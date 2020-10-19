@@ -17,7 +17,6 @@ export default class QueryArray extends Query {
 
   _onSnapshotChange(content, change) {
     let { type, oldIndex, newIndex, doc: snapshot } = change;
-    console.log(type, oldIndex, newIndex, snapshot.data());
     if(type === 'added') {
       let doc = this.store._createDocumentForSnapshot(snapshot, this);
       insertAt(content, newIndex, doc);
@@ -35,7 +34,6 @@ export default class QueryArray extends Query {
   }
 
   _onSnapshot(snapshot, notify=true) {
-    console.log('_onSnapshot');
     let { content } = this;
     snapshot.docChanges({ includeMetadataChanges: true }).map(change => {
       this._onSnapshotChange(content, change);

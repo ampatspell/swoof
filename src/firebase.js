@@ -7,7 +7,7 @@ const initializeApp = config => firebase.initializeApp(config);
 
 const enablePersistence = async firebase => {
   await firebase.firestore().enablePersistence({ synchronizeTabs: true }).catch(err => {
-    console.log(err.stack);
+    console.error(err.stack);
   });
 };
 
