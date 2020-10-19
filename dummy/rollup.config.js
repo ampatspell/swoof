@@ -6,7 +6,6 @@ import alias from "@rollup/plugin-alias";
 import livereload from 'rollup-plugin-livereload';
 import preprocess from 'svelte-preprocess';
 import { terser } from 'rollup-plugin-terser';
-import path from 'path';
 
 const production = !process.env.ROLLUP_WATCH;
 
@@ -43,7 +42,7 @@ export default {
     alias({
       resolve:  [ '.svelte', '.js' ],
       entries: [
-        // { find: "@store", replacement: path.resolve(__dirname, "src/store") }
+        // { find: "@store", replacement: requir('path').resolve(__dirname, "src/store") }
       ]
     }),
     svelte({
