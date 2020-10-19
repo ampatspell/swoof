@@ -17,9 +17,9 @@ export default class Message extends Model {
   }
 
   get serialized() {
-    let { doc, name } = this;
+    let { doc: { serialized: doc }, name } = this;
     return {
-      doc: doc.serialized,
+      doc,
       name
     };
   }
