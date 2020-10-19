@@ -7,9 +7,14 @@
 
 </script>
 
-<div class="single">
+<input bind:value={$message.doc.data.name}/>
+
+<div class="json">
   <JSON object={$message}/>
 </div>
 
 <style>
+  .json {
+    margin-top: 15px;
+  }
 </style>
