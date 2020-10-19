@@ -14,14 +14,10 @@ const {
 
 export default class Store {
 
-  constructor({ identifier, firebase }) {
+  constructor({ stores, identifier, firebase }) {
     this.identifier = identifier;
+    defineHiddenProperty(this, 'stores', stores);
     defineHiddenProperty(this, 'firebase', firebase);
-    defineHiddenProperty(this, '_observing', new Set());
-  }
-
-  get observing() {
-    return [ ...this._observing ];
   }
 
   get firestore() {
@@ -82,9 +78,8 @@ export default class Store {
     assert(false, `Unsupported type '${type}'`);
   }
 
-  _registerObserving(model) {
-    this._observing.add(model);
-    return () => this._observing.delete(model);
+  _registerObserving(...args) {
+    return this.stores._registerObserving(...args);
   }
 
   _onSnapshotError(sender) {

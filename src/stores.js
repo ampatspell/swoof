@@ -1,3 +1,4 @@
+import { defineHiddenProperty } from './util';
 import { initializeApp, enablePersistence } from './firebase';
 import { getContext, setContext } from 'svelte';
 import Store from './store';
@@ -8,7 +9,19 @@ class Stores {
 
   constructor() {
     this.definitions = Object.create(null);
+    defineHiddenProperty(this, '_observing', new Set());
   }
+
+  get observing() {
+    return [ ...this._observing ];
+  }
+
+  _registerObserving(model) {
+    this._observing.add(model);
+    return () => this._observing.delete(model);
+  }
+
+  //
 
   _contextIdentifier(identifier) {
     return `swoof:store:${identifier}`;
@@ -26,7 +39,8 @@ class Stores {
 
   create(identifier, definition) {
     let opts = this.definitions[definition];
-    let store = new Store(Object.assign({ identifier }, opts));
+    let stores = this;
+    let store = new Store(Object.assign({ stores, identifier }, opts));
     setContext(this._contextIdentifier(identifier), store);
     return store;
   }
