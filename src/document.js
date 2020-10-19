@@ -1,4 +1,4 @@
-import { toString, toJSON, defineHiddenProperty, objectToJSON } from './util';
+import { toString, toJSON, defineHiddenProperty, objectToJSON, defer } from './util';
 import { writable } from 'svelte/store';
 import Membrane from 'observable-membrane';
 
@@ -24,6 +24,7 @@ export default class Document {
     this.exists = undefined;
     this._proxy = null;
     this._data = {};
+    this._deferred = defer();
     if(snapshot) {
       this._onSnapshot(snapshot, false);
     } else if(data) {
@@ -41,6 +42,10 @@ export default class Document {
   }
 
   //
+
+  get promise() {
+    return this._deferred.promise;
+  }
 
   get data() {
     let { _proxy } = this;
@@ -153,9 +158,11 @@ export default class Document {
         return;
       }
       this._onSnapshot(snapshot);
+      this._deferred.resolve(this);
     }, error => {
       this._setState({ isLoading: false, isError: true, error }, true);
       this.store._onSnapshotError(this);
+      this._deferred.reject(error);
     });
 
     this._cancel = () => {
@@ -200,8 +207,10 @@ export default class Document {
       let snapshot = await this.ref.ref.get();
       this._onSnapshot(snapshot, true);
       this._maybeStartObserving();
+      this._deferred.resolve(this);
     } catch(error) {
       this._setState({ isLoading: false, isError: true, error }, true);
+      this._deferred.reject(error);
       throw error;
     }
     return this;

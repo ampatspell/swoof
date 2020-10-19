@@ -23,6 +23,13 @@
   </div>
 
   <div class="content">
+    <div class="status">
+      {#await $doc.promise}
+        Loading…
+      {:then}
+        Loaded
+      {/await}
+    </div>
     <div class="text">
       <input bind:value={$doc.data.text}/>
     </div>
@@ -38,6 +45,9 @@
 <style>
   .id {
     margin-bottom: 20px;
+  }
+  .status {
+    margin-bottom: 10px;
   }
   .content {
     margin-bottom: 10px;
