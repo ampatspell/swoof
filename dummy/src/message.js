@@ -5,13 +5,17 @@ export default class Message extends Model {
   constructor() {
     super();
     this.store = stores.get('main');
-    this.observed('doc', this.store.doc('messages/first').existing());
+    this.define({
+      doc: this.observed(this.store.doc('messages/first').existing()),
+      name: this.readOnly('doc.data.name')
+    });
   }
 
   get serialized() {
-    let { doc } = this;
+    let { doc, name } = this;
     return {
-      doc: doc.serialized
+      doc: doc.serialized,
+      name
     };
   }
 

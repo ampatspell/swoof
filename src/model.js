@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import { defineHiddenProperty, toString, toJSON } from './util';
+import { defineHiddenProperty, toString, toJSON, get } from './util';
 
 export default class Model {
 
@@ -8,25 +8,43 @@ export default class Model {
     defineHiddenProperty(this, '_observed', Object.create(null));
   }
 
-  observed(key, value) {
-    Object.defineProperty(this, key, {
-      get() {
-        let def = this._observed[key];
-        return def && def.value;
-      },
-      set(value) {
-        let def = this._observed[key];
-        if(def && def.value === value) {
-          return;
-        }
-        this._stopObservingDefinition(def);
-        def = { key, value };
-        this._observed[key] = def;
-        this._maybeStartObservingDefinition(def);
+  define(hash) {
+    for(let key in hash) {
+      let value = hash[key];
+      if(typeof value === 'function') {
+        value = value(key);
+      } else {
+        this[key] = value;
       }
+    }
+  }
+
+  readOnly(path) {
+    return key => Object.defineProperty(this, key, {
+      get: () => get(this, path)
     });
-    this[key] = value;
-    return value;
+  }
+
+  observed(value) {
+    return key => {
+      Object.defineProperty(this, key, {
+        get() {
+          let def = this._observed[key];
+          return def && def.value;
+        },
+        set(value) {
+          let def = this._observed[key];
+          if(def && def.value === value) {
+            return;
+          }
+          this._stopObservingDefinition(def);
+          def = { key, value };
+          this._observed[key] = def;
+          this._maybeStartObservingDefinition(def);
+        }
+      });
+      this[key] = value;
+    }
   }
 
   //

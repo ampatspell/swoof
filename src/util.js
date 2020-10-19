@@ -136,3 +136,16 @@ export const merge = (target, source) => {
   assign(target || {}, source);
   return target;
 }
+
+export const get = (object, path) => {
+  var components = path.split('.');
+  let current = object;
+  for(let i = 0; i < components.length; ++i) {
+    if(current[components[i]] === undefined) {
+      return undefined;
+    } else {
+      current = current[components[i]];
+    }
+  }
+  return current;
+}
