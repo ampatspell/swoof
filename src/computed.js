@@ -1,4 +1,4 @@
-import { get } from './util';
+import { get, set } from './util';
 
 export const observed = value => (model, key) => {
   Object.defineProperty(model, key, {
@@ -14,4 +14,9 @@ export const observed = value => (model, key) => {
 
 export const readOnly = path => (model, key) => Object.defineProperty(model, key, {
   get: () => get(model, path)
+});
+
+export const alias = path => (model, key) => Object.defineProperty(model, key, {
+  get: () => get(model, path),
+  set: value => set(model, path, value)
 });

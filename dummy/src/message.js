@@ -2,7 +2,8 @@ import { Model, stores, computed } from 'swoof';
 
 const {
   observed,
-  readOnly
+  readOnly,
+  alias
 } = computed;
 
 export default class Message extends Model {
@@ -14,7 +15,7 @@ export default class Message extends Model {
       doc: observed(this.store.doc('messages/first').existing()),
       query: observed(this.store.collection('messages').query()),
       total: readOnly('query.content.length'),
-      name: readOnly('doc.data.name')
+      name: alias('doc.data.name')
     });
   }
 

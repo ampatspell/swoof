@@ -7,7 +7,7 @@
 
 </script>
 
-<input bind:value={$message.doc.data.name}/>
+<input bind:value={$message.name}/>
 
 <div class="json">
   <JSON object={$message}/>
