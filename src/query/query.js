@@ -1,6 +1,10 @@
 import { defineHiddenProperty, toJSON, toString, objectToJSON } from '../util';
 import { writable } from 'svelte/store';
 
+const {
+  assign
+} = Object;
+
 export default class Query {
 
   constructor({ store, ref }) {
@@ -78,6 +82,8 @@ export default class Query {
       let observing = this.store._registerObserving(this);
       let snapshot = this._ref.onSnapshot({ includeMetadataChanges: true }, snapshot => {
         this._onSnapshot(snapshot);
+        this._setState({ isLoading: false, isLoaded: true });
+        this._notifyDidChange();
       }, error => {
         this._setState({ isLoading: false, isError: true, error }, true);
         this.store._onSnapshotError(this);
@@ -92,6 +98,28 @@ export default class Query {
       this._cancel();
       unsubscribe();
     }
+  }
+
+  async load(opts) {
+    let { force } = assign({ force: false }, opts);
+    let { isLoaded } = this;
+    if(isLoaded && !force) {
+      return this;
+    }
+    this._setState({ isLoading: true, isError: false, error: null }, true);
+    try {
+      let snapshot = await this._ref.get();
+      this._onLoad(snapshot);
+      this._setState({ isLoading: false, isLoaded: true }, true);
+    } catch(error) {
+      this._setState({ isLoading: false, isError: true, error }, true);
+      throw error;
+    }
+    return this;
+  }
+
+  reload() {
+    return this.load({ force: true });
   }
 
   //

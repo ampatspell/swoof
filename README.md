@@ -129,6 +129,5 @@ update `plugin-commonjs`:
 
 ## TODO
 
-* add query.load(), query.reload()
 * expose promise for document and queries which resolve after 1st load or onSnapshot
 * add basic storage support

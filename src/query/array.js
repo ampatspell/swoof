@@ -33,15 +33,25 @@ export default class QueryArray extends Query {
     }
   }
 
-  _onSnapshot(snapshot, notify=true) {
+  _onSnapshot(snapshot) {
     let { content } = this;
     snapshot.docChanges({ includeMetadataChanges: true }).map(change => {
       this._onSnapshotChange(content, change);
     });
-    this._setState({ isLoading: false, isLoaded: true });
-    if(notify) {
-      this._notifyDidChange();
-    }
+  }
+
+  _onLoad(_snapshot) {
+    let { content } = this;
+    this.content = _snapshot.docs.map(snapshot => {
+      let path = snapshot.ref.path;
+      let doc = content.find(doc => doc.path === path);
+      if(!doc) {
+        doc = this.store._createDocumentForSnapshot(snapshot, this);
+      } else {
+        this._withSuspendedDocumentDidChange(() => doc._onSnapshot(snapshot));
+      }
+      return doc;
+    });
   }
 
 }

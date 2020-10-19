@@ -11,11 +11,16 @@ export default class QuerySingle extends Query {
     return this.ref.ref;
   }
 
-  _onSnapshot(_snapshot, notify=true) {
+  _first(_snapshot) {
     let snapshot = _snapshot.docs[0];
     if(_snapshot.docs.length > 1) {
       console.warn(`${this.ref.string}.query({ type: 'single' }) yields more than 1 document`);
     }
+    return snapshot;
+  }
+
+  _onSnapshotInternal(_snapshot) {
+    let snapshot = this._first(_snapshot);
     let { content } = this;
     if(snapshot) {
       if(content && content.path === snapshot.ref.path) {
@@ -29,10 +34,14 @@ export default class QuerySingle extends Query {
       }
       this.content = null;
     }
-    this._setState({ isLoading: false, isLoaded: true });
-    if(notify) {
-      this._notifyDidChange();
-    }
+  }
+
+  _onSnapshot(snapshot) {
+    this._onSnapshotInternal(snapshot);
+  }
+
+  _onLoad(snapshot) {
+    this._onSnapshotInternal(snapshot);
   }
 
 }

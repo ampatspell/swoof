@@ -144,7 +144,7 @@ export default class Document {
 
     let { isLoaded } = this;
     if(!isLoaded) {
-      this._setState({ isLoading: true, isError: false, error: undefined }, true);
+      this._setState({ isLoading: true, isError: false, error: null }, true);
     }
 
     let observing = this.store._registerObserving(this);
@@ -195,7 +195,7 @@ export default class Document {
     if(isLoaded && !force) {
       return this;
     }
-    this._setState({ isNew: false, isLoading: true, isError: false, error: undefined }, true);
+    this._setState({ isNew: false, isLoading: true, isError: false, error: null }, true);
     try {
       let snapshot = await this.ref.ref.get();
       this._onSnapshot(snapshot, true);
@@ -217,7 +217,7 @@ export default class Document {
     if(!isDirty && !force) {
       return this;
     }
-    this._setState({ isSaving: true, isError: false, error: undefined }, true);
+    this._setState({ isSaving: true, isError: false, error: null }, true);
     try {
       await this.ref.ref.set(this._data, { merge });
       this._setState({ isNew: false, isSaving: false, exists: true }, true);
@@ -230,7 +230,7 @@ export default class Document {
   }
 
   async delete() {
-    this._setState({ isSaving: true, isError: false, error: undefined }, true);
+    this._setState({ isSaving: true, isError: false, error: null }, true);
     try {
       await this.ref.ref.delete();
       this._setState({ isSaving: false, exists: false }, true);
