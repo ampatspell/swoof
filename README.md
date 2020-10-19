@@ -66,3 +66,27 @@ Experimental Firestore library for Svelte.
 <style>
 </style>
 ```
+
+``` svelte
+// Query.svelte
+<script>
+  import { JSON, stores, setGlobal } from 'swoof';
+
+  let store = stores.get('main');
+
+  let query = store.collection('messages').query();
+  setGlobal({ query });
+
+</script>
+
+<JSON object={$query}/>
+
+{#each $query.content as doc}
+  <JSON object={doc}/>
+  <input bind:value={doc.data.text}/>
+  <button on:click={() => doc.save()}>Save</button>
+{/each}
+
+<style type="text/scss">
+</style>
+```
