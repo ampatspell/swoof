@@ -140,7 +140,7 @@ export const merge = (target, source) => {
 export const get = (object, path) => {
   var components = path.split('.');
   let current = object;
-  for(let i = 0; i < components.length; ++i) {
+  for(let i = 0; i < components.length; i++) {
     if(current[components[i]] === undefined) {
       return undefined;
     } else {
