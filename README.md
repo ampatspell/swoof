@@ -1,4 +1,4 @@
-# swoof
+# Swoof
 
 Experimental Firestore library for Svelte.
 
