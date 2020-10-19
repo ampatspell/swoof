@@ -54,6 +54,7 @@ export default {
       },
     }),
     replace({
+      'process.env.CONFIG': JSON.stringify(require('./config')),
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
     }),
 
