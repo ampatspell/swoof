@@ -1,11 +1,11 @@
-import Model from '../model';
+import Stateful from '../stateful';
 import { defineHiddenProperty, toJSON, toString, objectToJSON, defer } from '../util';
 
 const {
   assign
 } = Object;
 
-export default class Query extends Model {
+export default class Query extends Stateful {
 
   constructor({ store, ref }) {
     super();

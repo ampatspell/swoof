@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import { defineHiddenProperty } from './util';
+import { defineHiddenProperty, toString, toJSON } from './util';
 
 export default class Model {
 
@@ -11,19 +11,26 @@ export default class Model {
     this._writable.set(this);
   }
 
-  _setState(props, notify) {
-    let changed = false;
-    for(let key in props) {
-      let value  = props[key];
-      if(this[key] !== value) {
-        this[key] = value;
-        changed = true;
-      }
+  set() {
+    this._notifyDidChange();
+  }
+
+  subscribe(...args) {
+    this._subscribed = true;
+    let unsubscribe = this._writable.subscribe(...args);
+    return () => {
+      this._subscribed = false;
+      unsubscribe();
     }
-    if(changed && notify) {
-      this._notifyDidChange();
-    }
-    return changed;
+  }
+
+  toString() {
+    return toString(this, `${this.path}`);
+  }
+
+  toJSON() {
+    let { serialized } = this;
+    return toJSON(this, { serialized });
   }
 
 }
