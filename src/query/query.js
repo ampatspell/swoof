@@ -1,15 +1,15 @@
+import Model from '../model';
 import { defineHiddenProperty, toJSON, toString, objectToJSON, defer } from '../util';
-import { writable } from 'svelte/store';
 
 const {
   assign
 } = Object;
 
-export default class Query {
+export default class Query extends Model {
 
   constructor({ store, ref }) {
+    super();
     defineHiddenProperty(this, 'store', store);
-    defineHiddenProperty(this, 'writable', writable(this));
     defineHiddenProperty(this, 'ref', ref);
     this.isLoading = false;
     this.isLoaded = false;
@@ -39,27 +39,6 @@ export default class Query {
   }
 
   //
-
-  // TODO: from document
-  _notifyDidChange() {
-    this.writable.set(this);
-  }
-
-  // TODO: from document
-  _setState(props, notify) {
-    let changed = false;
-    for(let key in props) {
-      let value  = props[key];
-      if(this[key] !== value) {
-        this[key] = value;
-        changed = true;
-      }
-    }
-    if(changed && notify) {
-      this._notifyDidChange();
-    }
-    return changed;
-  }
 
   _withSuspendedDocumentDidChange(cb) {
     this._documentDidChangeSuspended++;
@@ -100,7 +79,7 @@ export default class Query {
         snapshot();
       };
     }
-    let unsubscribe = this.writable.subscribe(...args);
+    let unsubscribe = this._writable.subscribe(...args);
     return () => {
       this._cancel();
       unsubscribe();

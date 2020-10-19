@@ -1,17 +1,17 @@
+import Model from './model';
 import { toString, toJSON, defineHiddenProperty, objectToJSON, defer, cached, deleteCached, merge } from './util';
 import { assert } from './error';
-import { writable } from 'svelte/store';
 import Membrane from 'observable-membrane';
 
 const {
   assign
 } = Object;
 
-export default class Document {
+export default class Document extends Model {
 
   constructor({ store, ref, snapshot, data, parent }) {
+    super();
     defineHiddenProperty(this, 'store', store);
-    defineHiddenProperty(this, '_writable', writable(this));
     defineHiddenProperty(this, 'ref', ref);
     defineHiddenProperty(this, 'parent', parent);
     defineHiddenProperty(this, 'parent', parent, { writable: true });
@@ -74,23 +74,8 @@ export default class Document {
   //
 
   _notifyDidChange() {
-    this._writable.set(this);
+    super._notifyDidChange();
     this.parent && this.parent._documentDidChange(this);
-  }
-
-  _setState(props, notify) {
-    let changed = false;
-    for(let key in props) {
-      let value  = props[key];
-      if(this[key] !== value) {
-        this[key] = value;
-        changed = true;
-      }
-    }
-    if(changed && notify) {
-      this._notifyDidChange();
-    }
-    return changed;
   }
 
   _setData(data) {
