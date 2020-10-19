@@ -133,3 +133,4 @@ update `plugin-commonjs`:
 - [x] add query.load(), query.reload()
 - [x] expose promise for document and queries which resolve after 1st load or onSnapshot
 - [ ] diff doc onSnapshot changes + state and do writable.set(this) only if there are changes present
+- [ ] collect query onSnapshot changes and notify only if something has changed
