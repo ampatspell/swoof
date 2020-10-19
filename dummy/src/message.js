@@ -1,4 +1,9 @@
-import { Model, stores } from 'swoof';
+import { Model, stores, computed } from 'swoof';
+
+const {
+  observed,
+  readOnly
+} = computed;
 
 export default class Message extends Model {
 
@@ -6,8 +11,8 @@ export default class Message extends Model {
     super();
     this.store = stores.get('main');
     this.define({
-      doc: this.observed(this.store.doc('messages/first').existing()),
-      name: this.readOnly('doc.data.name')
+      doc: observed(this.store.doc('messages/first').existing()),
+      name: readOnly('doc.data.name')
     });
   }
 

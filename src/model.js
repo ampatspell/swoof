@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import { defineHiddenProperty, toString, toJSON, get } from './util';
+import { defineHiddenProperty, toString, toJSON } from './util';
 
 export default class Model {
 
@@ -12,42 +12,30 @@ export default class Model {
     for(let key in hash) {
       let value = hash[key];
       if(typeof value === 'function') {
-        value = value(key);
+        value(this, key);
       } else {
         this[key] = value;
       }
     }
   }
 
-  readOnly(path) {
-    return key => Object.defineProperty(this, key, {
-      get: () => get(this, path)
-    });
-  }
-
-  observed(value) {
-    return key => {
-      Object.defineProperty(this, key, {
-        get() {
-          let def = this._observed[key];
-          return def && def.value;
-        },
-        set(value) {
-          let def = this._observed[key];
-          if(def && def.value === value) {
-            return;
-          }
-          this._stopObservingDefinition(def);
-          def = { key, value };
-          this._observed[key] = def;
-          this._maybeStartObservingDefinition(def);
-        }
-      });
-      this[key] = value;
-    }
-  }
-
   //
+
+  _getValueForObservedKey(key) {
+    let def = this._observed[key];
+    return def && def.value;
+  }
+
+  _setValueForObservedKey(key, value) {
+    let def = this._observed[key];
+    if(def && def.value === value) {
+      return;
+    }
+    this._stopObservingDefinition(def);
+    def = { key, value };
+    this._observed[key] = def;
+    this._maybeStartObservingDefinition(def);
+  }
 
   _stopObservingDefinition(def) {
     if(!def) {
@@ -74,7 +62,7 @@ export default class Model {
     if(typeof value.subscribe !== 'function') {
       return;
     }
-    def.unsubscribe = value.subscribe(() => this._propertyDidChange(key));
+    def.unsubscribe = value.subscribe(() => this._observedPropertyDidChange(key));
   }
 
   _startObserving() {
@@ -93,11 +81,11 @@ export default class Model {
     }
   }
 
-  //
-
-  _propertyDidChange() {
+  _observedPropertyDidChange() {
     this._notifyDidChange();
   }
+
+  //
 
   _notifyDidChange() {
     this._writable.set(this);

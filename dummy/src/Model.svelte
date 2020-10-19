@@ -1,5 +1,5 @@
 <script>
-  import { JSON, stores, setGlobal } from 'swoof';
+  import { JSON, setGlobal } from 'swoof';
   import Message from './message';
 
   let message = new Message();
