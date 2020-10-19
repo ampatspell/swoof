@@ -1,4 +1,4 @@
-# swoof
+# Swoof
 
 Experimental Firestore library for Svelte.
 
@@ -129,6 +129,7 @@ update `plugin-commonjs`:
 
 ## TODO
 
+- [ ] add basic auth support (sign up, sign in (email, anon), forgot password, link account, sign out)
 - [ ] add basic storage support
 - [x] add query.load(), query.reload()
 - [x] expose promise for document and queries which resolve after 1st load or onSnapshot
