@@ -11,22 +11,12 @@
     }
   };
 
-  let ready = stores.configure('main', config);
+  stores.configure('main', config);
   let store = stores.create('main', 'main');
   setGlobal({ store });
 </script>
 
-{#await ready}
-  <div class="loading">Loading…</div>
-{:then}
-  <div class="application">
-    <Index/>
-  </div>
-{/await}
+<Index/>
 
 <style>
-  .loading {
-    padding: 10px;
-    font-size: 12px;
-  }
 </style>

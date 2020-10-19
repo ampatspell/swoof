@@ -2,17 +2,21 @@ import { initializeApp, enablePersistence } from './firebase';
 import { getContext, setContext } from 'svelte';
 import Store from './store';
 
+const noop = () => {};
+
 class Stores {
 
   constructor() {
     this.definitions = Object.create(null);
   }
 
-  async configure(name, config) {
+  configure(name, config, cb=noop) {
     let firebase = initializeApp(config.firebase);
     this.definitions[name] = { firebase };
     if(config.firestore && config.firestore.enablePersistence) {
-      await enablePersistence(firebase);
+      enablePersistence(firebase).then(() => cb());
+    } else {
+      Promise.resolve().then(() => cb());
     }
   }
 

@@ -23,15 +23,11 @@ Experimental Firestore library for Svelte.
     }
   };
 
-  let ready = stores.configure('main', config);
+  stores.configure('main', config);
   let store = stores.create('main', 'main');
 </script>
 
-{#await ready}
-  <div class="loading">Loading…</div>
-{:then}
-  <Whatever/>
-{/await}
+<Whatever/>
 
 <style>
 </style>
