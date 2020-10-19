@@ -126,3 +126,8 @@ update `plugin-commonjs`:
     "@rollup/plugin-commonjs": "^15.0.0"
 }
 ```
+
+## TODO
+
+* expose promise for document and queries which resolve after 1st load or onSnapshot
+* add basic storage support
