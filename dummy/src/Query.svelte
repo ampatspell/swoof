@@ -6,25 +6,18 @@
   let query = store.collection('messages').query();
   setGlobal({ query });
 
-  $: $query && console.log('query did change');
-
-  $: doc = $query.content[0];
-  $: setGlobal({ doc });
-
 </script>
 
 <div class="query">
   <JSON object={$query}/>
-  {#if $doc}
-    <input bind:value={$doc.data.text}/>
-    <button on:click={() => doc.save()}>Save</button>
-  {/if}
 </div>
 
 <div class="docs">
   {#each $query.content as doc}
     <div class="doc">
       <JSON object={doc}/>
+      <input bind:value={doc.data.text}/>
+      <button on:click={() => doc.save()}>Save</button>
     </div>
   {/each}
 </div>
