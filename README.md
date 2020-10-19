@@ -93,8 +93,6 @@ Experimental Firestore library for Svelte.
 
 ## process is not defined
 
-If you're seeing
-
 ```
 Uncaught ReferenceError: process is not defined
 ```
@@ -115,4 +113,20 @@ plugins([
   }),
   // ...
 ])
+```
+
+## 'registerComponent' of undefined
+
+```
+Uncaught TypeError: Cannot read property 'registerComponent' of undefined
+```
+
+update `plugin-commonjs`:
+
+``` javascript
+// package.json
+"devDependencies": {
+    // ...
+    "@rollup/plugin-commonjs": "^15.0.0"
+}
 ```
