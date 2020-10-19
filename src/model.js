@@ -97,12 +97,14 @@ export default class Model {
 
   subscribe(...args) {
     this._subscribed = true;
+    let observing = this.store._registerObserving(this);
     this._startObserving();
     let unsubscribe = this._writable.subscribe(...args);
     return () => {
       this._subscribed = false;
       this._stopObserving();
       unsubscribe();
+      observing();
     }
   }
 
