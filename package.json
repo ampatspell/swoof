@@ -1,6 +1,13 @@
 {
   "name": "swoof",
   "version": "0.0.1",
+  "description": "Firestore library for Svelte",
+  "license": "MIT",
+  "author": "Arnis Vuskans <ampatspell@gmail.com> (http://www.amateurinmotion.com/)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ampatspell/swoof.git"
+  },
   "svelte": "src/index.js",
   "module": "dist/index.mjs",
   "main": "dist/index.js",
@@ -17,7 +24,9 @@
     "observable-membrane": "^1.0.1"
   },
   "keywords": [
-    "svelte"
+    "svelte",
+    "firebase",
+    "firestore"
   ],
   "files": [
     "src",
