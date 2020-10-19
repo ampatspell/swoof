@@ -138,14 +138,26 @@ export const merge = (target, source) => {
 }
 
 export const get = (object, path) => {
-  var components = path.split('.');
+  let components = path.split('.');
   let current = object;
   for(let i = 0; i < components.length; i++) {
     if(current[components[i]] === undefined) {
-      return undefined;
-    } else {
-      current = current[components[i]];
+      return;
     }
+    current = current[components[i]];
   }
   return current;
+}
+
+export const set = (object, path, value) => {
+  let components = path.split('.');
+  let key = components.pop();
+  let current = object;
+  for(let i = 0; i < components.length; i++) {
+    if(current[components[i]] === undefined) {
+      return;
+    }
+    current = current[components[i]];
+  }
+  current[key] = value;
 }
