@@ -1,4 +1,4 @@
-import { defineHiddenProperty, toJSON, toString, objectToJSON } from '../util';
+import { defineHiddenProperty, toJSON, toString, objectToJSON, defer } from '../util';
 import { writable } from 'svelte/store';
 
 const {
@@ -15,7 +15,12 @@ export default class Query {
     this.isLoaded = false;
     this.isError = false;
     this.error = null;
+    this._deferred = defer();
     this._documentDidChangeSuspended = 0;
+  }
+
+  get promise() {
+    return this._deferred.promise;
   }
 
   get string() {
@@ -84,9 +89,11 @@ export default class Query {
         this._onSnapshot(snapshot);
         this._setState({ isLoading: false, isLoaded: true });
         this._notifyDidChange();
+        this._deferred.resolve(this);
       }, error => {
         this._setState({ isLoading: false, isError: true, error }, true);
         this.store._onSnapshotError(this);
+        this._deferred.reject(error);
       });
       this._cancel = () => {
         observing();
@@ -111,8 +118,10 @@ export default class Query {
       let snapshot = await this._ref.get();
       this._onLoad(snapshot);
       this._setState({ isLoading: false, isLoaded: true }, true);
+      this._deferred.resolve(this);
     } catch(error) {
       this._setState({ isLoading: false, isError: true, error }, true);
+      this._deferred.reject(error);
       throw error;
     }
     return this;

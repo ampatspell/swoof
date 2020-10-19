@@ -12,6 +12,14 @@
   <JSON object={$query}/>
 </div>
 
+<div class="status">
+  {#await $query.promise}
+    Loading…
+  {:then}
+    Loaded
+  {/await}
+</div>
+
 <div class="docs">
   {#each $query.content as doc}
     <div class="doc">
@@ -24,6 +32,9 @@
 
 <style type="text/scss">
   .query {
+    margin-bottom: 10px;
+  }
+  .status {
     margin-bottom: 10px;
   }
   .docs {

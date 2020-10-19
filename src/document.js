@@ -231,6 +231,7 @@ export default class Document {
       await this.ref.ref.set(this._data, { merge });
       this._setState({ isNew: false, isSaving: false, exists: true }, true);
       this._maybeStartObserving();
+      this._deferred.resolve(this);
     } catch(error) {
       this._setState({ isSaving: false, isError: true, error }, true);
       throw error;
