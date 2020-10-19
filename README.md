@@ -90,3 +90,29 @@ Experimental Firestore library for Svelte.
 <style type="text/scss">
 </style>
 ```
+
+## process is not defined
+
+If you're seeing
+
+```
+Uncaught ReferenceError: process is not defined
+```
+
+add `plugin-replace` to rollup config:
+
+``` javascript
+// rollup.config.js
+import replace from '@rollup/plugin-replace';
+
+plugins([
+  //...
+  svelte({
+    // ...
+  }),
+  replace({
+    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
+  }),
+  // ...
+])
+```
