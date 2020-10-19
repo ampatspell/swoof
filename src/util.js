@@ -1,5 +1,10 @@
 import firebase from "firebase/app";
 
+const {
+  assign,
+  keys
+} = Object;
+
 export const setGlobal = hash => {
   for(let key in hash) {
     window[key] = hash[key];
@@ -35,12 +40,13 @@ export const toJSON = (instance, props) => {
   };
 }
 
+const __cache = '__cache';
+
 export const cached = (instance, name, cb) => {
-  let key = '__cache';
-  let cache = instance[key];
+  let cache = instance[__cache];
   if(!cache) {
     cache = Object.create(null);
-    defineHiddenProperty(instance, key, cache);
+    defineHiddenProperty(instance, __cache, cache);
   }
   let value = cache[name];
   if(!value) {
@@ -48,6 +54,10 @@ export const cached = (instance, name, cb) => {
     cache[name] = value;
   }
   return value;
+}
+
+export const deleteCached = (instance, name) => {
+  instance[__cache] && delete instance[__cache][name];
 }
 
 let dateTimeFormatter = new Intl.DateTimeFormat('default', {
@@ -115,4 +125,14 @@ export const defer = () => {
     resolve,
     reject
   };
+}
+
+export const merge = (target, source) => {
+  for(let key of keys(source)) {
+    if(source[key] instanceof Object) {
+      assign(source[key], merge(target[key], source[key]));
+    }
+  }
+  assign(target || {}, source);
+  return target;
 }

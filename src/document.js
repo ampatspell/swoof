@@ -1,4 +1,5 @@
-import { toString, toJSON, defineHiddenProperty, objectToJSON, defer } from './util';
+import { toString, toJSON, defineHiddenProperty, objectToJSON, defer, cached, deleteCached, merge } from './util';
+import { assert } from './error';
 import { writable } from 'svelte/store';
 import Membrane from 'observable-membrane';
 
@@ -22,7 +23,6 @@ export default class Document {
     this.isError = false;
     this.error = null;
     this.exists = undefined;
-    this._proxy = null;
     this._data = {};
     this._deferred = defer();
     if(snapshot) {
@@ -48,18 +48,15 @@ export default class Document {
   }
 
   get data() {
-    let { _proxy } = this;
-    if(!_proxy) {
+    return cached(this, 'proxy', () => {
       let membrane = new Membrane({
         valueMutated: () => {
           this._setState({ isDirty: true });
           this._notifyDidChange();
         }
       });
-      _proxy = membrane.getProxy(this._data);
-      this._proxy = _proxy;
-    }
-    return _proxy;
+      return membrane.getProxy(this._data);
+    });
   }
 
   set data(data) {
@@ -69,10 +66,7 @@ export default class Document {
   }
 
   merge(props) {
-    for(let key in props) {
-      let value = props[key];
-      this._data[key] = value;
-    }
+    merge(this._data, props);
     this._setState({ isDirty: true });
     this._notifyDidChange();
   }
@@ -100,8 +94,9 @@ export default class Document {
   }
 
   _setData(data) {
+    assert(data instanceof Object, 'data must be object');
     this._data = data;
-    this._proxy = null;
+    deleteCached(this, 'proxy');
   }
 
   _onSnapshot(snapshot, notify=true) {
