@@ -12,14 +12,17 @@ export default class Message extends Model {
     this.store = stores.get('main');
     this.define({
       doc: observed(this.store.doc('messages/first').existing()),
+      query: observed(this.store.collection('messages').query()),
+      total: readOnly('query.content.length'),
       name: readOnly('doc.data.name')
     });
   }
 
   get serialized() {
-    let { doc: { serialized: doc }, name } = this;
+    let { doc: { serialized: doc }, name, total } = this;
     return {
       doc,
+      total,
       name
     };
   }
