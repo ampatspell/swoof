@@ -59,7 +59,7 @@ export default class Model {
     def.unsubscribe = value.subscribe(() => this._propertyDidChange(key));
   }
 
-  _maybeStartObserving() {
+  _startObserving() {
     let { _observed } = this;
     for(let key in _observed) {
       let def = _observed[key];
@@ -91,7 +91,7 @@ export default class Model {
 
   subscribe(...args) {
     this._subscribed = true;
-    this._maybeStartObserving();
+    this._startObserving();
     let unsubscribe = this._writable.subscribe(...args);
     return () => {
       this._subscribed = false;
