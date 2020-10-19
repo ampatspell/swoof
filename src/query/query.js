@@ -68,6 +68,10 @@ export default class Query {
     this._notifyDidChange();
   }
 
+  set() {
+    this._notifyDidChange();
+  }
+
   subscribe(...args) {
     if(!this.cancel) {
       this._setState({ isLoading: true, isError: false, error: null }, true);
