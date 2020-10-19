@@ -1,9 +1,9 @@
 <script>
-  import { JSON, setGlobal, set } from 'swoof';
+  import { JSON, setGlobal } from 'swoof';
   import Message from './message';
 
   let message = new Message();
-  setGlobal({ message, set });
+  setGlobal({ message });
 
 </script>
 
