@@ -8,8 +8,6 @@ export default class Model {
     defineHiddenProperty(this, '_observed', Object.create(null));
   }
 
-  //
-
   define(hash) {
     for(let key in hash) {
       let value = hash[key];
@@ -20,6 +18,8 @@ export default class Model {
       }
     }
   }
+
+  //
 
   _getValueForObservedKey(key) {
     let def = this._observed[key];
