@@ -10,6 +10,10 @@ class Stores {
     this.definitions = Object.create(null);
   }
 
+  _contextIdentifier(identifier) {
+    return `swoof:store:${identifier}`;
+  }
+
   configure(name, config, cb=noop) {
     let firebase = initializeApp(config.firebase);
     this.definitions[name] = { firebase };
@@ -23,12 +27,12 @@ class Stores {
   create(identifier, definition) {
     let opts = this.definitions[definition];
     let store = new Store(Object.assign({ identifier }, opts));
-    setContext(identifier, store);
+    setContext(this._contextIdentifier(identifier), store);
     return store;
   }
 
   get(identifier) {
-    return getContext(identifier);
+    return getContext(this._contextIdentifier(identifier));
   }
 
 }
