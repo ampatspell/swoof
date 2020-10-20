@@ -42,9 +42,9 @@ export default class Messages extends Model {
     };
 
     this.define('name', observed('hey there', name => {
-      console.log('name did change', name);
       this.query = createQuery(name);
     }));
+
     this.define('query', observed(createQuery(this.name)));
     this.define('models', models('query.content', doc => new Message(doc)));
   }
