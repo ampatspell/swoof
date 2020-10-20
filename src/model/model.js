@@ -1,5 +1,6 @@
 import { writable } from 'svelte/store';
 import { defineHiddenProperty, toString, toJSON, isFunction } from '../util';
+import swoof from '../swoof';
 
 export default class Model {
 
@@ -98,7 +99,7 @@ export default class Model {
 
   subscribe(...args) {
     this._subscribed = true;
-    let observing = this.store._registerObserving(this);
+    let observing = swoof._registerObserving(this);
     this._startObserving();
     let unsubscribe = this._writable.subscribe(...args);
     return () => {

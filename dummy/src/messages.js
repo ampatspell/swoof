@@ -25,9 +25,9 @@ export default class Messages extends Model {
 
   constructor() {
     super();
-    this.store = swoof.store('main');
+    let store = swoof.store('main');
     this.define({
-      query: observed(this.store.collection('messages').query()),
+      query: observed(store.collection('messages').query()),
       models: models('query.content', doc => new Message(doc))
     });
   }
