@@ -1,4 +1,5 @@
-import { get, set } from '../util';
+import { get, set, cached } from '../util';
+import Models from './models';
 
 export const observed = value => (model, key) => {
   Object.defineProperty(model, key, {
@@ -19,4 +20,10 @@ export const readOnly = path => (model, key) => Object.defineProperty(model, key
 export const alias = path => (model, key) => Object.defineProperty(model, key, {
   get: () => get(model, path),
   set: value => set(model, path, value)
+});
+
+export const models = arrayKey => (model, key) => Object.defineProperty(model, key, {
+  get: () => {
+    return cached(model, key, () => new Models({ parent: model, opts: { source: arrayKey } }));
+  }
 });

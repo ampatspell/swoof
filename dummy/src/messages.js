@@ -1,7 +1,8 @@
 import { Model, swoof, computed, get } from 'swoof';
 
 const {
-  observed
+  observed,
+  models
 } = computed;
 
 export default class Message extends Model {
@@ -11,6 +12,7 @@ export default class Message extends Model {
     this.store = swoof.store('main');
     this.define({
       query: observed(this.store.collection('messages').query()),
+      models: models('query.content')
     });
   }
 

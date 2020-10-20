@@ -29,13 +29,17 @@ export const guidFor = instance => {
   return guid;
 }
 
+export const toPrimitive = instance => {
+  return `${instance.constructor.name}:${guidFor(instance)}`;
+}
+
 export const toString = (instance, extension) => {
-  return `<${instance.constructor.name}:${guidFor(instance)}${extension ? `:${extension}` : ''}>`;
+  return `<${toPrimitive(instance)}${extension ? `:${extension}` : ''}>`;
 }
 
 export const toJSON = (instance, props) => {
   return {
-    instance: `${instance.constructor.name}:${guidFor(instance)}`,
+    instance: toPrimitive(instance),
     ...props
   };
 }
