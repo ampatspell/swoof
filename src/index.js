@@ -16,3 +16,5 @@ export {
   Model,
   computed
 }
+
+export default swoof;
