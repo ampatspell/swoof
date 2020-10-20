@@ -161,3 +161,6 @@ export const set = (object, path, value) => {
   }
   current[key] = value;
 }
+
+export const insertAt = (array, idx, object) => array.splice(idx, 0, object);
+export const removeAt = (array, idx) => array.splice(idx, 1);
