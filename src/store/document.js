@@ -1,6 +1,6 @@
 import Stateful from './stateful';
-import { toString, toJSON, defineHiddenProperty, objectToJSON, defer, cached, deleteCached, merge } from './util';
-import { assert } from './error';
+import { toString, toJSON, defineHiddenProperty, objectToJSON, defer, cached, deleteCached, merge } from '../util';
+import { assert } from '../error';
 import Membrane from 'observable-membrane';
 
 const {

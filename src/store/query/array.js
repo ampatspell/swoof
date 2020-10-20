@@ -1,6 +1,6 @@
 import Query from './query';
-import { assert } from '../error';
-import { insertAt, removeAt } from '../util';
+import { assert } from '../../error';
+import { insertAt, removeAt } from '../../util';
 
 export default class QueryArray extends Query {
 

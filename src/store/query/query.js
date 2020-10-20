@@ -1,5 +1,5 @@
 import Stateful from '../stateful';
-import { defineHiddenProperty, toJSON, toString, objectToJSON, defer } from '../util';
+import { defineHiddenProperty, toJSON, toString, objectToJSON, defer } from '../../util';
 
 const {
   assign

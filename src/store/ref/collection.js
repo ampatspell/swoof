@@ -1,5 +1,5 @@
 import QueryableReference from './queryable';
-import { toString, toJSON } from '../util';
+import { toString, toJSON } from '../../util';
 
 export default class CollectionReference extends QueryableReference {
 

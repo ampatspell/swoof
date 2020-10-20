@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import { defineHiddenProperty, toString, toJSON } from './util';
+import { defineHiddenProperty, toString, toJSON } from '../util';
 
 export default class Model {
 

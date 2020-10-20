@@ -1,7 +1,7 @@
 import { defineHiddenProperty } from './util';
-import { initializeApp, enablePersistence } from './firebase';
+import { initializeApp, enablePersistence } from './store/firebase';
 import { getContext, setContext } from 'svelte';
-import Store from './store';
+import Store from './store/store';
 
 const noop = () => {};
 

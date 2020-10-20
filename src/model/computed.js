@@ -1,4 +1,4 @@
-import { get, set } from './util';
+import { get, set } from '../util';
 
 export const observed = value => (model, key) => {
   Object.defineProperty(model, key, {
