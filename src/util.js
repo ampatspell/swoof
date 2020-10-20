@@ -172,3 +172,9 @@ export const set = (object, path, value) => {
 
 export const insertAt = (array, idx, object) => array.splice(idx, 0, object);
 export const removeAt = (array, idx) => array.splice(idx, 1);
+export const removeObject = (array, object) => {
+  let idx = array.indexOf(object);
+  if(idx !== -1) {
+    removeAt(array, idx);
+  }
+}

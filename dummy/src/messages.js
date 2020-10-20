@@ -2,7 +2,8 @@ import { Model, swoof, computed, get } from 'swoof';
 
 const {
   observed,
-  models
+  models,
+  alias
 } = computed;
 
 class Message extends Model {
@@ -10,12 +11,16 @@ class Message extends Model {
   constructor(doc) {
     super();
     this.doc = doc;
+    this.define({
+      name: alias('doc.data.name'),
+      message: observed('hey')
+    });
   }
 
   get serialized() {
-    let doc = this.doc.serialized;
     return {
-      doc
+      name: this.name,
+      message: this.message
     };
   }
 
@@ -36,10 +41,15 @@ export default class Messages extends Model {
     return this.models.map(model => model.doc.data.name);
   }
 
+  get messages() {
+    return this.models.map(model => model.message);
+  }
+
   get serialized() {
     return {
       total: get(this, 'query.content.length'),
       names: this.names,
+      names: this.messages,
       models: this.models.map(model => model.serialized)
     };
   }

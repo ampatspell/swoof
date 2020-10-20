@@ -1,4 +1,5 @@
-import { defineHiddenProperty, toString, toPrimitive, toJSON, objectToJSON, get, isFunction } from '../util';
+import { writable } from 'svelte/store';
+import { defineHiddenProperty, toString, toPrimitive, toJSON, objectToJSON, get, isFunction, removeObject } from '../util';
 import swoof from '../swoof';
 
 const {
@@ -32,7 +33,7 @@ const createProxy = instance => new Proxy(instance, {
       }
       return target[key];
     } else {
-      return target.modelAtIndex(idx);
+      return target.atIndex(idx);
     }
   },
   set: (target, _key, value) => {
@@ -59,37 +60,70 @@ const normalizeOpts = ({ source: path, factory }) => {
   };
 }
 
+const ownerKey = '__swoof_owner';
+
 export default class Models {
 
   constructor({ parent, opts }) {
     defineHiddenProperty(this, 'parent', parent);
     defineHiddenProperty(this, '_opts', normalizeOpts(opts));
-    this._subscribeToSource();
+    defineHiddenProperty(this, '_writable', writable(this));
+    this._subscribe();
     return createProxy(this);
   }
 
-  _subscribeToSource() {
-    let observing = swoof._registerObserving(this);
-    let source = get(this.parent, this._opts.source.key);
-    let subscription = source.subscribe(() => this._parentDidChange());
-    this._cancel = () => {
-      subscription();
-      observing();
-    };
-  }
-
-  subscribe() {
-    return () => {
-      let { _cancel } = this;
-      this._cancel = null;
-      _cancel && _cancel();
-    };
+  atIndex(idx) {
+    return this._content[idx];
   }
 
   //
 
-  modelAtIndex(idx) {
-    return this._content[idx];
+  _subscribe() {
+    let model = get(this.parent, this._opts.source.key);
+    let source = model.subscribe(() => this._parentDidChange());
+    let content = () => this._unsubscribeModels(this._content);
+    this._cancel = () => {
+      source();
+      content();
+    };
+  }
+
+  _unsubscribe() {
+    let { _cancel } = this;
+    this._cancel = null;
+    _cancel && _cancel();
+  }
+
+  subscribe(...args) {
+    this._subscribed = true;
+    let observing = swoof._registerObserving(this);
+    let unsubscribe = this._writable.subscribe(...args);
+    return () => {
+      this._subscribed = false;
+      this._unsubscribe();
+      unsubscribe();
+      observing();
+    }
+  }
+
+  _notifyDidChange() {
+    this._writable.set(this);
+  }
+
+  //
+
+  _modelDidChange() {
+    this._notifyDidChange();
+  }
+
+  _unsubscribeModels(models) {
+    models.forEach(model => {
+      let hash = model[ownerKey];
+      let { cancel } = hash;
+      delete hash.cancel;
+      delete hash.doc;
+      cancel && cancel();
+    });
   }
 
   _parentDidChange() {
@@ -98,12 +132,19 @@ export default class Models {
 
     let current = this._content || [];
 
-    let key = '__swoof_owner';
-    let find = doc => current.find(model => model[key] === doc);
+    let find = doc => {
+      let model = current.find(model => model[ownerKey] && model[ownerKey].doc === doc);
+      if(model) {
+        removeObject(current, model);
+      }
+      return model;
+    };
+
     let create = doc => {
       let model = factory(doc);
       if(model) {
-        defineProperty(model, key, { value: doc });
+        let cancel = model.subscribe(() => this._modelDidChange(model));
+        defineProperty(model, ownerKey, { value: { cancel, doc } });
       }
       return model;
     };
@@ -120,6 +161,9 @@ export default class Models {
         }
       });
     }
+
+    this._unsubscribeModels(current);
+
     this._content = content;
   }
 

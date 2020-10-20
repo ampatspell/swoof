@@ -32,6 +32,7 @@ export default class Model {
     if(def && def.value === value) {
       return;
     }
+    // console.log('_setValueForObservedKey', key, value);
     this._stopObservingDefinition(def);
     def = { key, value };
     this._observed[key] = def;
@@ -54,17 +55,20 @@ export default class Model {
     if(!this._subscribed) {
       return;
     }
+
     let { unsubscribe, value, key } = def;
     if(unsubscribe) {
       return;
     }
-    if(!value) {
-      return;
+
+    if(value) {
+      if(isFunction(value.subscribe)) {
+        def.unsubscribe = value.subscribe(() => this._observedPropertyDidChange(key));
+        return;
+      }
     }
-    if(!isFunction(value.subscribe)) {
-      return;
-    }
-    def.unsubscribe = value.subscribe(() => this._observedPropertyDidChange(key));
+
+    this._observedPropertyDidChange(key);
   }
 
   _startObserving() {
