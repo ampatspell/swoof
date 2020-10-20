@@ -3,6 +3,7 @@
   import Query from './Query.svelte';
   import First from './First.svelte';
   import Model from './Model.svelte';
+  import Models from './Models.svelte';
 
   let thing = true;
   let toggle = () => thing = !thing;
@@ -11,10 +12,11 @@
     { label: 'Document', component: Document },
     { label: 'Query', component: Query },
     { label: 'First', component: First },
-    { label: 'Model', component: Model }
+    { label: 'Model', component: Model },
+    { label: 'Models', component: Models },
   ];
 
-  let selected = routes[3];
+  let selected = routes[4];
 
   let select = route => selected = route;
 
