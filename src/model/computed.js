@@ -24,6 +24,9 @@ export const alias = path => (model, key) => Object.defineProperty(model, key, {
 
 export const models = (arrayKey, factory) => (model, key) => Object.defineProperty(model, key, {
   get: () => {
-    return cached(model, key, () => new Models({ parent: model, opts: { source: arrayKey, factory } }));
+    return cached(model, key, () => {
+      let models = new Models({ parent: model, opts: { source: arrayKey, factory } });
+      return model._setValueForObservedKey(key, models);
+    });
   }
 });

@@ -20,7 +20,7 @@ let guid = 0;
 const nextGuid = () => `${++guid}`;
 
 export const guidFor = instance => {
-  let key = '__guid';
+  let key = '__swoof_guid';
   let guid = instance[key];
   if(!guid) {
     guid = nextGuid();
@@ -44,7 +44,7 @@ export const toJSON = (instance, props) => {
   };
 }
 
-const __cache = '__cache';
+const __cache = '__swoof_cache';
 
 export const cached = (instance, name, cb) => {
   let cache = instance[__cache];
@@ -84,6 +84,8 @@ export const isServerTimestamp = arg => {
 
 export const isTimestamp = arg => arg instanceof firebase.firestore.Timestamp;
 
+export const isFunction = arg => typeof arg === 'function';
+
 export const objectToJSON = value => {
   if(typeof value === 'object') {
     if(value === null) {
@@ -104,6 +106,8 @@ export const objectToJSON = value => {
       return {
         type: 'server-timestamp',
       };
+    } else if(isFunction(value.toJSON)) {
+      return value.toJSON();
     } else {
       let hash = {};
       Object.getOwnPropertyNames(value).forEach(key => {

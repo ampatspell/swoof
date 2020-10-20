@@ -12,6 +12,13 @@ class Message extends Model {
     this.doc = doc;
   }
 
+  get serialized() {
+    let doc = this.doc.serialized;
+    return {
+      doc
+    };
+  }
+
 }
 
 export default class Messages extends Model {
@@ -29,6 +36,10 @@ export default class Messages extends Model {
     return {
       total: get(this, 'query.content.length')
     };
+  }
+
+  get toStringExtension() {
+    return `query=messages`;
   }
 
 }

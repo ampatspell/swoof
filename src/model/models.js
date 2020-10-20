@@ -1,4 +1,9 @@
-import { defineHiddenProperty, toString, toPrimitive, toJSON, get } from '../util';
+import { defineHiddenProperty, toString, toPrimitive, toJSON, objectToJSON, get, isFunction } from '../util';
+import swoof from '../swoof';
+
+const {
+  defineProperty
+} = Object;
 
 const parseKey = key => {
   try {
@@ -22,7 +27,7 @@ const createProxy = instance => new Proxy(instance, {
   get: (target, _key) => {
     let { idx, key } = parseKey(_key);
     if(key) {
-      if(typeof target[key] === 'function') {
+      if(isFunction(target[key])) {
         return (...args) => target[key].call(target, ...args);
       }
       return target[key];
@@ -40,36 +45,81 @@ const createProxy = instance => new Proxy(instance, {
   }
 });
 
+const normalizeOpts = ({ source: path, factory }) => {
+  let components = path.split('.');
+  let key = components.pop();
+  let value = components.join('.');
+  return {
+    source: {
+      path,
+      key,
+      value
+    },
+    factory
+  };
+}
+
 export default class Models {
 
   constructor({ parent, opts }) {
     defineHiddenProperty(this, 'parent', parent);
-    defineHiddenProperty(this, '_opts', opts);
-    this._createContent();
+    defineHiddenProperty(this, '_opts', normalizeOpts(opts));
+    this._subscribeToParent();
     return createProxy(this);
   }
+
+  _subscribeToParent() {
+    let observing = swoof._registerObserving(this);
+    let subscription = this.parent.subscribe(() => this._parentDidChange());
+    this._cancel = () => {
+      subscription();
+      observing();
+    };
+  }
+
+  subscribe() {
+    return () => {
+      let { _cancel } = this;
+      this._cancel = null;
+      _cancel && _cancel();
+    };
+  }
+
+  //
 
   modelAtIndex(idx) {
     return this._content[idx];
   }
 
-  get _source() {
-    return get(this.parent, this._opts.source);
-  }
+  _parentDidChange() {
+    let source = get(this.parent, this._opts.source.path);
+    let factory = this._opts.factory;
 
-  _createContent() {
+    let current = this._content || [];
+
+    let key = '__swoof_owner';
+    let find = doc => current.find(model => model[key] === doc);
+    let create = doc => {
+      let model = factory(doc);
+      if(model) {
+        defineProperty(model, key, { value: doc });
+      }
+      return model;
+    };
+
     let content = [];
-    let source = this._source;
     if(source) {
-      let factory = this._opts.factory;
       source.forEach(doc => {
-        let model = factory(doc);
-        console.log(model+'');
+        let model = find(doc);
+        if(!model) {
+          model = create(doc);
+        }
         if(model) {
           content.push(model);
         }
       });
     }
+
     this._content = content;
   }
 
@@ -91,14 +141,14 @@ export default class Models {
 
   get serialized() {
     return {
-      parent: toPrimitive(this.parent),
-      source: this._opts.source,
-      models: this.map(model => model.toJSON())
+      parent: String(this.parent),
+      source: this._opts.source.path,
+      models: this.map(model => objectToJSON(model))
     };
   }
 
   toString() {
-    return toString(this);
+    return toString(this, `parent=${this.parent}, source=${this._opts.source.path}`);
   }
 
   toJSON() {

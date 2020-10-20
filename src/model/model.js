@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import { defineHiddenProperty, toString, toJSON } from '../util';
+import { defineHiddenProperty, toString, toJSON, isFunction } from '../util';
 
 export default class Model {
 
@@ -11,7 +11,7 @@ export default class Model {
   define(hash) {
     for(let key in hash) {
       let value = hash[key];
-      if(typeof value === 'function') {
+      if(isFunction(value)) {
         value(this, key);
       } else {
         this[key] = value;
@@ -35,6 +35,7 @@ export default class Model {
     def = { key, value };
     this._observed[key] = def;
     this._maybeStartObservingDefinition(def);
+    return value;
   }
 
   _stopObservingDefinition(def) {
@@ -43,8 +44,8 @@ export default class Model {
     }
     let { unsubscribe } = def;
     if(unsubscribe) {
-      unsubscribe();
       delete def.unsubscribe;
+      unsubscribe();
     }
   }
 
@@ -59,7 +60,7 @@ export default class Model {
     if(!value) {
       return;
     }
-    if(typeof value.subscribe !== 'function') {
+    if(!isFunction(value.subscribe)) {
       return;
     }
     def.unsubscribe = value.subscribe(() => this._observedPropertyDidChange(key));
