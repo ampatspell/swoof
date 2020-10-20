@@ -8,6 +8,7 @@ const {
 class Message extends Model {
 
   constructor(doc) {
+    super();
     this.doc = doc;
   }
 

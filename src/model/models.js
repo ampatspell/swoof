@@ -1,4 +1,4 @@
-import { defineHiddenProperty, toString, toPrimitive, toJSON } from '../util';
+import { defineHiddenProperty, toString, toPrimitive, toJSON, get } from '../util';
 
 const parseKey = key => {
   try {
@@ -45,12 +45,32 @@ export default class Models {
   constructor({ parent, opts }) {
     defineHiddenProperty(this, 'parent', parent);
     defineHiddenProperty(this, '_opts', opts);
-    defineHiddenProperty(this, '_content', []);
+    this._createContent();
     return createProxy(this);
   }
 
   modelAtIndex(idx) {
     return this._content[idx];
+  }
+
+  get _source() {
+    return get(this.parent, this._opts.source);
+  }
+
+  _createContent() {
+    let content = [];
+    let source = this._source;
+    if(source) {
+      let factory = this._opts.factory;
+      source.forEach(doc => {
+        let model = factory(doc);
+        console.log(model+'');
+        if(model) {
+          content.push(model);
+        }
+      });
+    }
+    this._content = content;
   }
 
   //
@@ -73,7 +93,7 @@ export default class Models {
     return {
       parent: toPrimitive(this.parent),
       source: this._opts.source,
-      models: this.map(model => model.serialized)
+      models: this.map(model => model.toJSON())
     };
   }
 
