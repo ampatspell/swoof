@@ -64,7 +64,6 @@ export default class Query extends Stateful {
     if(!this._cancel) {
       this._setState({ isLoading: true, isError: false, error: null }, true);
       let observing = this.store._registerObserving(this);
-      console.log(this+'', 'onSnapshot');
       let snapshot = this._ref.onSnapshot({ includeMetadataChanges: true }, snapshot => {
         this._onSnapshot(snapshot);
         this._setState({ isLoading: false, isLoaded: true });
