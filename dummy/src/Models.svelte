@@ -9,10 +9,13 @@
 
 <div class="json">
   <JSON object={$messages}/>
-  <JSON object={$messages.models}/>
   {#each $messages.models as model}
-    <div>{model}</div>
+    <div>
+      {model}
+      <input bind:value={model.doc.data.name}/>
+    </div>
   {/each}
+  <div>{$messages.names}</div>
 </div>
 
 <style>

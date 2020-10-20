@@ -32,9 +32,15 @@ export default class Messages extends Model {
     });
   }
 
+  get names() {
+    return this.models.map(model => model.doc.data.name);
+  }
+
   get serialized() {
     return {
-      total: get(this, 'query.content.length')
+      total: get(this, 'query.content.length'),
+      names: this.names,
+      models: this.models.map(model => model.serialized)
     };
   }
 
