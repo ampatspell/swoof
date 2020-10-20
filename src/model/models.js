@@ -68,7 +68,6 @@ export default class Models {
     defineHiddenProperty(this, 'parent', parent);
     defineHiddenProperty(this, '_opts', normalizeOpts(opts));
     defineHiddenProperty(this, '_writable', writable(this));
-    this._subscribe();
     return createProxy(this);
   }
 

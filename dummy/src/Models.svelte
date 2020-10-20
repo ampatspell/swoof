@@ -7,6 +7,7 @@
 
 </script>
 
+<input bind:value={$messages.foo}/>
 <input bind:value={$messages.name}/>
 
 <div class="json">

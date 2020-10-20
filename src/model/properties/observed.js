@@ -91,7 +91,6 @@ export default class ObservedProperty extends Property {
       this.subscription = () => {};
       this.valueDidChange();
     }
-
   }
 
   stopObservingValue() {

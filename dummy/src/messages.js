@@ -9,10 +9,10 @@ const {
 
 class Message extends Model {
 
-  constructor(doc) {
+  constructor(doc, name) {
     super();
     this.doc = doc;
-    this.define('name', alias('doc.data.name'));
+    this.name = name;
     this.define('message', observed('hey'));
   }
 
@@ -40,9 +40,10 @@ export default class Messages extends Model {
       return coll.query();
     };
 
+    this.define('foo', observed('one'));
     this.define('name', observed('hey there'));
     this.define('query', observed(() => createQuery(this.name)).dependencies('name'));
-    this.define('models', models('query.content', doc => new Message(doc)));
+    this.define('models', models('query.content', doc => new Message(doc, this.foo)));
   }
 
   get names() {
