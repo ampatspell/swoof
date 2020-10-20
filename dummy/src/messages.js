@@ -38,8 +38,4 @@ export default class Messages extends Model {
     };
   }
 
-  get toStringExtension() {
-    return `query=messages`;
-  }
-
 }
