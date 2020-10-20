@@ -5,14 +5,22 @@ const {
   models
 } = computed;
 
-export default class Message extends Model {
+class Message extends Model {
+
+  constructor(doc) {
+    this.doc = doc;
+  }
+
+}
+
+export default class Messages extends Model {
 
   constructor() {
     super();
     this.store = swoof.store('main');
     this.define({
       query: observed(this.store.collection('messages').query()),
-      models: models('query.content')
+      models: models('query.content', doc => new Message(doc))
     });
   }
 
