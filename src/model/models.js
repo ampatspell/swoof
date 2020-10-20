@@ -79,11 +79,10 @@ export default class Models {
   //
 
   _subscribe() {
-    let model = get(this.parent, this._opts.source.key);
-    let source = model.subscribe(() => this._parentDidChange());
+    let parent = this.parent.subscribe(() => this._parentDidChange());
     let content = () => this._unsubscribeModels(this._content);
     this._cancel = () => {
-      source();
+      parent();
       content();
     };
   }
@@ -126,7 +125,7 @@ export default class Models {
     });
   }
 
-  _parentDidChange() {
+  _sourceDidChange() {
     let source = get(this.parent, this._opts.source.path);
     let factory = this._opts.factory;
 
@@ -165,6 +164,10 @@ export default class Models {
     this._unsubscribeModels(current);
 
     this._content = content;
+  }
+
+  _parentDidChange() {
+    this._sourceDidChange();
   }
 
   //

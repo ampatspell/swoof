@@ -7,16 +7,32 @@ export default class Model {
   constructor() {
     defineHiddenProperty(this, '_writable', writable(this));
     defineHiddenProperty(this, '_observed', Object.create(null));
+    defineHiddenProperty(this, '_meta', Object.create(null));
   }
 
-  define(hash) {
+  _defineKeyValue(key, value) {
+    if(isFunction(value)) {
+      let meta = value(this, key);
+      if(meta) {
+        this._meta[key] = meta;
+      }
+    } else {
+      this[key] = value;
+    }
+  }
+
+  _defineHash(hash) {
     for(let key in hash) {
       let value = hash[key];
-      if(isFunction(value)) {
-        value(this, key);
-      } else {
-        this[key] = value;
-      }
+      this._defineKeyValue(key, value);
+    }
+  }
+
+  define(...args) {
+    if(args.length === 1) {
+      this._defineHash(args[0]);
+    } else {
+      this._defineKeyValue(args[0], args[1]);
     }
   }
 
@@ -32,7 +48,6 @@ export default class Model {
     if(def && def.value === value) {
       return;
     }
-    // console.log('_setValueForObservedKey', key, value);
     this._stopObservingDefinition(def);
     def = { key, value };
     this._observed[key] = def;
@@ -51,7 +66,7 @@ export default class Model {
     }
   }
 
-  _maybeStartObservingDefinition(def) {
+  _maybeStartObservingDefinition(def, initial) {
     if(!this._subscribed) {
       return;
     }
@@ -68,14 +83,14 @@ export default class Model {
       }
     }
 
-    this._observedPropertyDidChange(key);
+    this._observedPropertyDidChange(key, initial);
   }
 
   _startObserving() {
     let { _observed } = this;
     for(let key in _observed) {
       let def = _observed[key];
-      this._maybeStartObservingDefinition(def);
+      this._maybeStartObservingDefinition(def, true);
     }
   }
 
@@ -87,7 +102,22 @@ export default class Model {
     }
   }
 
-  _observedPropertyDidChange() {
+  _notifyObservedProperty(key) {
+    let meta = this._meta[key];
+    if(!meta) {
+      return;
+    }
+    let { didChange } = meta;
+    if(!didChange) {
+      return;
+    }
+    meta.didChange(this[key], key);
+  }
+
+  _observedPropertyDidChange(key, initial) {
+    if(key && !initial) {
+      this._notifyObservedProperty(key);
+    }
     this._notifyDidChange();
   }
 

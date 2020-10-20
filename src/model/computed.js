@@ -1,7 +1,7 @@
 import { get, set, cached } from '../util';
 import Models from './models';
 
-export const observed = value => (model, key) => {
+export const observed = (value, didChange) => (model, key) => {
   Object.defineProperty(model, key, {
     get() {
       return model._getValueForObservedKey(key);
@@ -11,6 +11,9 @@ export const observed = value => (model, key) => {
     }
   });
   model[key] = value;
+  return {
+    didChange
+  };
 }
 
 export const readOnly = path => (model, key) => Object.defineProperty(model, key, {

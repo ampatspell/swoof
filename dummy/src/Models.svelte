@@ -8,6 +8,7 @@
 </script>
 
 <div class="json">
+  <input bind:value={$messages.name}/>
   <JSON object={$messages}/>
   {#each $messages.models as model}
     <div>
