@@ -1,4 +1,4 @@
-import { defineHiddenProperty } from './util';
+import { defineHiddenProperty, removeObject } from './util';
 import { initializeApp, enablePersistence } from './store/firebase';
 import { getContext, setContext } from 'svelte';
 import Store from './store/store';
@@ -9,16 +9,29 @@ class Swoof {
 
   constructor() {
     this.definitions = Object.create(null);
-    defineHiddenProperty(this, '_observing', new Set());
+    defineHiddenProperty(this, '_observing', []);
   }
 
   get observing() {
-    return [ ...this._observing ];
+    return this._observing.map(hash => hash.model);
   }
 
   _registerObserving(model) {
-    this._observing.add(model);
-    return () => this._observing.delete(model);
+    let existing = this._observing.find(hash => hash.model === model);
+    if(!existing) {
+      existing = {
+        model,
+        count: 0
+      };
+      this._observing.push(existing);
+    };
+    existing.count++;
+    return () => {
+      existing.count--;
+      if(existing.count === 0) {
+        removeObject(this._observing, existing);
+      }
+    };
   }
 
   //

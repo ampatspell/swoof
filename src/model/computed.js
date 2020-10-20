@@ -1,35 +1,9 @@
-import { get, set, cached } from '../util';
-import Models from './models';
+import ObservedProperty from './properties/observed';
+import ReadOnlyProperty from './properties/read-only';
+import AliasProperty from './properties/alias';
+import ModelsProperty from './properties/models';
 
-export const observed = (value, didChange) => (model, key) => {
-  Object.defineProperty(model, key, {
-    get() {
-      return model._getValueForObservedKey(key);
-    },
-    set(value) {
-      model._setValueForObservedKey(key, value);
-    }
-  });
-  model[key] = value;
-  return {
-    didChange
-  };
-}
-
-export const readOnly = path => (model, key) => Object.defineProperty(model, key, {
-  get: () => get(model, path)
-});
-
-export const alias = path => (model, key) => Object.defineProperty(model, key, {
-  get: () => get(model, path),
-  set: value => set(model, path, value)
-});
-
-export const models = (arrayKey, factory) => (model, key) => Object.defineProperty(model, key, {
-  get: () => {
-    return cached(model, key, () => {
-      let models = new Models({ parent: model, opts: { source: arrayKey, factory } });
-      return model._setValueForObservedKey(key, models);
-    });
-  }
-});
+export const observed = content => new ObservedProperty(content);
+export const readOnly = path => new ReadOnlyProperty(path);
+export const alias = path => new AliasProperty(path);
+export const models = (path, factory) => new ModelsProperty(path, factory);

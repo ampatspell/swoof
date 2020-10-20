@@ -7,14 +7,20 @@
 
 </script>
 
+<input bind:value={$messages.name}/>
+
 <div class="json">
-  <input bind:value={$messages.name}/>
-  <JSON object={$messages}/>
+  <JSON object={$messages.query}/>
   {#each $messages.models as model}
     <div>
-      {model}
+      <JSON object={model}/>
       <input bind:value={model.name}/>
       <input bind:value={model.message}/>
+    </div>
+  {/each}
+  {#each $messages.query.content as doc}
+    <div>
+      <JSON object={doc.serialized}/>
     </div>
   {/each}
   <div>{$messages.names}</div>

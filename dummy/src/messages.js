@@ -1,9 +1,10 @@
-import { Model, swoof, computed, get } from 'swoof';
+import { Model, swoof, computed, setGlobal } from 'swoof';
 
 const {
   observed,
   models,
-  alias
+  alias,
+  readOnly,
 } = computed;
 
 class Message extends Model {
@@ -11,10 +12,8 @@ class Message extends Model {
   constructor(doc) {
     super();
     this.doc = doc;
-    this.define({
-      name: alias('doc.data.name'),
-      message: observed('hey')
-    });
+    this.define('name', alias('doc.data.name'));
+    this.define('message', observed('hey'));
   }
 
   get serialized() {
@@ -41,16 +40,13 @@ export default class Messages extends Model {
       return coll.query();
     };
 
-    this.define('name', observed('hey there', name => {
-      this.query = createQuery(name);
-    }));
-
-    this.define('query', observed(createQuery(this.name)));
+    this.define('name', observed('hey there'));
+    this.define('query', observed(() => createQuery(this.name)).dependencies('name'));
     this.define('models', models('query.content', doc => new Message(doc)));
   }
 
   get names() {
-    return this.models.map(model => model.doc.data.name);
+    return this.models.map(model => model.name);
   }
 
   get messages() {

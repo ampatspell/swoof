@@ -46,7 +46,7 @@ const createProxy = instance => new Proxy(instance, {
   }
 });
 
-const normalizeOpts = ({ source: path, factory }) => {
+const normalizeOpts = ({ path, factory }) => {
   let components = path.split('.');
   let key = components.shift();
   let value = components.join('.');
