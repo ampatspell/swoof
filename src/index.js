@@ -1,6 +1,8 @@
 import JSON from './components/JSON.svelte';
-import stores from './stores';
-import { setGlobal, isServerTimestamp, isTimestamp, objectToJSON } from './util';
+import swoof from './swoof';
+import { setGlobal, isServerTimestamp, isTimestamp, objectToJSON, get, set } from './util';
+import Model from './model/model';
+import * as computed from './model/computed';
 
 export {
   JSON,
@@ -8,5 +10,9 @@ export {
   isServerTimestamp,
   isTimestamp,
   objectToJSON,
-  stores
+  swoof,
+  get,
+  set,
+  Model,
+  computed
 }

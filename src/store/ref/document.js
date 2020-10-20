@@ -1,6 +1,6 @@
 import Reference from './reference';
-import { toString, toJSON } from '../util';
-import { documentForRefNotFoundError } from '../error';
+import { toString, toJSON } from '../../util';
+import { documentForRefNotFoundError } from '../../error';
 
 const {
   assign

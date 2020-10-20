@@ -1,11 +1,11 @@
-import Model from '../model';
-import { defineHiddenProperty, toJSON, toString, objectToJSON, defer } from '../util';
+import Stateful from '../stateful';
+import { defineHiddenProperty, toJSON, toString, objectToJSON, defer } from '../../util';
 
 const {
   assign
 } = Object;
 
-export default class Query extends Model {
+export default class Query extends Stateful {
 
   constructor({ store, ref }) {
     super();
@@ -61,7 +61,7 @@ export default class Query extends Model {
   }
 
   subscribe(...args) {
-    if(!this.cancel) {
+    if(!this._cancel) {
       this._setState({ isLoading: true, isError: false, error: null }, true);
       let observing = this.store._registerObserving(this);
       let snapshot = this._ref.onSnapshot({ includeMetadataChanges: true }, snapshot => {

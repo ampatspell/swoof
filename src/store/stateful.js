@@ -1,7 +1,7 @@
 import { writable } from 'svelte/store';
-import { defineHiddenProperty } from './util';
+import { defineHiddenProperty } from '../util';
 
-export default class Model {
+export default class Stateful {
 
   constructor() {
     defineHiddenProperty(this, '_writable', writable(this));

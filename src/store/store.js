@@ -4,8 +4,8 @@ import CollectionReference from './ref/collection';
 import ConditionReference from './ref/condition';
 import QuerySingle from './query/single';
 import QueryArray from './query/array';
-import { toString, toJSON, defineHiddenProperty, cached } from './util';
-import { assert } from './error';
+import { toString, toJSON, defineHiddenProperty, cached } from '../util';
+import { assert } from '../error';
 import firebase from "firebase/app";
 
 const {
@@ -14,14 +14,10 @@ const {
 
 export default class Store {
 
-  constructor({ identifier, firebase }) {
+  constructor({ swoof, identifier, firebase }) {
     this.identifier = identifier;
+    defineHiddenProperty(this, 'swoof', swoof);
     defineHiddenProperty(this, 'firebase', firebase);
-    defineHiddenProperty(this, '_observing', new Set());
-  }
-
-  get observing() {
-    return [ ...this._observing ];
   }
 
   get firestore() {
@@ -82,9 +78,8 @@ export default class Store {
     assert(false, `Unsupported type '${type}'`);
   }
 
-  _registerObserving(model) {
-    this._observing.add(model);
-    return () => this._observing.delete(model);
+  _registerObserving(...args) {
+    return this.swoof._registerObserving(...args);
   }
 
   _onSnapshotError(sender) {

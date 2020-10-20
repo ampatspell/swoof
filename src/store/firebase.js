@@ -3,7 +3,7 @@ import 'firebase/storage';
 import 'firebase/auth';
 import 'firebase/firestore';
 
-const initializeApp = config => firebase.initializeApp(config);
+const initializeApp = (config, name) => firebase.initializeApp(config, name);
 
 const enablePersistence = async firebase => {
   await firebase.firestore().enablePersistence({ synchronizeTabs: true }).catch(err => {

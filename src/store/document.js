@@ -1,20 +1,19 @@
-import Model from './model';
-import { toString, toJSON, defineHiddenProperty, objectToJSON, defer, cached, deleteCached, merge } from './util';
-import { assert } from './error';
+import Stateful from './stateful';
+import { toString, toJSON, defineHiddenProperty, objectToJSON, defer, cached, deleteCached, merge } from '../util';
+import { assert } from '../error';
 import Membrane from 'observable-membrane';
 
 const {
   assign
 } = Object;
 
-export default class Document extends Model {
+export default class Document extends Stateful {
 
   constructor({ store, ref, snapshot, data, parent }) {
     super();
     defineHiddenProperty(this, 'store', store);
     defineHiddenProperty(this, 'ref', ref);
     defineHiddenProperty(this, 'parent', parent);
-    defineHiddenProperty(this, 'parent', parent, { writable: true });
     this.isNew = false;
     this.isLoading = false;
     this.isLoaded = false;

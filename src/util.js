@@ -20,7 +20,7 @@ let guid = 0;
 const nextGuid = () => `${++guid}`;
 
 export const guidFor = instance => {
-  let key = '__guid';
+  let key = '__swoof_guid';
   let guid = instance[key];
   if(!guid) {
     guid = nextGuid();
@@ -29,18 +29,22 @@ export const guidFor = instance => {
   return guid;
 }
 
+export const toPrimitive = instance => {
+  return `${instance.constructor.name}:${guidFor(instance)}`;
+}
+
 export const toString = (instance, extension) => {
-  return `<${instance.constructor.name}:${guidFor(instance)}${extension ? `:${extension}` : ''}>`;
+  return `<${toPrimitive(instance)}${extension ? `:${extension}` : ''}>`;
 }
 
 export const toJSON = (instance, props) => {
   return {
-    instance: `${instance.constructor.name}:${guidFor(instance)}`,
+    instance: toPrimitive(instance),
     ...props
   };
 }
 
-const __cache = '__cache';
+const __cache = '__swoof_cache';
 
 export const cached = (instance, name, cb) => {
   let cache = instance[__cache];
@@ -80,6 +84,8 @@ export const isServerTimestamp = arg => {
 
 export const isTimestamp = arg => arg instanceof firebase.firestore.Timestamp;
 
+export const isFunction = arg => typeof arg === 'function';
+
 export const objectToJSON = value => {
   if(typeof value === 'object') {
     if(value === null) {
@@ -100,6 +106,8 @@ export const objectToJSON = value => {
       return {
         type: 'server-timestamp',
       };
+    } else if(isFunction(value.toJSON)) {
+      return value.toJSON();
     } else {
       let hash = {};
       Object.getOwnPropertyNames(value).forEach(key => {
@@ -135,4 +143,38 @@ export const merge = (target, source) => {
   }
   assign(target || {}, source);
   return target;
+}
+
+export const get = (object, path) => {
+  let components = path.split('.');
+  let current = object;
+  for(let i = 0; i < components.length; i++) {
+    if(current[components[i]] === undefined) {
+      return;
+    }
+    current = current[components[i]];
+  }
+  return current;
+}
+
+export const set = (object, path, value) => {
+  let components = path.split('.');
+  let key = components.pop();
+  let current = object;
+  for(let i = 0; i < components.length; i++) {
+    if(current[components[i]] === undefined) {
+      return;
+    }
+    current = current[components[i]];
+  }
+  current[key] = value;
+}
+
+export const insertAt = (array, idx, object) => array.splice(idx, 0, object);
+export const removeAt = (array, idx) => array.splice(idx, 1);
+export const removeObject = (array, object) => {
+  let idx = array.indexOf(object);
+  if(idx !== -1) {
+    removeAt(array, idx);
+  }
 }

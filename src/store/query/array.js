@@ -1,8 +1,6 @@
 import Query from './query';
-import { assert } from '../error';
-
-const insertAt = (array, idx, object) => array.splice(idx, 0, object);
-const removeAt = (array, idx) => array.splice(idx, 1);
+import { assert } from '../../error';
+import { insertAt, removeAt } from '../../util';
 
 export default class QueryArray extends Query {
 

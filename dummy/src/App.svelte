@@ -1,5 +1,5 @@
 <script>
-  import { setGlobal, stores } from 'swoof';
+  import { setGlobal, swoof } from 'swoof';
   import Index from './Index.svelte';
 
   let { firebase } = process.env.CONFIG;
@@ -11,8 +11,8 @@
     }
   };
 
-  stores.configure('main', config);
-  let store = stores.create('main', 'main');
+  swoof.configure('main', config);
+  let store = swoof.create('main', 'main');
   setGlobal({ store });
 </script>
 

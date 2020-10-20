@@ -1,7 +1,10 @@
 <script>
-  import { JSON, stores, setGlobal } from 'swoof';
+  import { JSON, swoof, setGlobal } from 'swoof';
+  import Message from './message';
 
-  let store = stores.get('main');
+  let message = new Message();
+
+  let store = swoof.store('main');
 
   let id = 'first';
 
