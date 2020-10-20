@@ -1,7 +1,7 @@
 <script>
-  import { JSON, stores, setGlobal } from 'swoof';
+  import { JSON, swoof, setGlobal } from 'swoof';
 
-  let store = stores.get('main');
+  let store = swoof.store('main');
 
   let query = store.collection('messages').query();
   setGlobal({ query });

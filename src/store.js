@@ -14,9 +14,9 @@ const {
 
 export default class Store {
 
-  constructor({ stores, identifier, firebase }) {
+  constructor({ swoof, identifier, firebase }) {
     this.identifier = identifier;
-    defineHiddenProperty(this, 'stores', stores);
+    defineHiddenProperty(this, 'swoof', swoof);
     defineHiddenProperty(this, 'firebase', firebase);
   }
 
@@ -79,7 +79,7 @@ export default class Store {
   }
 
   _registerObserving(...args) {
-    return this.stores._registerObserving(...args);
+    return this.swoof._registerObserving(...args);
   }
 
   _onSnapshotError(sender) {

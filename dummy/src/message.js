@@ -1,4 +1,4 @@
-import { Model, stores, computed } from 'swoof';
+import { Model, swoof, computed } from 'swoof';
 
 const {
   observed,
@@ -10,7 +10,7 @@ export default class Message extends Model {
 
   constructor() {
     super();
-    this.store = stores.get('main');
+    this.store = swoof.store('main');
     this.define({
       doc: observed(this.store.doc('messages/first').existing()),
       query: observed(this.store.collection('messages').query()),

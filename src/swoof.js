@@ -5,7 +5,7 @@ import Store from './store';
 
 const noop = () => {};
 
-class Stores {
+class Swoof {
 
   constructor() {
     this.definitions = Object.create(null);
@@ -28,7 +28,7 @@ class Stores {
   }
 
   configure(name, config, cb=noop) {
-    let firebase = initializeApp(config.firebase);
+    let firebase = initializeApp(config.firebase, name);
     this.definitions[name] = { firebase };
     if(config.firestore && config.firestore.enablePersistence) {
       enablePersistence(firebase).then(() => cb());
@@ -39,18 +39,18 @@ class Stores {
 
   create(identifier, definition) {
     let opts = this.definitions[definition];
-    let stores = this;
-    let store = new Store(Object.assign({ stores, identifier }, opts));
+    let swoof = this;
+    let store = new Store(Object.assign({ swoof, identifier }, opts));
     setContext(this._contextIdentifier(identifier), store);
     return store;
   }
 
-  get(identifier) {
+  store(identifier) {
     return getContext(this._contextIdentifier(identifier));
   }
 
 }
 
-let stores = new Stores();
+let swoof = new Swoof();
 
-export default stores;
+export default swoof;
