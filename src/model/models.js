@@ -47,7 +47,7 @@ const createProxy = instance => new Proxy(instance, {
 
 const normalizeOpts = ({ source: path, factory }) => {
   let components = path.split('.');
-  let key = components.pop();
+  let key = components.shift();
   let value = components.join('.');
   return {
     source: {
@@ -64,13 +64,14 @@ export default class Models {
   constructor({ parent, opts }) {
     defineHiddenProperty(this, 'parent', parent);
     defineHiddenProperty(this, '_opts', normalizeOpts(opts));
-    this._subscribeToParent();
+    this._subscribeToSource();
     return createProxy(this);
   }
 
-  _subscribeToParent() {
+  _subscribeToSource() {
     let observing = swoof._registerObserving(this);
-    let subscription = this.parent.subscribe(() => this._parentDidChange());
+    let source = get(this.parent, this._opts.source.key);
+    let subscription = source.subscribe(() => this._parentDidChange());
     this._cancel = () => {
       subscription();
       observing();
@@ -119,7 +120,6 @@ export default class Models {
         }
       });
     }
-
     this._content = content;
   }
 
