@@ -1,7 +1,7 @@
 import { writable } from 'svelte/store';
 import { assert } from '../util/error';
 import Bindable, { _binding, getBinding } from './bindable';
-import state from '../state';
+import { registerRoot } from '../state';
 
 export class Writable {
 
@@ -23,11 +23,12 @@ export class Writable {
   }
 
   bind() {
-    let binding = getBinding(this.model);
-    let root = state.registerRoot(this.model);
+    let { model } = this;
+    let binding = getBinding(model);
+    let root = registerRoot(model);
     binding.bind(this);
     return () => {
-      binding.unbind(this.model);
+      binding.unbind(this);
       root();
     };
   }

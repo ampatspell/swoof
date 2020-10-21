@@ -74,6 +74,8 @@ export const registerOnSnapshot = (model, cancel) => {
   };
 }
 
+export const registerRoot = model => state.registerRoot(model);
+
 export const registerBound = model => state.registerBound(model);
 export const unregisterBound = model => state.unregisterBound(model);
 
