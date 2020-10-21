@@ -171,7 +171,7 @@ export default class Document extends Bindable {
 
   //
 
-    // TODO: issue with current firebase js sdk
+  // TODO: issue with current firebase js sdk
   _shouldIgnoreSnapshot(snapshot) {
     return this.isSaving && !snapshot.metadata.hasPendingWrites;
   }
@@ -194,6 +194,7 @@ export default class Document extends Bindable {
 
   _subscribeToOnSnapshot() {
     let { isLoaded } = this;
+
     if(!isLoaded) {
       this._setState({ isLoading: true, isError: false, error: null }, true);
     }

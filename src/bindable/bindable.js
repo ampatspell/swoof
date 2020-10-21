@@ -2,10 +2,6 @@ import { defineHiddenProperty, toString, toJSON } from '../util';
 import { assert } from '../error';
 import { registerBound, unregisterBound } from '../state';
 
-const {
-  assign
-} = Object;
-
 export const _binding = '_binding';
 const isBindable = model => model && !!model[_binding];
 export const getBinding = model => isBindable(model) && model[_binding];
@@ -109,7 +105,7 @@ export default class Bindable {
     getBinding(this).notifyDidChange();
   }
 
-  _isBound() {
+  get _isBound() {
     return getBinding(this).isBound;
   }
 
