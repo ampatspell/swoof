@@ -12,18 +12,22 @@
 
     constructor() {
       super();
-      this.property('index', attr(0));
-      this.property('name', attr(() => `hey there ${this.index}`).dependencies('index'));
-      this.property('array', attr(swoof.store('main').collection('messages').query()));
-      this.property('first', attr(swoof.store('main').collection('messages').limit(1).query({ type: 'single' })));
+      let store = swoof.store('main');
+      this.property('name', attr('first'));
+      this.property('first', attr(() => {
+        let { name } = this;
+        if(!name) {
+          return;
+        }
+        return store.collection('messages').where('name', '==', name).limit(1).query({ type: 'single' });
+      }).dependencies('name'));
     }
 
     get serialized() {
-      let { name, array, first } = this;
+      let { name, first } = this;
       return {
         name,
-        first: first.content,
-        array: array.content
+        first: first && first.content
       };
     }
 
@@ -39,7 +43,7 @@
 </script>
 
 <div class="row">
-  {$base} <input bind:value={$base.index} type="number"/> <input bind:value={$base.name}/>
+  <input bind:value={$base.name}/>
 </div>
 
 <div class="row">
