@@ -112,12 +112,12 @@ export default class Bindable {
     return getBinding(this).defineProperty(key, value);
   }
 
-  _isBound() {
-    return getBinding(this).isBound;
-  }
-
   _notifyDidChange() {
     getBinding(this).notifyDidChange();
+  }
+
+  _isBound() {
+    return getBinding(this).isBound;
   }
 
   _onBind() {
