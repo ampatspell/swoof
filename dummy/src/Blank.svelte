@@ -1,11 +1,16 @@
 <script>
-  import { swoof, state, setGlobal } from 'swoof';
+  import { JSON, swoof, state, setGlobal, objectToJSON } from 'swoof';
   import { Bindable, writable } from 'swoof';
 
   class Base extends Bindable {
     constructor() {
       super();
       this.property('doc');
+    }
+    get serialized() {
+      return {
+        doc: objectToJSON(this.doc)
+      }
     }
   }
 
@@ -27,7 +32,9 @@
 <div class="row">
   <button on:click={() => show = !show}>Toggle</button>
 </div>
-
+<div class="row">
+  <JSON object={$base}/>
+</div>
 
 <div class="state">
   <div class="group">

@@ -1,4 +1,4 @@
-import { defineHiddenProperty, toString } from './util';
+import { defineHiddenProperty, toString, toJSON } from './util';
 import { assert } from './error';
 import { registerBound, unregisterBound } from './state';
 
@@ -116,6 +116,10 @@ export default class Bindable {
     return getBinding(this).isBound;
   }
 
+  _notifyDidChange() {
+    getBinding(this).notifyDidChange();
+  }
+
   _onBind() {
   }
 
@@ -123,6 +127,11 @@ export default class Bindable {
   }
 
   //
+
+  toJSON() {
+    let { serialized } = this;
+    return toJSON(this, { serialized });
+  }
 
   toString() {
     return toString(this);

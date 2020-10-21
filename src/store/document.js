@@ -90,10 +90,6 @@ export default class Document extends Bindable {
 
   //
 
-  _notifyDidChange() {
-    this.parent && this.parent._documentDidChange(this);
-  }
-
   _setData(data) {
     assert(data instanceof Object, 'data must be object');
     this._data = data;
@@ -167,6 +163,13 @@ export default class Document extends Bindable {
       this._cancel = null;
       _cancel();
     }
+  }
+
+  //
+
+  _notifyDidChange() {
+    super._notifyDidChange();
+    this.parent && this.parent._documentDidChange(this);
   }
 
   _onBind() {
