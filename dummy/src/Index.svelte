@@ -27,7 +27,6 @@
     <button class="toggle" on:click={toggle}>Toggle</button>
   </div>
   {#if show}
-    <div class="route">{selected.label}</div>
     <div class="content">
       <svelte:component this={selected.component}/>
     </div>
@@ -73,17 +72,13 @@
       align-items: center;
       flex: 1;
       > .item {
-        margin: 0 10px 0 0;
+        margin: 0 20px 0 0;
         cursor: pointer;
         &.selected {
-          text-decoration: underline;
+          font-weight: 600;
         }
       }
     }
-  }
-  .route {
-    font-weight: 600;
-    padding: 10px;
   }
   .content {
     padding: 10px 10px 20px 10px;
