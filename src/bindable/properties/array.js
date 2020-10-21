@@ -41,7 +41,7 @@ const createProxy = instance => new Proxy(instance, {
   }
 });
 
-class ArrayStorage {
+class ArrayProxy {
 
   constructor(content, property) {
     this.property = property;
@@ -138,7 +138,7 @@ export default class ArrayProperty extends Property {
 
   constructor(binding, key, { value }) {
     super(binding, key);
-    this.content = new ArrayStorage(value, this);
+    this.content = new ArrayProxy(value, this);
     this.proxy = createProxy(this.content);
   }
 
