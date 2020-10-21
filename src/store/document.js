@@ -155,6 +155,7 @@ export default class Document extends Stateful {
   }
 
   bind(subscription) {
+    assert(!this._subscription, 'already bound');
     this._subscription = subscription;
     console.log(this+' bind');
     this._maybeStartObserving();
@@ -163,25 +164,6 @@ export default class Document extends Stateful {
       this._subscription = null;
       this._stopObserving();
     }
-  }
-
-  // subscribe(...args) {
-  //   // TODO: fix start observing
-  //   this._subscribed = true;
-  //   this._maybeStartObserving();
-  //   let observing = swoof._registerObserving(this);
-  //   let unsubscribe = this._writable.subscribe(...args);
-  //   return () => {
-  //     this._subscribed = false;
-  //     this._stopObserving();
-  //     unsubscribe();
-  //     observing();
-  //   }
-  // }
-
-  set() {
-    this._setState({ isDirty: true });
-    this._notifyDidChange();
   }
 
   async load(opts) {
