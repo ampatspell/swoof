@@ -1,4 +1,5 @@
 <script>
+  import Document from './Document.svelte';
   import QueryFirst from './QueryFirst.svelte';
   import Blank from './Blank.svelte';
   import { state } from 'swoof';
@@ -7,6 +8,7 @@
   let toggle = () => show = !show;
 
   let routes = [
+    { label: 'Document', component: Document },
     { label: 'Query First', component: QueryFirst },
     { label: 'Blank', component: Blank },
   ];
