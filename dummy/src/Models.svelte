@@ -1,15 +1,26 @@
 <script>
-  import { JSON, Bindable, writable, setGlobal } from 'swoof';
+  import { swoof, JSON, Bindable, writable, computed, setGlobal } from 'swoof';
+
+  const {
+    attr,
+    models
+  } = computed;
+
+  let store = swoof.store('main');
 
   class Models extends Bindable {
 
     constructor() {
       super();
+      this.property('query', attr(store.collection('messages').query()));
+      this.property('models', models());
     }
 
     get serialized() {
+      let { query, models } = this;
       return {
-        ok: true
+        query: query.content.length,
+        models: models
       };
     }
 
