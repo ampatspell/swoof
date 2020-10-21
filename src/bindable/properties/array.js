@@ -1,84 +1,13 @@
 import Property from './property';
-import { isFunction, toString, objectToJSON, toPrimitive, insertAt, removeAt, removeObject } from '../../util/util';
+import {insertAt, removeAt, removeObject } from '../../util/util';
+import { createArrayProxy, ImmutableArrayProxy } from '../../util/proxy';
 
-const parseKey = key => {
-  try {
-    let idx = Number(key);
-    if(isNaN(idx)) {
-      return {
-        key
-      };
-    }
-    return {
-      idx
-    };
-  } catch(err) {
-    return {
-      key
-    };
-  }
-}
-
-const createArrayProxy = instance => new Proxy(instance, {
-  get: (target, _key) => {
-    let { idx, key } = parseKey(_key);
-    if(key) {
-      if(isFunction(target[key])) {
-        return (...args) => target[key].call(target, ...args);
-      }
-      return target[key];
-    } else {
-      return target.atIndex(idx);
-    }
-  },
-  set: (target, _key, value) => {
-    let { key } = parseKey(_key);
-    if(key) {
-      target[key] = value;
-      return true;
-    }
-    return false;
-  }
-});
-
-class ArrayProxy {
+class ArrayProxy extends ImmutableArrayProxy{
 
   constructor(content, property) {
+    super(content);
     this._property = property;
-    this._content = content;
   }
-
-  //
-
-  atIndex(idx) {
-    return this._content[idx];
-  }
-
-  get last() {
-    return this._content[this._content.length - 1];
-  }
-
-  map(...args) {
-    return this._content.map(...args);
-  }
-
-  forEach(...args) {
-    return this._content.forEach(...args);
-  }
-
-  reduce(...args) {
-    return this._content.reduce(...args);
-  }
-
-  find(...args) {
-    return this._content.find(...args);
-  }
-
-  filter(...args) {
-    return this._content.filter(...args);
-  }
-
-  //
 
   insertAt(idx, object) {
     let removed = insertAt(this._content, idx, object);
@@ -115,32 +44,6 @@ class ArrayProxy {
     let len = this._content.push(...values);
     this._property.didAddItems(values);
     return len;
-  }
-
-  //
-
-  get length() {
-    return this._content.length;
-  }
-
-  toString() {
-    return toString(this);
-  }
-
-  get serialized() {
-    return objectToJSON(this._content);
-  }
-
-  toJSON() {
-    return this.serialized;
-  }
-
-  get [Symbol.toStringTag]() {
-    return toPrimitive(this);
-  }
-
-  [Symbol.toPrimitive]() {
-    return this.toString();
   }
 
 }
