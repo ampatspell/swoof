@@ -42,10 +42,12 @@ import Blank from './Blank.svelte';
 </script>
 
 <div class="row">
+  <div class="label">id</div>
   <input bind:value={$model.id}/>
 </div>
 
 <div class="row">
+  <div class="label">doc.data.name</div>
   <input bind:value={$model.doc.data.name}/>
   <button on:click={() => $model.save()}>Save</button>
 </div>
@@ -57,5 +59,8 @@ import Blank from './Blank.svelte';
 <style type="text/scss">
   .row {
     margin-bottom: 5px;
+    > .label {
+      font-size: 11px;
+    }
   }
 </style>

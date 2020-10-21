@@ -1,6 +1,7 @@
 <script>
   import Document from './Document.svelte';
   import QueryFirst from './QueryFirst.svelte';
+  import QueryArray from './QueryArray.svelte';
   import Blank from './Blank.svelte';
   import { state } from 'swoof';
 
@@ -10,6 +11,7 @@
   let routes = [
     { label: 'Document', component: Document },
     { label: 'Query First', component: QueryFirst },
+    { label: 'Query Array', component: QueryArray },
     { label: 'Blank', component: Blank },
   ];
 
