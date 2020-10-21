@@ -1,5 +1,5 @@
 import Property from './property';
-import { isFunction, toString, objectToJSON, toPrimitive, insertAt, removeAt, removeObject } from '../../util';
+import { isFunction, toString, objectToJSON, toPrimitive, insertAt, removeAt, removeObject } from '../../util/util';
 
 const parseKey = key => {
   try {

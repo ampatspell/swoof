@@ -1,4 +1,4 @@
-import { defineHiddenProperty, removeObject } from './util';
+import { defineHiddenProperty, removeObject } from './util/util';
 import { initializeApp, enablePersistence } from './store/firebase';
 import { getContext, setContext } from 'svelte';
 import Store from './store/store';

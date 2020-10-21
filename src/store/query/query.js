@@ -1,5 +1,5 @@
 import Bindable from '../../bindable/bindable';
-import { defineHiddenProperty, toJSON, toString, objectToJSON, defer } from '../../util';
+import { defineHiddenProperty, toJSON, toString, objectToJSON, defer } from '../../util/util';
 import { registerOnSnapshot } from '../../state';
 
 const {

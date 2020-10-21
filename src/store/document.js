@@ -1,5 +1,5 @@
-import { toString, toJSON, defineHiddenProperty, objectToJSON, defer, cached, deleteCached, merge } from '../util';
-import { assert } from '../error';
+import { toString, toJSON, defineHiddenProperty, objectToJSON, defer, cached, deleteCached, merge } from '../util/util';
+import { assert } from '../util/error';
 import Membrane from 'observable-membrane';
 import { registerOnSnapshot } from '../state';
 import Bindable from '../bindable/bindable';

@@ -1,4 +1,4 @@
-import { toString } from './util';
+import { toString } from './util/util';
 import { writable } from 'svelte/store';
 
 class State {

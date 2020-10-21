@@ -1,4 +1,4 @@
-import { defineHiddenProperty, toString, toJSON } from '../util';
+import { defineHiddenProperty, toString, toJSON } from '../util/util';
 import { assert } from '../util/error';
 import { registerBound, unregisterBound } from '../state';
 

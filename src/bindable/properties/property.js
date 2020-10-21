@@ -1,4 +1,4 @@
-import { toString } from '../../util';
+import { toString } from '../../util/util';
 
 export default class Property {
 
