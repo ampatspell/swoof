@@ -2,6 +2,7 @@ import Stateful from './stateful';
 import { toString, toJSON, defineHiddenProperty, objectToJSON, defer, cached, deleteCached, merge } from '../util';
 import { assert } from '../error';
 import Membrane from 'observable-membrane';
+import { registerOnSnapshot } from '../state';
 
 const {
   assign
@@ -128,7 +129,7 @@ export default class Document extends Stateful {
       this._setState({ isLoading: true, isError: false, error: null }, true);
     }
 
-    this._cancel = this.ref.ref.onSnapshot({ includeMetadataChanges: true }, snapshot => {
+    this._cancel = registerOnSnapshot(this, this.ref.ref.onSnapshot({ includeMetadataChanges: true }, snapshot => {
       if(this._shouldIgnoreSnapshot(snapshot)) {
         return;
       }
@@ -138,7 +139,7 @@ export default class Document extends Stateful {
       this._setState({ isLoading: false, isError: true, error }, true);
       this.store._onSnapshotError(this);
       this._deferred.reject(error);
-    });
+    }));
   }
 
   _stopObserving() {

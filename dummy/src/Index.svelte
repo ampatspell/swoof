@@ -18,7 +18,7 @@
     { label: 'Blank', component: Blank },
   ];
 
-  let selected = routes[0];
+  let selected = routes[5];
 
   let select = route => selected = route;
 
