@@ -1,12 +1,12 @@
 import Query from './query';
 import { assert } from '../../util/error';
-import { insertAt, removeAt } from '../../util/util';
+import { array } from '../../bindable/computed';
 
 export default class QueryArray extends Query {
 
   constructor(opts) {
     super(opts);
-    this.content = [];
+    this.property('content', array([]));
   }
 
   get _ref() {
@@ -17,8 +17,7 @@ export default class QueryArray extends Query {
     let { type, oldIndex, newIndex, doc: snapshot } = change;
     if(type === 'added') {
       let doc = this.store._createDocumentForSnapshot(snapshot, this);
-      console.log('created', doc+'');
-      insertAt(content, newIndex, doc);
+      content.insertAt(newIndex, doc);
     } else if(type === 'modified') {
       let existing = content[oldIndex];
       if(!existing) {
@@ -28,7 +27,7 @@ export default class QueryArray extends Query {
       }
       existing._onSnapshot(snapshot);
     } else if(type === 'removed') {
-      removeAt(content, oldIndex);
+      content.removeAt(oldIndex);
     }
   }
 

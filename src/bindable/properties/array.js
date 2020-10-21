@@ -70,6 +70,14 @@ class ArrayProxy {
     return this._content.reduce(...args);
   }
 
+  find(...args) {
+    return this._content.find(...args);
+  }
+
+  filter(...args) {
+    return this._content.filter(...args);
+  }
+
   //
 
   insertAt(idx, object) {

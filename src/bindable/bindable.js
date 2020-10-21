@@ -19,7 +19,10 @@ class Binding {
     };
   }
 
-  defineProperty(key, { factory, opts, value }) {
+  defineProperty(key, definition={}) {
+    let { _isPropertyDefinition, factory, opts, value } = definition;
+    assert(typeof key === 'string', 'property() first argument must be string');
+    assert(_isPropertyDefinition, 'property() second argument must be property definition');
     let property = new factory(this, key, opts);
     this.properties.byKey[key] = property;
     this.properties.all.push(property);

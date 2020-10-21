@@ -17,7 +17,6 @@ export default class Query extends Bindable {
     this.isError = false;
     this.error = null;
     this._deferred = defer();
-    this._documentDidChangeSuspended = 0;
   }
 
   get promise() {
