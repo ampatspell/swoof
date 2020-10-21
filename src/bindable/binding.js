@@ -20,9 +20,10 @@ export default class Binding {
   }
 
   defineProperty(key, definition={}) {
-    let { _isPropertyDefinition, factory, opts: { dependencies }, opts } = definition;
+    let { _isPropertyDefinition, factory, opts } = definition;
     assert(typeof key === 'string', 'property() first argument must be string');
     assert(_isPropertyDefinition, 'property() second argument must be property definition');
+    let { dependencies } = opts;
     let property = new factory(this, key, dependencies, opts);
     this.properties.byKey[key] = property;
     this.properties.all.push(property);
