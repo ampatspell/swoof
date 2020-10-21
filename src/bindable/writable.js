@@ -18,6 +18,10 @@ export class Writable {
     this.writable.set(this.model);
   }
 
+  get value() {
+    return this.model;
+  }
+
   get isBound() {
     return getBinding(this.model).isBound;
   }

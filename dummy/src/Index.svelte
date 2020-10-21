@@ -1,31 +1,23 @@
 <script>
-  import Document from './Document.svelte';
-  import Query from './Query.svelte';
-  import First from './First.svelte';
-  import Model from './Model.svelte';
-  import Models from './Models.svelte';
+  import QueryFirst from './QueryFirst.svelte';
   import Blank from './Blank.svelte';
+  import { state } from 'swoof';
 
-  let thing = true;
-  let toggle = () => thing = !thing;
+  let show = true;
+  let toggle = () => show = !show;
 
   let routes = [
-    { label: 'Document', component: Document },
-    { label: 'Query', component: Query },
-    { label: 'First', component: First },
-    { label: 'Model', component: Model },
-    { label: 'Models', component: Models },
+    { label: 'Query First', component: QueryFirst },
     { label: 'Blank', component: Blank },
   ];
 
-  let selected = routes[5];
+  let selected = routes[0];
 
   let select = route => selected = route;
 
 </script>
 
 <div class="index">
-
   <div class="header">
     <div class="items">
       {#each routes as route}
@@ -34,12 +26,38 @@
     </div>
     <button class="toggle" on:click={toggle}>Toggle</button>
   </div>
-  {#if thing}
+  {#if show}
     <div class="route">{selected.label}</div>
     <div class="content">
       <svelte:component this={selected.component}/>
     </div>
   {/if}
+  <div class="state">
+    <div class="group">
+      <div class="label">Roots</div>
+      {#each $state.roots as model}
+        <div>{model}</div>
+      {:else}
+        <div>No roots</div>
+      {/each}
+    </div>
+    <div class="group">
+      <div class="label">Bound</div>
+      {#each $state.bound as model}
+        <div>{model}</div>
+      {:else}
+        <div>No bound models</div>
+      {/each}
+    </div>
+    <div class="group">
+      <div class="label">Snapshots</div>
+      {#each $state.snapshots as snapshot}
+        <div>{snapshot}</div>
+      {:else}
+        <div>No onSnapshot listeners</div>
+      {/each}
+    </div>
+  </div>
 </div>
 
 <style type="text/scss">
@@ -68,6 +86,16 @@
     padding: 10px;
   }
   .content {
+    padding: 10px 10px 20px 10px;
+  }
+  .state {
     padding: 10px;
+    font-size: 11px;
+    > .group {
+      margin-bottom: 10px;
+      > .label {
+        font-weight: 600;
+      }
+    }
   }
 </style>
