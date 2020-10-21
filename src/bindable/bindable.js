@@ -20,13 +20,13 @@ class Binding {
   }
 
   defineProperty(key, definition={}) {
-    let { _isPropertyDefinition, factory, opts, value } = definition;
+    let { _isPropertyDefinition, factory, opts: { dependencies }, opts } = definition;
     assert(typeof key === 'string', 'property() first argument must be string');
     assert(_isPropertyDefinition, 'property() second argument must be property definition');
-    let property = new factory(this, key, opts);
+    let property = new factory(this, key, dependencies, opts);
     this.properties.byKey[key] = property;
     this.properties.all.push(property);
-    return property.define(value);
+    property.define();
   }
 
   get isBound() {

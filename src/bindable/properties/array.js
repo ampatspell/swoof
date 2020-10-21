@@ -147,8 +147,8 @@ class ArrayProxy {
 
 export default class ArrayProperty extends Property {
 
-  constructor(binding, key, { value }) {
-    super(binding, key);
+  constructor(binding, key, dependencies, { value }) {
+    super(binding, key, dependencies);
     this.value = value || [];
     this.content = new ArrayProxy(this.value, this);
     this.proxy = createArrayProxy(this.content);
@@ -204,8 +204,6 @@ export default class ArrayProperty extends Property {
         this.notifyDidChange();
       }
     });
-
-    return this.proxy;
   }
 
 }

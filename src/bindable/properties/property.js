@@ -2,10 +2,11 @@ import { toString } from '../../util/util';
 
 export default class Property {
 
-  constructor(binding, key) {
+  constructor(binding, key, dependencies) {
     this.binding = binding;
     this.owner = binding.owner;
     this.key = key;
+    this.dependencies = new Set(dependencies);
   }
 
   registerNested(object) {

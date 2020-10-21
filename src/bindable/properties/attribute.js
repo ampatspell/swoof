@@ -2,14 +2,25 @@ import Property from './property';
 
 export default class AttributeProperty extends Property {
 
-  constructor(binding, key, { value }) {
-    super(binding, key);
-    this.value = value;
+  constructor(binding, key, dependencies, { value }) {
+    super(binding, key, dependencies);
+    this.__value = value;
   }
 
-  define(value) {
+  get _value() {
+    let value = this.__value;
+    if(typeof value === 'function') {
+      let { owner, key } = this;
+      value = value.call(owner, owner, key);
+    }
+    return value;
+  }
+
+  define() {
     let { owner, key } = this;
 
+    let value = this._value;
+    this.value = value;
     this.registerNested(value);
 
     Object.defineProperty(owner, key, {
@@ -29,8 +40,6 @@ export default class AttributeProperty extends Property {
         this.notifyDidChange();
       }
     });
-
-    return value;
   }
 
 }

@@ -12,7 +12,8 @@
 
     constructor() {
       super();
-      this.property('name', attr('hey there'));
+      this.property('index', attr(0));
+      this.property('name', attr(() => `hey there`).dependencies('index'));
       this.property('array', attr(swoof.store('main').collection('messages').query()));
       this.property('first', attr(swoof.store('main').collection('messages').limit(1).query({ type: 'single' })));
     }

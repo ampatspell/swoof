@@ -5,13 +5,23 @@ const {
   assign
 } = Object;
 
-const definition = hash => assign(hash, { _isPropertyDefinition: true });
+const definition = hash => {
+  return assign(hash, {
+    _isPropertyDefinition: true,
+    dependencies: (...keys) => {
+      hash.opts.dependencies = [ ...hash.opts.dependencies, ...keys ];
+      return hash;
+    }
+  });
+};
 
 export const attribute = value => {
   return definition({
     factory: AttributeProperty,
-    opts: { value },
-    value
+    opts: {
+      value,
+      dependencies: []
+    },
   });
 };
 
@@ -20,7 +30,9 @@ export const attr = attribute;
 export const array = value => {
   return definition({
     factory: ArrayProperty,
-    opts: { value },
-    value
+    opts: {
+      value,
+      dependencies: []
+    }
   });
 };
