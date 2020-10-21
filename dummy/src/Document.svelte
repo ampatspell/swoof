@@ -1,15 +1,12 @@
 <script>
   import { JSON, swoof, setGlobal } from 'swoof';
-  import Message from './message';
-
-  let message = new Message();
 
   let store = swoof.store('main');
 
   let id = 'first';
 
-  $: doc = store.doc(`foobar/${id}`).existing();
-  $: setGlobal({ doc });
+  let doc = store.doc(`foobar/${id}`).existing();
+  setGlobal({ doc });
 
   let save = () => {
     doc.data.updatedAt = store.serverTimestamp;
