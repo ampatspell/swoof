@@ -5,6 +5,7 @@ import { setGlobal, isServerTimestamp, isTimestamp, objectToJSON, toString, toJS
 
 import Bindable from './bindable/bindable';
 import writable from './bindable/writable';
+import * as computed from './bindable/computed';
 
 export {
   JSON,
@@ -24,7 +25,8 @@ export {
   set,
 
   writable,
-  Bindable
+  Bindable,
+  computed
 }
 
 export default swoof;

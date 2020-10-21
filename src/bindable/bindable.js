@@ -2,6 +2,10 @@ import { defineHiddenProperty, toString, toJSON } from '../util';
 import { assert } from '../error';
 import { registerBound, unregisterBound } from '../state';
 
+const {
+  assign
+} = Object;
+
 export const _binding = '_binding';
 const isBindable = model => model && !!model[_binding];
 export const getBinding = model => isBindable(model) && model[_binding];
@@ -13,28 +17,17 @@ class Binding {
     this.parent = null;
     this.nested = new Set();
     this.listeners = new Set();
-    this.properties = Object.create(null);
+    this.properties = {
+      byKey: Object.create(null),
+      all: []
+    };
   }
 
-  defineProperty(key, value) {
-    this.registerNested(value);
-    this.properties[key] = value;
-    Object.defineProperty(this.owner, key, {
-      get: () => {
-        return this.properties[key];
-      },
-      set: value => {
-        let current = this.properties[key];
-        if(value === current) {
-          return;
-        }
-        this.unregisterNested(current);
-        this.properties[key] = value;
-        this.registerNested(value);
-        this.notifyDidChange();
-      }
-    });
-    return value;
+  defineProperty(key, { factory, opts, value }) {
+    let property = new factory(this, key, opts);
+    this.properties.byKey[key] = property;
+    this.properties.all.push(property);
+    return property.define(value);
   }
 
   get isBound() {

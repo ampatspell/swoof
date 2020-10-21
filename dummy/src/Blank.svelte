@@ -1,6 +1,10 @@
 <script>
   import { JSON, swoof, state, setGlobal, objectToJSON } from 'swoof';
-  import { Bindable, writable } from 'swoof';
+  import { Bindable, writable, computed } from 'swoof';
+
+  const {
+    observed
+  } = computed;
 
   let show = true;
 
@@ -30,7 +34,7 @@
 
     constructor(name) {
       super();
-      this.property('name', name);
+      this.property('name', observed(name));
     }
 
     get serialized() {
