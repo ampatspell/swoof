@@ -1,16 +1,16 @@
 <script>
-  import { JSON, setGlobal } from 'swoof';
-  import Messages from './messages';
+  // import { JSON, setGlobal } from 'swoof';
+  // import Messages from './messages';
 
-  let messages = new Messages();
-  setGlobal({ messages });
+  // let messages = new Messages();
+  // setGlobal({ messages });
 
 </script>
 
-<input bind:value={$messages.foo}/>
+<!-- <input bind:value={$messages.foo}/>
 <input bind:value={$messages.name}/>
 
-<JSON object={$messages}/>
+<JSON object={$messages}/> -->
 
 <!-- {#each $messages.query.content as doc}
   <div>

@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import { assert } from './error';
+import { assert } from '../error';
 import Bindable, { _binding, getBinding } from './bindable';
 
 export class Writable {

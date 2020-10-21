@@ -2,7 +2,7 @@ import { toString, toJSON, defineHiddenProperty, objectToJSON, defer, cached, de
 import { assert } from '../error';
 import Membrane from 'observable-membrane';
 import { registerOnSnapshot } from '../state';
-import Bindable from '../bindable';
+import Bindable from '../bindable/bindable';
 
 const {
   assign

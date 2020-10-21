@@ -1,6 +1,6 @@
-import { defineHiddenProperty, toString, toJSON } from './util';
-import { assert } from './error';
-import { registerBound, unregisterBound } from './state';
+import { defineHiddenProperty, toString, toJSON } from '../util';
+import { assert } from '../error';
+import { registerBound, unregisterBound } from '../state';
 
 export const _binding = '_binding';
 const isBindable = model => model && !!model[_binding];

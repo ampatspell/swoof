@@ -2,34 +2,53 @@
   import { JSON, swoof, state, setGlobal, objectToJSON } from 'swoof';
   import { Bindable, writable } from 'swoof';
 
+  let show = true;
+
+  // class Base extends Bindable {
+
+  //   constructor() {
+  //     super();
+  //     this.property('query');
+  //   }
+
+  //   get serialized() {
+  //     return {
+  //       docs: objectToJSON(this.query.content)
+  //     }
+  //   }
+  // }
+
+  // let query = swoof.store('main').collection('messages').query();
+  // let base = writable(new Base());
+
+  // $: {
+  //   base.model.query = show ? query : null;
+  //   setGlobal({ base: base.model });
+  // }
+
   class Base extends Bindable {
 
-    constructor() {
+    constructor(name) {
       super();
-      this.property('query');
+      this.property('name', name);
     }
 
     get serialized() {
+      let { name } = this;
       return {
-        docs: objectToJSON(this.query.content)
-      }
+        name
+      };
     }
+
   }
 
-  let show = true;
-
-  let query = swoof.store('main').collection('messages').query();
-  let base = writable(new Base());
-
-  $: {
-    base.model.query = show ? query : null;
-    setGlobal({ base: base.model });
-  }
+  let base = writable(new Base('hey there'));
+  setGlobal({ base: base.model });
 
 </script>
 
 <div class="row">
-  {$base} {$base.query}
+  {$base} <input bind:value={$base.name}/>
 </div>
 <div class="row">
   <button on:click={() => show = !show}>Toggle</button>
