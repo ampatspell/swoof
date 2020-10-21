@@ -3,7 +3,7 @@
   import { Bindable, writable, computed } from 'swoof';
 
   const {
-    observed,
+    attr,
     array
   } = computed;
 
@@ -35,13 +35,14 @@
 
     constructor(names) {
       super();
-      this.property('name', observed('hey there'));
+      this.property('name', attr('hey there'));
       this.property('names', array(names));
     }
 
     get serialized() {
-      let { names } = this;
+      let { name, names } = this;
       return {
+        name,
         names
       };
     }

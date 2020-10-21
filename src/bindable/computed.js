@@ -1,13 +1,15 @@
-import ObservedProperty from './properties/observed';
+import AttributeProperty from './properties/attribute';
 import ArrayProperty from './properties/array';
 
-export const observed = value => {
+export const attribute = value => {
   return {
-    factory: ObservedProperty,
+    factory: AttributeProperty,
     opts: { value },
     value
   };
 };
+
+export const attr = attribute;
 
 export const array = value => {
   return {

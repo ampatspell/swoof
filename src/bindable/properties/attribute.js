@@ -1,6 +1,6 @@
 import Property from './property';
 
-export default class ObservedProperty extends Property {
+export default class AttributeProperty extends Property {
 
   constructor(binding, key, { value }) {
     super(binding, key);
