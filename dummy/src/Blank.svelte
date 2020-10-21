@@ -3,7 +3,8 @@
   import { Bindable, writable, computed } from 'swoof';
 
   const {
-    observed
+    observed,
+    array
   } = computed;
 
   let show = true;
@@ -32,21 +33,22 @@
 
   class Base extends Bindable {
 
-    constructor(name) {
+    constructor(names) {
       super();
-      this.property('name', observed(name));
+      this.property('name', observed('hey there'));
+      this.property('names', array(names));
     }
 
     get serialized() {
-      let { name } = this;
+      let { names } = this;
       return {
-        name
+        names
       };
     }
 
   }
 
-  let base = writable(new Base('hey there'));
+  let base = writable(new Base([ 'a' ]));
   setGlobal({ base: base.model });
 
 </script>
