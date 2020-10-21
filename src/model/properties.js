@@ -1,3 +1,5 @@
+import { toString } from '../util';
+
 export default class Properties {
 
   constructor(model) {
@@ -14,10 +16,10 @@ export default class Properties {
     return this.model;
   }
 
-  startObserving() {
-    let properties = this.properties.map(property => property.startObserving());
+  subscribe() {
+    let properties = this.properties.map(property => property.subscribe(() => {}));
     return () => {
-      properties.forEach(stop => stop());
+      properties.forEach(unsubscribe => unsubscribe());
     };
   }
 
@@ -39,6 +41,10 @@ export default class Properties {
       });
     });
     this.model._notifyDidChange();
+  }
+
+  toString() {
+    return toString(this, this.model+'');
   }
 
 }

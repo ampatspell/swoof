@@ -1,5 +1,6 @@
 import Property from './property';
 import { isFunction } from '../../util';
+import Subscriptions from '../../subscriptions';
 
 export default class ObservedProperty extends Property {
 
@@ -8,8 +9,10 @@ export default class ObservedProperty extends Property {
     this.content = content;
     this.value = null;
     this._dependencies = [];
-    this.observing = false;
-    this.subscription = null;
+    this._subscriptions = new Subscriptions(this, {
+      onStart: () => this.onStart(),
+      onStop: () => this.onStop()
+    });
   }
 
   dependencies(...dependencies) {
@@ -75,10 +78,6 @@ export default class ObservedProperty extends Property {
   maybeStartObservingValue() {
     let { value } = this;
 
-    if(!this.observing) {
-      return;
-    }
-
     if(this.subscription) {
       return;
     }
@@ -103,13 +102,16 @@ export default class ObservedProperty extends Property {
 
   //
 
-  startObserving() {
-    this.observing = true;
+  onStart() {
     this.maybeStartObservingValue();
-    return () => {
-      this.stopObservingValue();
-      this.observing = false;
-    };
+  }
+
+  onStop() {
+    this.stopObservingValue();
+  }
+
+  subscribe(...args) {
+    return this._subscriptions.subscribe(...args);
   }
 
 }

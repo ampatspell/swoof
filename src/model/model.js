@@ -1,13 +1,15 @@
-import { writable } from 'svelte/store';
 import { defineHiddenProperty, toString, toJSON } from '../util';
 import Properties from './properties';
-import swoof from '../swoof';
+import Subscriptions from '../subscriptions';
 
 export default class Model {
 
   constructor() {
-    defineHiddenProperty(this, '_writable', writable(this));
     defineHiddenProperty(this, '_properties', new Properties(this));
+    defineHiddenProperty(this, '_subscriptions', new Subscriptions(this, {
+      onStart: () => {},
+      onStop: () => {}
+    }));
   }
 
   define(...args) {
@@ -15,24 +17,21 @@ export default class Model {
   }
 
   _notifyDidChange() {
-    this._writable.set(this);
+    this._subscriptions.notifyDidChange();
   }
 
   set() {
     this._notifyDidChange();
   }
 
+
   subscribe(...args) {
-    this._subscribed = true;
-    let observing = swoof._registerObserving(this);
-    let properties = this._properties.startObserving();
-    let unsubscribe = this._writable.subscribe(...args);
+    let subscriptions = this._subscriptions.subscribe(...args);
+    let properties = this._properties.subscribe(() => {});
     return () => {
-      this._subscribed = false;
       properties();
-      unsubscribe();
-      observing();
-    }
+      subscriptions();
+    };
   }
 
   toString() {

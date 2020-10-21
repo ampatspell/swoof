@@ -4,6 +4,7 @@
   import First from './First.svelte';
   import Model from './Model.svelte';
   import Models from './Models.svelte';
+  import Blank from './Blank.svelte';
 
   let thing = true;
   let toggle = () => thing = !thing;
@@ -14,6 +15,7 @@
     { label: 'First', component: First },
     { label: 'Model', component: Model },
     { label: 'Models', component: Models },
+    { label: 'Blank', component: Blank },
   ];
 
   let selected = routes[4];

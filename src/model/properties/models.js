@@ -1,5 +1,6 @@
 import Property from './property';
 import Models from '../models';
+import Subscriptions from '../../subscriptions';
 
 export default class ModelsProperty extends Property {
 
@@ -8,6 +9,10 @@ export default class ModelsProperty extends Property {
     this.path = path;
     this.factory = factory;
     this._dependencies = [];
+    this._subscriptions = new Subscriptions(this, {
+      onStart: () => this.onStart(),
+      onStop: () => this.onStop()
+    });
   }
 
   dependencies(...dependencies) {
@@ -19,7 +24,7 @@ export default class ModelsProperty extends Property {
 
   defineProperty() {
     Object.defineProperty(this.model, this.key, {
-      get: () => this.getValue(),
+      get: () => this.getValue()
     });
   }
 
@@ -39,7 +44,7 @@ export default class ModelsProperty extends Property {
   }
 
   dependencyDidChange() {
-    console.log('mdoels dependency did change');
+    console.log('models dependency did change');
   }
 
   propertyDidChange(property) {
@@ -50,17 +55,13 @@ export default class ModelsProperty extends Property {
   }
 
   valueDidChange() {
-    console.log('models did change');
+    this.properties.propertyValueDidChange(this);
   }
 
   //
 
   maybeStartObservingValue() {
     let { value } = this;
-
-    if(!this.observing) {
-      return;
-    }
 
     if(this.subscription) {
       return;
@@ -71,7 +72,12 @@ export default class ModelsProperty extends Property {
     });
   }
 
-  stopObservingValue() {
+  onStart() {
+    this.maybeStartObservingValue();
+  }
+
+  onStop() {
+    console.log('models stop');
     let { subscription } = this;
     if(subscription) {
       this.subscription = null;
@@ -79,13 +85,8 @@ export default class ModelsProperty extends Property {
     }
   }
 
-  startObserving() {
-    this.observing = true;
-    this.maybeStartObservingValue();
-    return () => {
-      this.stopObservingValue();
-      this.observing = false;
-    };
+  subscribe(...args) {
+    return this._subscriptions.subscribe(...args);
   }
 
 }

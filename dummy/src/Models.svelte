@@ -10,8 +10,15 @@
 <input bind:value={$messages.foo}/>
 <input bind:value={$messages.name}/>
 
-<div class="json">
-  <JSON object={$messages.query}/>
+<JSON object={$messages.query}/>
+
+<!-- {#each $messages.query.content as doc}
+  <div>
+    <JSON object={doc.serialized}/>
+  </div>
+{/each} -->
+
+<!-- <div class="json">
   {#each $messages.models as model}
     <div>
       <JSON object={model}/>
@@ -19,14 +26,11 @@
       <input bind:value={model.message}/>
     </div>
   {/each}
-  {#each $messages.query.content as doc}
-    <div>
-      <JSON object={doc.serialized}/>
-    </div>
-  {/each}
-  <div>{$messages.names}</div>
-  <div>{$messages.messages}</div>
-</div>
+</div> -->
+
+<!-- <div>{$messages.names}</div>
+<div>{$messages.messages}</div> -->
+
 
 <style>
   .json {

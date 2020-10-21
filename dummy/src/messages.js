@@ -13,13 +13,13 @@ class Message extends Model {
     super();
     this.doc = doc;
     this.name = name;
-    this.define('message', observed('hey'));
+    // this.define('message', observed('hey'));
   }
 
   get serialized() {
     return {
-      name: this.name,
-      message: this.message
+      // name: this.name,
+      // message: this.message
     };
   }
 
@@ -43,16 +43,18 @@ export default class Messages extends Model {
     this.define('foo', observed('one'));
     this.define('name', observed('hey there'));
     this.define('query', observed(() => createQuery(this.name)).dependencies('name'));
-    this.define('models', models('query.content', doc => new Message(doc, this.foo)));
+    // this.define('models', models('query.content', doc => new Message(doc, this.foo)));
+    this.define('models', models('query.content', doc => ({})));
+    // setGlobal({ models: this.models });
   }
 
-  get names() {
-    return this.models.map(model => model.name);
-  }
+  // get names() {
+  //   return this.models.map(model => model.name);
+  // }
 
-  get messages() {
-    return this.models.map(model => model.message);
-  }
+  // get messages() {
+  //   return this.models.map(model => model.message);
+  // }
 
   get serialized() {
     return {

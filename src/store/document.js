@@ -1,4 +1,5 @@
 import Stateful from './stateful';
+import swoof from '../swoof';
 import { toString, toJSON, defineHiddenProperty, objectToJSON, defer, cached, deleteCached, merge } from '../util';
 import { assert } from '../error';
 import Membrane from 'observable-membrane';
@@ -131,8 +132,7 @@ export default class Document extends Stateful {
       this._setState({ isLoading: true, isError: false, error: null }, true);
     }
 
-    let observing = this.store._registerObserving(this);
-    let snapshot = this.ref.ref.onSnapshot({ includeMetadataChanges: true }, snapshot => {
+    this._cancel = this.ref.ref.onSnapshot({ includeMetadataChanges: true }, snapshot => {
       if(this._shouldIgnoreSnapshot(snapshot)) {
         return;
       }
@@ -143,12 +143,6 @@ export default class Document extends Stateful {
       this.store._onSnapshotError(this);
       this._deferred.reject(error);
     });
-
-    this._cancel = () => {
-      // console.log('stop', this+'');
-      observing();
-      snapshot();
-    };
   }
 
   _stopObserving() {
@@ -162,11 +156,13 @@ export default class Document extends Stateful {
   subscribe(...args) {
     this._subscribed = true;
     this._maybeStartObserving();
+    let observing = swoof._registerObserving(this);
     let unsubscribe = this._writable.subscribe(...args);
     return () => {
       this._subscribed = false;
       this._stopObserving();
       unsubscribe();
+      observing();
     }
   }
 

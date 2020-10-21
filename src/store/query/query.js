@@ -1,4 +1,5 @@
 import Stateful from '../stateful';
+import swoof from '../../swoof';
 import { defineHiddenProperty, toJSON, toString, objectToJSON, defer } from '../../util';
 
 const {
@@ -63,8 +64,7 @@ export default class Query extends Stateful {
   subscribe(...args) {
     if(!this._cancel) {
       this._setState({ isLoading: true, isError: false, error: null }, true);
-      let observing = this.store._registerObserving(this);
-      let snapshot = this._ref.onSnapshot({ includeMetadataChanges: true }, snapshot => {
+      this._cancel = this._ref.onSnapshot({ includeMetadataChanges: true }, snapshot => {
         this._onSnapshot(snapshot);
         this._setState({ isLoading: false, isLoaded: true });
         this._notifyDidChange();
@@ -74,15 +74,13 @@ export default class Query extends Stateful {
         this.store._onSnapshotError(this);
         this._deferred.reject(error);
       });
-      this._cancel = () => {
-        observing();
-        snapshot();
-      };
     }
+    let observing = swoof._registerObserving(this);
     let unsubscribe = this._writable.subscribe(...args);
     return () => {
       this._cancel();
       unsubscribe();
+      observing();
     }
   }
 

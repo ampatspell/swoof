@@ -27,6 +27,7 @@ class Swoof {
     };
     existing.count++;
     return () => {
+      let existing = this._observing.find(hash => hash.model === model);
       existing.count--;
       if(existing.count === 0) {
         removeObject(this._observing, existing);

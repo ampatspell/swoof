@@ -1,6 +1,5 @@
-import { writable } from 'svelte/store';
 import { defineHiddenProperty, toString, toPrimitive, toJSON, objectToJSON, get, isFunction, removeObject } from '../util';
-import swoof from '../swoof';
+import Subscriptions from '../subscriptions';
 
 const {
   defineProperty
@@ -61,70 +60,22 @@ const normalizeOpts = ({ path, factory }) => {
 }
 
 const ownerKey = '__swoof_owner';
+const noop = () => {};
 
 export default class Models {
 
   constructor({ parent, opts }) {
     defineHiddenProperty(this, 'parent', parent);
     defineHiddenProperty(this, '_opts', normalizeOpts(opts));
-    defineHiddenProperty(this, '_writable', writable(this));
+    defineHiddenProperty(this, '_subscriptions', new Subscriptions(this, {
+      onStart: () => this._onStart(),
+      onStop: () => this._onStop()
+    }));
+    this._content = [];
     return createProxy(this);
   }
 
-  atIndex(idx) {
-    return this._content[idx];
-  }
-
-  //
-
-  _subscribe() {
-    let parent = this.parent.subscribe(() => this._parentDidChange());
-    let content = () => this._unsubscribeModels(this._content);
-    this._cancel = () => {
-      parent();
-      content();
-    };
-  }
-
-  _unsubscribe() {
-    let { _cancel } = this;
-    this._cancel = null;
-    _cancel && _cancel();
-  }
-
-  subscribe(...args) {
-    this._subscribed = true;
-    let observing = swoof._registerObserving(this);
-    let unsubscribe = this._writable.subscribe(...args);
-    return () => {
-      this._subscribed = false;
-      this._unsubscribe();
-      unsubscribe();
-      observing();
-    }
-  }
-
-  _notifyDidChange() {
-    this._writable.set(this);
-  }
-
-  //
-
-  _modelDidChange() {
-    this._notifyDidChange();
-  }
-
-  _unsubscribeModels(models) {
-    models.forEach(model => {
-      let hash = model[ownerKey];
-      let { cancel } = hash;
-      delete hash.cancel;
-      delete hash.doc;
-      cancel && cancel();
-    });
-  }
-
-  _sourceDidChange() {
+  _recreateContent() {
     let source = get(this.parent, this._opts.source.path);
     let factory = this._opts.factory;
 
@@ -141,7 +92,13 @@ export default class Models {
     let create = doc => {
       let model = factory(doc);
       if(model) {
-        let cancel = model.subscribe(() => this._modelDidChange(model));
+        let cancel = this._subscriptions.withSuppressNotifyDidChange(() => {
+          if(isFunction(model.subscribe)) {
+            return model.subscribe(() => this._contentModelDidChange(model));
+          } else {
+            return noop;
+          }
+        });
         defineProperty(model, ownerKey, { value: { cancel, doc } });
       }
       return model;
@@ -160,16 +117,60 @@ export default class Models {
       });
     }
 
-    this._unsubscribeModels(current);
+    this._unsubscribeContentModels(current);
 
     this._content = content;
   }
 
   _parentDidChange() {
-    this._sourceDidChange();
+    this._recreateContent();
   }
 
+  _contentModelDidChange() {
+    this._subscriptions.notifyDidChange();
+  }
+
+  _unsubscribeContentModels(models) {
+    models.forEach(model => {
+      let hash = model[ownerKey];
+      let { cancel } = hash;
+      delete hash.cancel;
+      delete hash.doc;
+      cancel && cancel();
+    });
+  }
+
+  _unsubscribeContent() {
+    this._unsubscribeContentModels(this._content);
+    this._content = [];
+  }
+
+  _onStart() {
+    console.log('models start');
+    this._recreateContent();
+    this.subscription = this.parent.subscribe(() => this._parentDidChange());
+    return () => this._onStop();
+  }
+
+  _onStop() {
+    console.log('models stop');
+    this.subscription();
+    this._unsubscribeContent();
+  }
+
+  // subscribe(...args) {
+  //   let r = this._subscriptions.subscribe(...args);
+  //   return () => {
+  //     console.log('models unsubscribe');
+  //     r();
+  //   };
+  // }
+
   //
+
+  atIndex(idx) {
+    return this._content[idx];
+  }
 
   map(...args) {
     return this._content.map(...args);

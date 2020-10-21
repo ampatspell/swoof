@@ -78,10 +78,6 @@ export default class Store {
     assert(false, `Unsupported type '${type}'`);
   }
 
-  _registerObserving(...args) {
-    return this.swoof._registerObserving(...args);
-  }
-
   _onSnapshotError(sender) {
     console.error('onSnapshot', sender.string || sender.path, sender.error.stack);
   }
