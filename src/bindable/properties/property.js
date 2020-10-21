@@ -8,12 +8,12 @@ export default class Property {
     this.key = key;
   }
 
-  registerNested() {
-    this.binding.registerNested();
+  registerNested(object) {
+    this.binding.registerNested(object);
   }
 
-  unregisterNested() {
-    this.binding.unregisterNested();
+  unregisterNested(object) {
+    this.binding.unregisterNested(object);
   }
 
   notifyDidChange() {
