@@ -143,12 +143,10 @@ export default class ArrayProperty extends Property {
   }
 
   registerNestedItems(items) {
-    console.log('register', items);
     items.forEach(item => this.registerNested(item));
   }
 
   unregisterNestedItems(items) {
-    console.log('unregister', items);
     items.forEach(item => this.unregisterNested(item));
   }
 
@@ -160,17 +158,17 @@ export default class ArrayProperty extends Property {
   }
 
   didAddItem(item) {
-    this.registerNestedItems([ item ]);
-    this.notifyDidChange();
-  }
-
-  didRemoveItem(item) {
-    this.unregisterNestedItems([ item ]);
+    this.registerNested(item);
     this.notifyDidChange();
   }
 
   didRemoveItems(items) {
     this.unregisterNestedItems(items);
+    this.notifyDidChange();
+  }
+
+  didRemoveItem(item) {
+    this.unregisterNested(item);
     this.notifyDidChange();
   }
 
