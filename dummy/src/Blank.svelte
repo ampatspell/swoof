@@ -57,6 +57,7 @@
 
   // swoof: has internal listeners of some sort which starts/stops onSnapshot stuff
   // have a writable wrapper for it
+  // that would also mean documents and queries are not stores
 
   // let models new Models();
   // let writable = wrap(models); // starts on 1st subscription, stops on last
