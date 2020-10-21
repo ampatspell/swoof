@@ -1,5 +1,5 @@
-import AttributeProperty from './properties/attribute';
-import ArrayProperty from './properties/array';
+import AttributeProperty from './attribute';
+import ArrayProperty from './array';
 
 const {
   assign

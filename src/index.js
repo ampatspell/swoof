@@ -8,7 +8,7 @@ import { SwoofError, error, assert } from './util/error';
 
 import Bindable from './bindable/bindable';
 import writable from './bindable/writable';
-import * as computed from './bindable/computed';
+import * as computed from './bindable/properties/definitions';
 
 export {
   JSON,

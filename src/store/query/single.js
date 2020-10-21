@@ -1,5 +1,5 @@
 import Query from './query';
-import { attr } from '../../bindable/computed';
+import { attr } from '../../bindable/properties/definitions';
 
 export default class QuerySingle extends Query {
 
