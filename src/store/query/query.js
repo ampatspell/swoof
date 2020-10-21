@@ -62,6 +62,7 @@ export default class Query extends Stateful {
   }
 
   subscribe(...args) {
+    // TODO: fix start observing
     if(!this._cancel) {
       this._setState({ isLoading: true, isError: false, error: null }, true);
       this._cancel = this._ref.onSnapshot({ includeMetadataChanges: true }, snapshot => {

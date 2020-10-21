@@ -10,7 +10,7 @@
 <input bind:value={$messages.foo}/>
 <input bind:value={$messages.name}/>
 
-<JSON object={$messages.query}/>
+<JSON object={$messages}/>
 
 <!-- {#each $messages.query.content as doc}
   <div>

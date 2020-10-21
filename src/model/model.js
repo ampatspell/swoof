@@ -24,14 +24,8 @@ export default class Model {
     this._notifyDidChange();
   }
 
-
   subscribe(...args) {
-    let subscriptions = this._subscriptions.subscribe(...args);
-    let properties = this._properties.subscribe(() => {});
-    return () => {
-      properties();
-      subscriptions();
-    };
+    return this._subscriptions.subscribe(...args);
   }
 
   toString() {

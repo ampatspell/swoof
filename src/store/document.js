@@ -154,6 +154,7 @@ export default class Document extends Stateful {
   }
 
   subscribe(...args) {
+    // TODO: fix start observing
     this._subscribed = true;
     this._maybeStartObserving();
     let observing = swoof._registerObserving(this);

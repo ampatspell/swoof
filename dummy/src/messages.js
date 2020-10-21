@@ -1,4 +1,4 @@
-import { Model, swoof, computed, setGlobal } from 'swoof';
+import { Model, swoof, computed, get } from 'swoof';
 
 const {
   observed,
@@ -29,22 +29,19 @@ export default class Messages extends Model {
 
   constructor() {
     super();
-
-    let store = swoof.store('main');
-
-    let createQuery = name => {
-      let coll = store.collection('messages');
-      if(name) {
-        coll = coll.where('name', '==', name);
-      }
-      return coll.query();
-    };
-
-    this.define('foo', observed('one'));
-    this.define('name', observed('hey there'));
-    this.define('query', observed(() => createQuery(this.name)).dependencies('name'));
+    // let store = swoof.store('main');
+    // let createQuery = name => {
+    //   let coll = store.collection('messages');
+    //   if(name) {
+    //     coll = coll.where('name', '==', name);
+    //   }
+    //   return coll.query();
+    // };
+    // this.define('foo', observed('one'));
+    // this.define('name', observed('hey there'));
+    // this.define('query', observed(() => createQuery(this.name)).dependencies('name'));
     // this.define('models', models('query.content', doc => new Message(doc, this.foo)));
-    this.define('models', models('query.content', doc => ({})));
+    // this.define('models', models('query.content', doc => ({})));
     // setGlobal({ models: this.models });
   }
 
@@ -58,10 +55,10 @@ export default class Messages extends Model {
 
   get serialized() {
     return {
-      total: get(this, 'query.content.length'),
-      names: this.names,
-      names: this.messages,
-      models: this.models.map(model => model.serialized)
+      // total: get(this, 'query.content.length'),
+      // names: this.names,
+      // names: this.messages,
+      // models: this.models.map(model => model.serialized)
     };
   }
 

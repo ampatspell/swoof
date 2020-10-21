@@ -16,13 +16,6 @@ export default class Properties {
     return this.model;
   }
 
-  subscribe() {
-    let properties = this.properties.map(property => property.subscribe(() => {}));
-    return () => {
-      properties.forEach(unsubscribe => unsubscribe());
-    };
-  }
-
   withNotifyDidChangeSuspended(cb) {
     this._notifyDidChangeSuspended++;
     try {

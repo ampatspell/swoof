@@ -158,13 +158,13 @@ export default class Models {
     this._unsubscribeContent();
   }
 
-  // subscribe(...args) {
-  //   let r = this._subscriptions.subscribe(...args);
-  //   return () => {
-  //     console.log('models unsubscribe');
-  //     r();
-  //   };
-  // }
+  subscribe(...args) {
+    let r = this._subscriptions.subscribe(...args);
+    return () => {
+      console.log('models unsubscribe');
+      r();
+    };
+  }
 
   //
 
