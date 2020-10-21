@@ -2,7 +2,7 @@ import Property from './property';
 import {insertAt, removeAt, removeObject } from '../../util/util';
 import { createArrayProxy, ImmutableArrayProxy } from '../../util/proxy';
 
-class ArrayProxy extends ImmutableArrayProxy{
+class ArrayProxy extends ImmutableArrayProxy {
 
   constructor(content, property) {
     super(content);
