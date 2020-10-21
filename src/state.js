@@ -5,11 +5,16 @@ class State {
 
   constructor() {
     this._snapshots = new Set();
+    this._bound = new Set();
     this._writable = writable(this);
   }
 
   get snapshots() {
     return [ ...this._snapshots ];
+  }
+
+  get bound() {
+    return [ ...this._bound ];
   }
 
   _notify() {
@@ -23,6 +28,16 @@ class State {
       this._snapshots.delete(model);
       this._notify();
     }
+  }
+
+  registerBound(model) {
+    this._bound.add(model);
+    this._notify();
+  }
+
+  unregisterBound(model) {
+    this._bound.delete(model);
+    this._notify();
   }
 
   subscribe() {
@@ -44,5 +59,8 @@ export const registerOnSnapshot = (model, cancel) => {
     cancel();
   };
 }
+
+export const registerBound = model => state.registerBound(model);
+export const unregisterBound = model => state.unregisterBound(model);
 
 export default state;

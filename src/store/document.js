@@ -1,4 +1,3 @@
-import Stateful from './stateful';
 import { toString, toJSON, defineHiddenProperty, objectToJSON, defer, cached, deleteCached, merge } from '../util';
 import { assert } from '../error';
 import Membrane from 'observable-membrane';
@@ -8,10 +7,9 @@ const {
   assign
 } = Object;
 
-export default class Document extends Stateful {
+export default class Document {
 
   constructor({ store, ref, snapshot, data, parent }) {
-    super();
     defineHiddenProperty(this, 'store', store);
     defineHiddenProperty(this, 'ref', ref);
     defineHiddenProperty(this, 'parent', parent);
@@ -39,6 +37,23 @@ export default class Document extends Stateful {
 
   get path() {
     return this.ref.path;
+  }
+
+  //
+
+  _setState(props, notify) {
+    let changed = false;
+    for(let key in props) {
+      let value  = props[key];
+      if(this[key] !== value) {
+        this[key] = value;
+        changed = true;
+      }
+    }
+    if(changed && notify) {
+      this._notifyDidChange();
+    }
+    return changed;
   }
 
   //
@@ -74,7 +89,6 @@ export default class Document extends Stateful {
   //
 
   _notifyDidChange() {
-    super._notifyDidChange();
     this.parent && this.parent._documentDidChange(this);
   }
 

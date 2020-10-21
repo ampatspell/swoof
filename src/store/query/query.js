@@ -1,5 +1,4 @@
 import Stateful from '../stateful';
-import swoof from '../../swoof';
 import { defineHiddenProperty, toJSON, toString, objectToJSON, defer } from '../../util';
 
 const {

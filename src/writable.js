@@ -1,24 +1,31 @@
 import { writable } from 'svelte/store';
-import { toString, toJSON, objectToJSON } from './util';
+import { assert } from './error';
+import Bindable from './bindable';
 
-class Writable {
+export class Writable {
 
   constructor(model) {
+    assert(model instanceof Bindable, `model ${model} is not Bindable`);
     this.model = model;
     this.writable = writable(model, () => this.bind());
-    this.bound = false;
   }
 
   notifyDidChange() {
     this.writable.set(this.model);
   }
 
+  get isBound() {
+    return this.model._isBound;
+  }
+
+  _nestedDidChange() {
+    this.notifyDidChange();
+  }
+
   bind() {
-    let cancel = this.model.bind(() => this.notifyDidChange());
-    this.bound = true;
+    this.model._bind(this);
     return () => {
-      this.bound = false;
-      cancel();
+      this.model._unbind(this);
     }
   }
 
@@ -30,15 +37,16 @@ class Writable {
   }
 
   get serialized() {
-    let { model } = this;
+    let { isBound: bound, model } = this;
     return {
+      bound,
       model: objectToJSON(model)
     };
   }
 
   toString() {
-    let { bound, model } = this;
-    return toString(this, `${bound ? 'bound' : 'unbound'}:${model}`);
+    let { isBound, model } = this;
+    return toString(this, `${isBound ? 'bound' : 'unbound'}:${model}`);
   }
 
   toJSON() {
@@ -48,6 +56,4 @@ class Writable {
 
 }
 
-let wrap = model => new Writable(model);
-
-export default wrap;
+export default model => new Writable(model);
