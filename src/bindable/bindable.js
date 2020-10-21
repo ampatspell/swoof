@@ -16,6 +16,8 @@ export default class Bindable {
     return getBinding(this).defineProperty(key, value);
   }
 
+  //
+
   _notifyDidChange() {
     getBinding(this).notifyDidChange();
   }
