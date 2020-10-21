@@ -18,7 +18,7 @@
     { label: 'Blank', component: Blank }
   ];
 
-  let selected = routes[0];
+  let selected = routes.find(r => r.label === 'Models');
 
   let select = route => selected = route;
 
