@@ -19,7 +19,7 @@ const parseKey = key => {
   }
 }
 
-const createProxy = instance => new Proxy(instance, {
+const createArrayProxy = instance => new Proxy(instance, {
   get: (target, _key) => {
     let { idx, key } = parseKey(_key);
     if(key) {
@@ -44,71 +44,75 @@ const createProxy = instance => new Proxy(instance, {
 class ArrayProxy {
 
   constructor(content, property) {
-    this.property = property;
-    this.content = content || [];
+    this._property = property;
+    this._content = content;
   }
 
   //
 
   atIndex(idx) {
-    return this.content[idx];
+    return this._content[idx];
   }
 
   get last() {
-    return this.content[this.content.length - 1];
+    return this._content[this._content.length - 1];
   }
 
   map(...args) {
-    return this.content.map(...args);
+    return this._content.map(...args);
   }
 
   forEach(...args) {
-    return this.content.forEach(...args);
+    return this._content.forEach(...args);
+  }
+
+  reduce(...args) {
+    return this._content.reduce(...args);
   }
 
   //
 
   insertAt(idx, object) {
-    let removed = insertAt(this.content, idx, object);
-    this.property.didAddItem(object);
+    let removed = insertAt(this._content, idx, object);
+    this._property.didAddItem(object);
     return removed;
   }
 
   removeAt(idx) {
-    let removed = removeAt(this.content, idx);
-    this.property.didRemoveItems(removed);
+    let removed = removeAt(this._content, idx);
+    this._property.didRemoveItems(removed);
     return removed;
   }
 
   removeObject(object) {
-    removeObject(this.content, object);
-    this.property.didRemoveItem(object);
+    removeObject(this._content, object);
+    this._property.didRemoveItem(object);
   }
 
   // remove last
   pop() {
-    let item = this.content.pop();
-    this.property.didRemoveItem(item);
+    let item = this._content.pop();
+    this._property.didRemoveItem(item);
     return item;
   }
 
   // remove 1st
   shift() {
-    let item = this.content.shift();
-    this.property.didRemoveItem(item);
+    let item = this._content.shift();
+    this._property.didRemoveItem(item);
     return item;
   }
 
   push(...values) {
-    let len = this.content.push(...values);
-    this.property.didAddItems(values);
+    let len = this._content.push(...values);
+    this._property.didAddItems(values);
     return len;
   }
 
   //
 
   get length() {
-    return this.content.length;
+    return this._content.length;
   }
 
   toString() {
@@ -116,7 +120,7 @@ class ArrayProxy {
   }
 
   get serialized() {
-    return objectToJSON(this.content);
+    return objectToJSON(this._content);
   }
 
   toJSON() {
@@ -124,7 +128,7 @@ class ArrayProxy {
   }
 
   get [Symbol.toStringTag]() {
-    return toPrimitive(this)
+    return toPrimitive(this);
   }
 
   [Symbol.toPrimitive]() {
@@ -137,8 +141,9 @@ export default class ArrayProperty extends Property {
 
   constructor(binding, key, { value }) {
     super(binding, key);
-    this.content = new ArrayProxy(value, this);
-    this.proxy = createProxy(this.content);
+    this.value = value || [];
+    this.content = new ArrayProxy(this.value, this);
+    this.proxy = createArrayProxy(this.content);
   }
 
   registerNestedItems(items) {
@@ -175,7 +180,7 @@ export default class ArrayProperty extends Property {
 
   define() {
     let { owner, key } = this;
-    this.registerNestedItems(this.content.content);
+    this.registerNestedItems(this.value);
     Object.defineProperty(owner, key, {
       get: () => {
         return this.proxy;
@@ -184,9 +189,10 @@ export default class ArrayProperty extends Property {
         if(value === this.proxy) {
           return;
         }
-        this.unregisterNestedItems(this.content.content);
-        this.content.content = value;
-        this.registerNestedItems(this.content.content);
+        this.unregisterNestedItems(this.value);
+        this.value = value;
+        this.content._content = value;
+        this.registerNestedItems(this.value);
         this.notifyDidChange();
       }
     });
