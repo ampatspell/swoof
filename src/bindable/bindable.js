@@ -41,11 +41,21 @@ class Binding {
     this.listeners.delete(listener);
   }
 
-  notifyDidChange() {
+  notifyDidChange(key) {
     if(!this.isBound) {
       return;
     }
-    this.listeners.forEach(listener => listener(this.owner));
+
+    if(key) {
+      this.properties.all.forEach(property => {
+        if(property.key === key) {
+          return;
+        }
+        property.onPropertyDidChange(key);
+      });
+    }
+
+    this.listeners.forEach(listener => listener(this.owner, key));
     getBinding(this.parent).notifyDidChange();
   }
 

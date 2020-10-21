@@ -18,7 +18,17 @@ export default class Property {
   }
 
   notifyDidChange() {
-    this.binding.notifyDidChange();
+    this.binding.notifyDidChange(this.key);
+  }
+
+  onDependencyDidChange() {
+  }
+
+  onPropertyDidChange(key) {
+    if(!this.dependencies.has(key)) {
+      return;
+    }
+    this.onDependencyDidChange(key);
   }
 
   toString() {

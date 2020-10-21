@@ -13,7 +13,7 @@
     constructor() {
       super();
       this.property('index', attr(0));
-      this.property('name', attr(() => `hey there`).dependencies('index'));
+      this.property('name', attr(() => `hey there ${this.index}`).dependencies('index'));
       this.property('array', attr(swoof.store('main').collection('messages').query()));
       this.property('first', attr(swoof.store('main').collection('messages').limit(1).query({ type: 'single' })));
     }
@@ -39,7 +39,7 @@
 </script>
 
 <div class="row">
-  {$base} <input bind:value={$base.name}/>
+  {$base} <input bind:value={$base.index} type="number"/> <input bind:value={$base.name}/>
 </div>
 
 <div class="row">
