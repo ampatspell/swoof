@@ -59,7 +59,8 @@ export default class Binding {
     if(!binding) {
       return;
     }
-    binding.key = join([ property.key, key], '.');
+    let path = join([ property.key, key ], '.');
+    binding.key = path;
     this.nested.add(model);
     if(this.isBound) {
       binding.bind(this.owner);
