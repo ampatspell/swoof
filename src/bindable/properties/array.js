@@ -1,5 +1,5 @@
 import Property from './property';
-import { isFunction, toString, toJSON, objectToJSON, toPrimitive, insertAt, removeAt, removeObject } from '../../util';
+import { isFunction, toString, objectToJSON, toPrimitive, insertAt, removeAt, removeObject } from '../../util';
 
 const parseKey = key => {
   try {
@@ -120,8 +120,7 @@ class ArrayProxy {
   }
 
   toJSON() {
-    let { serialized } = this;
-    return toJSON(this, { serialized });
+    return this.serialized;
   }
 
   get [Symbol.toStringTag]() {
