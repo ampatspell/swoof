@@ -137,3 +137,4 @@ update `plugin-commonjs`:
 - [ ] collect query onSnapshot changes and notify only if something has changed
 - [x] move observing to stores, add models
 - [x] bare bones model and models with nested models support
+- [ ] fix doc and query subscribes

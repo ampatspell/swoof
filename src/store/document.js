@@ -1,13 +1,14 @@
-import Stateful from './stateful';
-import { toString, toJSON, defineHiddenProperty, objectToJSON, defer, cached, deleteCached, merge } from '../util';
-import { assert } from '../error';
+import { toString, toJSON, defineHiddenProperty, objectToJSON, defer, cached, deleteCached, merge } from '../util/util';
+import { assert } from '../util/error';
 import Membrane from 'observable-membrane';
+import { registerOnSnapshot } from '../state';
+import Bindable from '../bindable/bindable';
 
 const {
   assign
 } = Object;
 
-export default class Document extends Stateful {
+export default class Document extends Bindable {
 
   constructor({ store, ref, snapshot, data, parent }) {
     super();
@@ -42,6 +43,23 @@ export default class Document extends Stateful {
 
   //
 
+  _setState(props, notify) {
+    let changed = false;
+    for(let key in props) {
+      let value  = props[key];
+      if(this[key] !== value) {
+        this[key] = value;
+        changed = true;
+      }
+    }
+    if(changed && notify) {
+      this._notifyDidChange();
+    }
+    return changed;
+  }
+
+  //
+
   get promise() {
     return this._deferred.promise;
   }
@@ -72,11 +90,6 @@ export default class Document extends Stateful {
 
   //
 
-  _notifyDidChange() {
-    super._notifyDidChange();
-    this.parent && this.parent._documentDidChange(this);
-  }
-
   _setData(data) {
     assert(data instanceof Object, 'data must be object');
     this._data = data;
@@ -94,86 +107,7 @@ export default class Document extends Stateful {
     }
   }
 
-  _shouldIgnoreSnapshot(snapshot) {
-    // TODO: issue with current firebase js sdk
-    return this.isSaving && !snapshot.metadata.hasPendingWrites;
-  }
-
-  _shouldObserve() {
-    if(this.parent) {
-      return false;
-    }
-    if(this.isNew) {
-      return false;
-    }
-    return true;
-  }
-
-  _shouldStartObserving() {
-    if(this._cancel) {
-      return false;
-    }
-    if(!this._subscribed) {
-      return;
-    }
-    return this._shouldObserve();
-  }
-
-  _maybeStartObserving() {
-    if(!this._shouldStartObserving()) {
-      return;
-    }
-
-    // console.log('start', this+'');
-
-    let { isLoaded } = this;
-    if(!isLoaded) {
-      this._setState({ isLoading: true, isError: false, error: null }, true);
-    }
-
-    let observing = this.store._registerObserving(this);
-    let snapshot = this.ref.ref.onSnapshot({ includeMetadataChanges: true }, snapshot => {
-      if(this._shouldIgnoreSnapshot(snapshot)) {
-        return;
-      }
-      this._onSnapshot(snapshot);
-      this._deferred.resolve(this);
-    }, error => {
-      this._setState({ isLoading: false, isError: true, error }, true);
-      this.store._onSnapshotError(this);
-      this._deferred.reject(error);
-    });
-
-    this._cancel = () => {
-      // console.log('stop', this+'');
-      observing();
-      snapshot();
-    };
-  }
-
-  _stopObserving() {
-    let { _cancel } = this;
-    if(_cancel) {
-      this._cancel = null;
-      _cancel();
-    }
-  }
-
-  subscribe(...args) {
-    this._subscribed = true;
-    this._maybeStartObserving();
-    let unsubscribe = this._writable.subscribe(...args);
-    return () => {
-      this._subscribed = false;
-      this._stopObserving();
-      unsubscribe();
-    }
-  }
-
-  set() {
-    this._setState({ isDirty: true });
-    this._notifyDidChange();
-  }
+  //
 
   async load(opts) {
     let { force } = assign({ force: false }, opts);
@@ -185,7 +119,7 @@ export default class Document extends Stateful {
     try {
       let snapshot = await this.ref.ref.get();
       this._onSnapshot(snapshot, true);
-      this._maybeStartObserving();
+      this._maybeSubscribeToOnSnapshot();
       this._deferred.resolve(this);
     } catch(error) {
       this._setState({ isLoading: false, isError: true, error }, true);
@@ -209,7 +143,7 @@ export default class Document extends Stateful {
     try {
       await this.ref.ref.set(this._data, { merge });
       this._setState({ isNew: false, isSaving: false, exists: true }, true);
-      this._maybeStartObserving();
+      this._maybeSubscribeToOnSnapshot();
       this._deferred.resolve(this);
     } catch(error) {
       this._setState({ isSaving: false, isError: true, error }, true);
@@ -223,7 +157,7 @@ export default class Document extends Stateful {
     try {
       await this.ref.ref.delete();
       this._setState({ isSaving: false, exists: false }, true);
-      this._maybeStartObserving();
+      this._maybeSubscribeToOnSnapshot();
     } catch(error) {
       this._setState({ isSaving: false, isError: true, error }, true);
       throw error;
@@ -233,6 +167,72 @@ export default class Document extends Stateful {
 
   _onDeleted() {
     this._setState({ exists: false }, true);
+  }
+
+  //
+
+  // TODO: issue with current firebase js sdk
+  _shouldIgnoreSnapshot(snapshot) {
+    return this.isSaving && !snapshot.metadata.hasPendingWrites;
+  }
+
+  _shouldSubscribeToOnSnapshot() {
+    if(this.parent) {
+      return false;
+    }
+    if(!this._isBound) {
+      return false;
+    }
+    if(this._cancel) {
+      return false;
+    }
+    if(this.isNew) {
+      return false;
+    }
+    return true;
+  }
+
+  _subscribeToOnSnapshot() {
+    let { isLoaded } = this;
+
+    if(!isLoaded) {
+      this._setState({ isLoading: true, isError: false, error: null }, true);
+    }
+
+    this._cancel = registerOnSnapshot(this, this.ref.ref.onSnapshot({ includeMetadataChanges: true }, snapshot => {
+      if(this._shouldIgnoreSnapshot(snapshot)) {
+        return;
+      }
+      this._onSnapshot(snapshot);
+      this._deferred.resolve(this);
+    }, error => {
+      this._setState({ isLoading: false, isError: true, error }, true);
+      this.store._onSnapshotError(this);
+      this._deferred.reject(error);
+    }));
+  }
+
+  _maybeSubscribeToOnSnapshot() {
+    if(!this._shouldSubscribeToOnSnapshot()) {
+      return;
+    }
+    this._subscribeToOnSnapshot();
+  }
+
+  _unsubscribeFromOnSnapshot() {
+    let { _cancel } = this;
+    if(_cancel) {
+      this._cancel = null;
+      _cancel();
+    }
+  }
+
+  _onBind() {
+    this._maybeSubscribeToOnSnapshot();
+  }
+
+  _onUnbind() {
+    this._unsubscribeFromOnSnapshot();
   }
 
   //

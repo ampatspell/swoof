@@ -4,7 +4,7 @@ const {
   assign
 } = Object;
 
-export class StoreError extends Error {
+export class SwoofError extends Error {
 
   get serialized() {
     return objectToJSON(this);
@@ -22,7 +22,7 @@ export const error = opts => {
   delete opts.message;
   delete opts.code;
 
-  let err = new StoreError(message);
+  let err = new SwoofError(message);
   err.code = `store/${code}`;
   assign(err, opts);
 

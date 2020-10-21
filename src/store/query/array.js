@@ -1,12 +1,12 @@
 import Query from './query';
-import { assert } from '../../error';
-import { insertAt, removeAt } from '../../util';
+import { assert } from '../../util/error';
+import { array } from '../../bindable/computed';
 
 export default class QueryArray extends Query {
 
   constructor(opts) {
     super(opts);
-    this.content = [];
+    this.property('content', array([]));
   }
 
   get _ref() {
@@ -17,7 +17,7 @@ export default class QueryArray extends Query {
     let { type, oldIndex, newIndex, doc: snapshot } = change;
     if(type === 'added') {
       let doc = this.store._createDocumentForSnapshot(snapshot, this);
-      insertAt(content, newIndex, doc);
+      content.insertAt(newIndex, doc);
     } else if(type === 'modified') {
       let existing = content[oldIndex];
       if(!existing) {
@@ -25,9 +25,9 @@ export default class QueryArray extends Query {
         existing = content.find(doc => doc.path === path);
         assert(!!existing, `existing document not found for path '${path}'`);
       }
-      this._withSuspendedDocumentDidChange(() => existing._onSnapshot(snapshot));
+      existing._onSnapshot(snapshot);
     } else if(type === 'removed') {
-      removeAt(content, oldIndex);
+      content.removeAt(oldIndex);
     }
   }
 
@@ -46,7 +46,7 @@ export default class QueryArray extends Query {
       if(!doc) {
         doc = this.store._createDocumentForSnapshot(snapshot, this);
       } else {
-        this._withSuspendedDocumentDidChange(() => doc._onSnapshot(snapshot));
+        doc._onSnapshot(snapshot);
       }
       return doc;
     });

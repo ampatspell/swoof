@@ -1,10 +1,11 @@
 import Query from './query';
+import { attr } from '../../bindable/computed';
 
 export default class QuerySingle extends Query {
 
   constructor(opts) {
     super(opts);
-    this.content = null;
+    this.property('content', attr(null));
   }
 
   get _ref() {
@@ -24,7 +25,7 @@ export default class QuerySingle extends Query {
     let { content } = this;
     if(snapshot) {
       if(content && content.path === snapshot.ref.path) {
-        this._withSuspendedDocumentDidChange(() => content._onSnapshot(snapshot));
+        content._onSnapshot(snapshot);
       } else {
         this.content = this.store._createDocumentForSnapshot(snapshot, this);
       }

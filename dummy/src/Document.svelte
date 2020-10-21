@@ -1,61 +1,66 @@
 <script>
-  import { JSON, swoof, setGlobal } from 'swoof';
-  import Message from './message';
+  import { JSON, swoof, Bindable, writable, computed, setGlobal } from 'swoof';
+import Blank from './Blank.svelte';
 
-  let message = new Message();
+  const {
+    attr,
+  } = computed;
 
   let store = swoof.store('main');
 
-  let id = 'first';
+  class Document extends Bindable {
 
-  $: doc = store.doc(`foobar/${id}`).existing();
-  $: setGlobal({ doc });
+    constructor() {
+      super();
+      this.property('id', attr('first'));
+      this.property('doc', attr(() => {
+        let { id } = this;
+        if(!id) {
+          return;
+        }
+        return store.doc(`messages/${id}`).existing(); // or .new();
+      }).dependencies('id'));
+    }
 
-  let save = () => {
-    doc.data.updatedAt = store.serverTimestamp;
-    console.log('save', doc.serialized.data);
-    doc.save();
-  };
+    get serialized() {
+      let { id, doc } = this;
+      return {
+        id,
+        doc
+      };
+    }
+
+    async save() {
+      await this.doc && this.doc.save();
+    }
+
+  }
+
+  let model = writable(new Document());
+  setGlobal({ model: model.value });
 
 </script>
 
-<div class="single">
-
-  <div class="id">
-    <input bind:value={id}/>
-  </div>
-
-  <div class="content">
-    <div class="status">
-      {#await $doc.promise}
-        Loading…
-      {:then}
-        Loaded
-      {/await}
-    </div>
-    <div class="text">
-      <input bind:value={$doc.data.text}/>
-    </div>
-    <div class="actions">
-      <button on:click={() => save()}>Save</button>
-    </div>
-  </div>
-
-  <JSON object={store}/>
-  <JSON object={$doc}/>
+<div class="row">
+  <div class="label">id</div>
+  <input bind:value={$model.id}/>
 </div>
 
-<style>
-  .id {
-    margin-bottom: 20px;
-  }
-  .status {
-    margin-bottom: 10px;
-  }
-  .content {
-    margin-bottom: 10px;
-  }
-  .text {
-    margin-bottom: 10px;
+<div class="row">
+  <div class="label">doc.data.name</div>
+  <input bind:value={$model.doc.data.name}/>
+  <button on:click={() => $model.save()}>Save</button>
+</div>
+
+<div class="row">
+  <JSON object={$model}/>
+</div>
+
+<style type="text/scss">
+  .row {
+    margin-bottom: 5px;
+    > .label {
+      font-size: 11px;
+    }
   }
 </style>

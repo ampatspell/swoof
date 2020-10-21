@@ -1,7 +1,7 @@
 <script>
   import { JSON, Bindable, writable, setGlobal } from 'swoof';
 
-  class Models extends Bindable {
+  class Blank extends Bindable {
 
     constructor() {
       super();
@@ -15,7 +15,7 @@
 
   }
 
-  let model = writable(new Models());
+  let model = writable(new Blank());
   setGlobal({ model: model.value });
 
 </script>

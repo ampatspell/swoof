@@ -1,11 +1,12 @@
-import Stateful from '../stateful';
-import { defineHiddenProperty, toJSON, toString, objectToJSON, defer } from '../../util';
+import Bindable from '../../bindable/bindable';
+import { defineHiddenProperty, toJSON, toString, objectToJSON, defer } from '../../util/util';
+import { registerOnSnapshot } from '../../state';
 
 const {
   assign
 } = Object;
 
-export default class Query extends Stateful {
+export default class Query extends Bindable {
 
   constructor({ store, ref }) {
     super();
@@ -16,75 +17,28 @@ export default class Query extends Stateful {
     this.isError = false;
     this.error = null;
     this._deferred = defer();
-    this._documentDidChangeSuspended = 0;
   }
 
   get promise() {
     return this._deferred.promise;
   }
 
-  get string() {
-    return this.ref.string;
-  }
-
-  get serialized() {
-    let { isLoading, isLoaded, isError, error, string } = this;
-    return {
-      isLoading,
-      isLoaded,
-      isError,
-      error: objectToJSON(error),
-      string
-    };
+  _setState(props, notify) {
+    let changed = false;
+    for(let key in props) {
+      let value  = props[key];
+      if(this[key] !== value) {
+        this[key] = value;
+        changed = true;
+      }
+    }
+    if(changed && notify) {
+      this._notifyDidChange();
+    }
+    return changed;
   }
 
   //
-
-  _withSuspendedDocumentDidChange(cb) {
-    this._documentDidChangeSuspended++;
-    try {
-      cb();
-    } finally {
-      this._documentDidChangeSuspended--;
-    }
-  }
-
-  _documentDidChange() {
-    if(this._documentDidChangeSuspended > 0) {
-      return;
-    }
-    this._notifyDidChange();
-  }
-
-  set() {
-    this._notifyDidChange();
-  }
-
-  subscribe(...args) {
-    if(!this._cancel) {
-      this._setState({ isLoading: true, isError: false, error: null }, true);
-      let observing = this.store._registerObserving(this);
-      let snapshot = this._ref.onSnapshot({ includeMetadataChanges: true }, snapshot => {
-        this._onSnapshot(snapshot);
-        this._setState({ isLoading: false, isLoaded: true });
-        this._notifyDidChange();
-        this._deferred.resolve(this);
-      }, error => {
-        this._setState({ isLoading: false, isError: true, error }, true);
-        this.store._onSnapshotError(this);
-        this._deferred.reject(error);
-      });
-      this._cancel = () => {
-        observing();
-        snapshot();
-      };
-    }
-    let unsubscribe = this._writable.subscribe(...args);
-    return () => {
-      this._cancel();
-      unsubscribe();
-    }
-  }
 
   async load(opts) {
     let { force } = assign({ force: false }, opts);
@@ -111,6 +65,54 @@ export default class Query extends Stateful {
   }
 
   //
+
+  _subscribeToOnSnapshot() {
+    let cancel = this._cancel;
+    if(!cancel) {
+      this._setState({ isLoading: true, isError: false, error: null }, true);
+      this._cancel = registerOnSnapshot(this, this._ref.onSnapshot({ includeMetadataChanges: true }, snapshot => {
+        this._onSnapshot(snapshot);
+        this._setState({ isLoading: false, isLoaded: true });
+        this._notifyDidChange();
+        this._deferred.resolve(this);
+      }, error => {
+        this._setState({ isLoading: false, isError: true, error }, true);
+        this.store._onSnapshotError(this);
+        this._deferred.reject(error);
+      }));
+    }
+  }
+
+  _unsubscribeFromOnSnapshot() {
+    let { _cancel } = this;
+    this._cancel = null;
+    _cancel();
+  }
+
+  _onBind() {
+    this._subscribeToOnSnapshot();
+  }
+
+  _onUnbind() {
+    this._unsubscribeFromOnSnapshot();
+  }
+
+  //
+
+  get string() {
+    return this.ref.string;
+  }
+
+  get serialized() {
+    let { isLoading, isLoaded, isError, error, string } = this;
+    return {
+      isLoading,
+      isLoaded,
+      isError,
+      error: objectToJSON(error),
+      string
+    };
+  }
 
   toJSON() {
     let { serialized } = this;

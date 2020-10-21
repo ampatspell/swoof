@@ -4,8 +4,8 @@ import CollectionReference from './ref/collection';
 import ConditionReference from './ref/condition';
 import QuerySingle from './query/single';
 import QueryArray from './query/array';
-import { toString, toJSON, defineHiddenProperty, cached } from '../util';
-import { assert } from '../error';
+import { toString, toJSON, defineHiddenProperty, cached } from '../util/util';
+import { assert } from '../util/error';
 import firebase from "firebase/app";
 
 const {
@@ -76,10 +76,6 @@ export default class Store {
       return new QuerySingle({ store, ref });
     }
     assert(false, `Unsupported type '${type}'`);
-  }
-
-  _registerObserving(...args) {
-    return this.swoof._registerObserving(...args);
   }
 
   _onSnapshotError(sender) {

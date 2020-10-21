@@ -1,19 +1,38 @@
 import JSON from './components/JSON.svelte';
+
 import swoof from './swoof';
-import { setGlobal, isServerTimestamp, isTimestamp, objectToJSON, get, set } from './util';
-import Model from './model/model';
-import * as computed from './model/computed';
+import state from './state';
+
+import { setGlobal, isServerTimestamp, isTimestamp, objectToJSON, toString, toJSON, get, set } from './util/util';
+import { SwoofError, error, assert } from './util/error';
+
+import Bindable from './bindable/bindable';
+import writable from './bindable/writable';
+import * as computed from './bindable/computed';
 
 export {
   JSON,
+
+  swoof,
+  state,
+
   setGlobal,
+  objectToJSON,
+  toString,
+  toJSON,
+
   isServerTimestamp,
   isTimestamp,
-  objectToJSON,
-  swoof,
+
   get,
   set,
-  Model,
+
+  SwoofError,
+  error,
+  assert,
+
+  writable,
+  Bindable,
   computed
 }
 
