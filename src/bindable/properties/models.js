@@ -32,8 +32,4 @@ export default class ModelsProperty extends Property {
     });
   }
 
-  onDependencyDidChange(key) {
-    console.log(key);
-  }
-
 }
