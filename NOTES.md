@@ -1,21 +1,3 @@
-# Split
-
-``` javascript
-const normalizeOpts = ({ path, factory }) => {
-  let components = path.split('.');
-  let key = components.shift();
-  let value = components.join('.');
-  return {
-    source: {
-      path,
-      key,
-      value
-    },
-    factory
-  };
-}
-```
-
 # Recreate
 
 ``` javascript

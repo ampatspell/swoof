@@ -8,12 +8,19 @@
 
   let store = swoof.store('main');
 
+  class Message extends Bindable {
+    constructor(doc) {
+      super();
+      this.doc = doc;
+    }
+  }
+
   class Models extends Bindable {
 
     constructor() {
       super();
       this.property('query', attr(store.collection('messages').query()));
-      this.property('models', models());
+      this.property('models', models('query.content', doc => new Message(doc)));
     }
 
     get serialized() {

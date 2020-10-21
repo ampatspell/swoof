@@ -38,10 +38,12 @@ export const array = value => {
   });
 };
 
-export const models = () => {
+export const models = (path, factory) => {
   return definition({
     factory: ModelsProperty,
     opts: {
+      path,
+      factory,
       dependencies: []
     }
   });
