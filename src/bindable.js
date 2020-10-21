@@ -3,7 +3,7 @@ import { assert } from './error';
 import { registerBound, unregisterBound } from './state';
 
 export const _binding = '_binding';
-const isBindable = model => model && model[_binding];
+const isBindable = model => model && !!model[_binding];
 export const getBinding = model => isBindable(model) && model[_binding];
 
 class Binding {
