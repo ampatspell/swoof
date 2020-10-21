@@ -17,6 +17,7 @@ export default class QueryArray extends Query {
     let { type, oldIndex, newIndex, doc: snapshot } = change;
     if(type === 'added') {
       let doc = this.store._createDocumentForSnapshot(snapshot, this);
+      console.log('created', doc+'');
       insertAt(content, newIndex, doc);
     } else if(type === 'modified') {
       let existing = content[oldIndex];
@@ -25,7 +26,7 @@ export default class QueryArray extends Query {
         existing = content.find(doc => doc.path === path);
         assert(!!existing, `existing document not found for path '${path}'`);
       }
-      this._withSuspendedDocumentDidChange(() => existing._onSnapshot(snapshot));
+      existing._onSnapshot(snapshot);
     } else if(type === 'removed') {
       removeAt(content, oldIndex);
     }
@@ -46,7 +47,7 @@ export default class QueryArray extends Query {
       if(!doc) {
         doc = this.store._createDocumentForSnapshot(snapshot, this);
       } else {
-        this._withSuspendedDocumentDidChange(() => doc._onSnapshot(snapshot));
+        doc._onSnapshot(snapshot);
       }
       return doc;
     });

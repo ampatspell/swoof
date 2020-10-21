@@ -11,7 +11,7 @@
 
     get serialized() {
       return {
-        query: objectToJSON(this.query)
+        docs: objectToJSON(this.query.content)
       }
     }
   }
