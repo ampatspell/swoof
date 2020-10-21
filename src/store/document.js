@@ -107,79 +107,6 @@ export default class Document extends Bindable {
     }
   }
 
-  _shouldIgnoreSnapshot(snapshot) {
-    // TODO: issue with current firebase js sdk
-    return this.isSaving && !snapshot.metadata.hasPendingWrites;
-  }
-
-  _shouldObserve() {
-    if(this.parent) {
-      return false;
-    }
-    if(this.isNew) {
-      return false;
-    }
-    return true;
-  }
-
-  _shouldStartObserving() {
-    if(!this._isBound) {
-      return;
-    }
-    if(this._cancel) {
-      return false;
-    }
-    return this._shouldObserve();
-  }
-
-  _maybeStartObserving() {
-    if(!this._shouldStartObserving()) {
-      return;
-    }
-
-    // console.log('start', this+'');
-
-    let { isLoaded } = this;
-    if(!isLoaded) {
-      this._setState({ isLoading: true, isError: false, error: null }, true);
-    }
-
-    this._cancel = registerOnSnapshot(this, this.ref.ref.onSnapshot({ includeMetadataChanges: true }, snapshot => {
-      if(this._shouldIgnoreSnapshot(snapshot)) {
-        return;
-      }
-      this._onSnapshot(snapshot);
-      this._deferred.resolve(this);
-    }, error => {
-      this._setState({ isLoading: false, isError: true, error }, true);
-      this.store._onSnapshotError(this);
-      this._deferred.reject(error);
-    }));
-  }
-
-  _stopObserving() {
-    let { _cancel } = this;
-    if(_cancel) {
-      this._cancel = null;
-      _cancel();
-    }
-  }
-
-  //
-
-  _notifyDidChange() {
-    super._notifyDidChange();
-    this.parent && this.parent._documentDidChange(this);
-  }
-
-  _onBind() {
-    this._maybeStartObserving();
-  }
-
-  _onUnbind() {
-    this._stopObserving();
-  }
-
   //
 
   async load(opts) {
@@ -240,6 +167,71 @@ export default class Document extends Bindable {
 
   _onDeleted() {
     this._setState({ exists: false }, true);
+  }
+
+  //
+
+    // TODO: issue with current firebase js sdk
+  _shouldIgnoreSnapshot(snapshot) {
+    return this.isSaving && !snapshot.metadata.hasPendingWrites;
+  }
+
+  _shouldSubscribeToOnSnapshot() {
+    if(this.parent) {
+      return false;
+    }
+    if(!this._isBound) {
+      return false;
+    }
+    if(this._cancel) {
+      return false;
+    }
+    if(this.isNew) {
+      return false;
+    }
+    return true;
+  }
+
+  _subscribeToOnSnapshot() {
+    let { isLoaded } = this;
+    if(!isLoaded) {
+      this._setState({ isLoading: true, isError: false, error: null }, true);
+    }
+
+    this._cancel = registerOnSnapshot(this, this.ref.ref.onSnapshot({ includeMetadataChanges: true }, snapshot => {
+      if(this._shouldIgnoreSnapshot(snapshot)) {
+        return;
+      }
+      this._onSnapshot(snapshot);
+      this._deferred.resolve(this);
+    }, error => {
+      this._setState({ isLoading: false, isError: true, error }, true);
+      this.store._onSnapshotError(this);
+      this._deferred.reject(error);
+    }));
+  }
+
+  _maybeSubscribeToOnSnapshot() {
+    if(!this._shouldSubscribeToOnSnapshot()) {
+      return;
+    }
+    this._subscribeToOnSnapshot();
+  }
+
+  _unsubscribeFromOnSnapshot() {
+    let { _cancel } = this;
+    if(_cancel) {
+      this._cancel = null;
+      _cancel();
+    }
+  }
+
+  _onBind() {
+    this._maybeSubscribeToOnSnapshot();
+  }
+
+  _onUnbind() {
+    this._unsubscribeFromOnSnapshot();
   }
 
   //

@@ -3,31 +3,33 @@
   import { Bindable, writable } from 'swoof';
 
   class Base extends Bindable {
+
     constructor() {
       super();
-      this.property('doc');
+      this.property('query');
     }
+
     get serialized() {
       return {
-        doc: objectToJSON(this.doc)
+        query: objectToJSON(this.query)
       }
     }
   }
 
   let show = true;
 
-  let doc = swoof.store('main').doc('messages/first').existing();
+  let query = swoof.store('main').collection('messages').query();
   let base = writable(new Base());
 
   $: {
-    base.model.doc = show ? doc : null;
+    base.model.query = show ? query : null;
     setGlobal({ base: base.model });
   }
 
 </script>
 
 <div class="row">
-  {$base} {$base.doc}
+  {$base} {$base.query}
 </div>
 <div class="row">
   <button on:click={() => show = !show}>Toggle</button>
