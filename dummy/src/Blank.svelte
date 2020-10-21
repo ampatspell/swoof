@@ -15,6 +15,11 @@
       });
     }
 
+    subscribeChild(parent, ...args) {
+      this.parent = parent;
+      return this.subscribe(...args);
+    }
+
     subscribe(...args) {
       return this.writable.subscribe(...args);
     }
@@ -30,7 +35,7 @@
       this.model = model;
     }
     onStart() {
-      this.cancel = model.subscribe(model => {
+      this.cancel = model.subscribeChild(this, model => {
         console.log(`models: model did change`);
       });
     }
@@ -43,29 +48,24 @@
     constructor() {
       super();
     }
-    bindModels() {
-      if(this.cancel) {
-        this.cancel();
-      }
-      this.models = models;
-      this.cancel = this.models.subscribe(models => {
-      });
-    }
     onStart() {
+      console.log(this.parent+'');
     }
     onStop() {
-      this.cancel();
     }
   }
 
+  // swoof: has internal listeners of some sort which starts/stops onSnapshot stuff
+  // have a writable wrapper for it
+
+  // let models new Models();
+  // let writable = wrap(models); // starts on 1st subscription, stops on last
+
   let model = new Model();
   let models = new Models(model);
-  model.bindModels(models);
 
   let c1 = models.subscribe(() => {});
-  let c2 = model.subscribe(() => {});
   c1();
-  c2();
 
 </script>
 
