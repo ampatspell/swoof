@@ -1,4 +1,4 @@
-import { toString } from '../util/util';
+import { toString, join } from '../util/util';
 import { assert } from '../util/error';
 import { registerBound, unregisterBound } from '../state';
 
@@ -50,7 +50,7 @@ export default class Binding {
       property.onPropertyDidChange(key);
     });
 
-    let path = this.key ? `${this.key}.${key}` : key;
+    let path = join([ this.key, key ], '.');
     getBinding(this.parent).notifyDidChange(path);
   }
 
@@ -59,7 +59,7 @@ export default class Binding {
     if(!binding) {
       return;
     }
-    binding.key = key ? `${property.key}.${key}` : property.key;
+    binding.key = join([ property.key, key], '.');
     this.nested.add(model);
     if(this.isBound) {
       binding.bind(this.owner);

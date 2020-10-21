@@ -178,3 +178,7 @@ export const removeObject = (array, object) => {
     removeAt(array, idx);
   }
 }
+
+export const join = (strings, ...remaining) => {
+  return strings.filter(string => !!string).join(...remaining);
+}
