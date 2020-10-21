@@ -18,10 +18,9 @@ export default class ModelsProperty extends Property {
 
   constructor(binding, key, dependencies, opts) {
     let { source, factory } = normalizeOpts(opts);
-    super(binding, key, dependencies);
+    super(binding, key, [ ...dependencies, source.path ]);
     this.source = source;
     this.factory = factory;
-    console.log(source, factory);
   }
 
   define() {
@@ -30,6 +29,10 @@ export default class ModelsProperty extends Property {
       get: () => {
       }
     });
+  }
+
+  onDependencyDidChange(key) {
+    console.log('onDependencyDidChange', key);
   }
 
 }

@@ -18,8 +18,8 @@ export default class Bindable {
 
   //
 
-  _notifyDidChange() {
-    getBinding(this).notifyDidChange();
+  _notifyDidChange(key) {
+    getBinding(this).notifyDidChange(key);
   }
 
   get _isBound() {

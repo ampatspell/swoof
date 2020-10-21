@@ -33,7 +33,7 @@ export default class Query extends Bindable {
       }
     }
     if(changed && notify) {
-      this._notifyDidChange();
+      this._notifyDidChange('state');
     }
     return changed;
   }
@@ -72,8 +72,7 @@ export default class Query extends Bindable {
       this._setState({ isLoading: true, isError: false, error: null }, true);
       this._cancel = registerOnSnapshot(this, this._ref.onSnapshot({ includeMetadataChanges: true }, snapshot => {
         this._onSnapshot(snapshot);
-        this._setState({ isLoading: false, isLoaded: true });
-        this._notifyDidChange();
+        this._setState({ isLoading: false, isLoaded: true }, true);
         this._deferred.resolve(this);
       }, error => {
         this._setState({ isLoading: false, isError: true, error }, true);

@@ -33,7 +33,7 @@
 
   }
 
-  let model = writable(new Models());
+  let model = writable(new Models(), { logger: ({ path }) => path ? console.log(`→ ${path}`) : undefined });
   setGlobal({ model: model.value });
 
 </script>

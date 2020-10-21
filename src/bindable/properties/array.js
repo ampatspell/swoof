@@ -57,6 +57,10 @@ export default class ArrayProperty extends Property {
     this.proxy = createArrayProxy(this.content);
   }
 
+  registerNested(object) {
+    super.registerNested(object, '[]');
+  }
+
   registerNestedItems(items) {
     items.forEach(item => this.registerNested(item));
   }
@@ -104,7 +108,7 @@ export default class ArrayProperty extends Property {
         this.value = value;
         this.content._content = value;
         this.registerNestedItems(this.value);
-        this.notifyDidChange();
+        this.notifyDidChange(key);
       }
     });
   }

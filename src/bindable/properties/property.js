@@ -6,15 +6,15 @@ export default class Property {
     this.binding = binding;
     this.owner = binding.owner;
     this.key = key;
-    this.dependencies = new Set(dependencies);
+    this.dependencies = [ ...new Set(dependencies) ];
   }
 
-  registerNested(object) {
-    this.binding.registerNested(object);
+  registerNested(object, key) {
+    this.binding.registerNested(this, object, key);
   }
 
   unregisterNested(object) {
-    this.binding.unregisterNested(object);
+    this.binding.unregisterNested(this, object);
   }
 
   notifyDidChange() {
@@ -25,10 +25,17 @@ export default class Property {
   }
 
   onPropertyDidChange(key) {
-    if(!this.dependencies.has(key)) {
+    let dependency = this.dependencies.find(dep => key.startsWith(dep));
+    if(!dependency) {
       return;
     }
-    this.onDependencyDidChange(key);
+    this.onDependencyDidChange(dependency, key);
+  }
+
+  onBind() {
+  }
+
+  onUnbind() {
   }
 
   toString() {

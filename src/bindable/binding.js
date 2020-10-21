@@ -12,7 +12,6 @@ export default class Binding {
     this.owner = owner;
     this.parent = null;
     this.nested = new Set();
-    this.listeners = new Set();
     this.properties = {
       byKey: Object.create(null),
       all: []
@@ -34,44 +33,40 @@ export default class Binding {
     return !!this.parent;
   }
 
-  addDidChangeListener(listener) {
-    this.listeners.add(listener);
-  }
-
-  removeDidChangeListener(listener) {
-    this.listeners.delete(listener);
-  }
-
   notifyDidChange(key) {
+    if(!key) {
+      debugger;
+    }
+    assert(!!key, 'Missing key for notifyDidChange');
+
     if(!this.isBound) {
       return;
     }
 
-    if(key) {
-      this.properties.all.forEach(property => {
-        if(property.key === key) {
-          return;
-        }
-        property.onPropertyDidChange(key);
-      });
-    }
+    this.properties.all.forEach(property => {
+      if(property.key === key) {
+        return;
+      }
+      property.onPropertyDidChange(key);
+    });
 
-    this.listeners.forEach(listener => listener(this.owner, key));
-    getBinding(this.parent).notifyDidChange();
+    let path = this.key ? `${this.key}.${key}` : key;
+    getBinding(this.parent).notifyDidChange(path);
   }
 
-  registerNested(model) {
+  registerNested(property, model, key) {
     let binding = getBinding(model);
     if(!binding) {
       return;
     }
+    binding.key = key ? `${property.key}.${key}` : property.key;
     this.nested.add(model);
     if(this.isBound) {
       binding.bind(this.owner);
     }
   }
 
-  unregisterNested(model) {
+  unregisterNested(property, model) {
     let binding = getBinding(model);
     if(!binding) {
       return;

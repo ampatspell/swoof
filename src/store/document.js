@@ -43,7 +43,7 @@ export default class Document extends Bindable {
 
   //
 
-  _setState(props, notify) {
+  _setState(props, notify=true) {
     let changed = false;
     for(let key in props) {
       let value  = props[key];
@@ -53,7 +53,7 @@ export default class Document extends Bindable {
       }
     }
     if(changed && notify) {
-      this._notifyDidChange();
+      this._notifyDidChange('state');
     }
     return changed;
   }
@@ -69,7 +69,7 @@ export default class Document extends Bindable {
       let membrane = new Membrane({
         valueMutated: () => {
           this._setState({ isDirty: true });
-          this._notifyDidChange();
+          this._notifyDidChange('data');
         }
       });
       return membrane.getProxy(this._data);
@@ -79,13 +79,13 @@ export default class Document extends Bindable {
   set data(data) {
     this._setData(data || {});
     this._setState({ isDirty: true });
-    this._notifyDidChange();
+    this._notifyDidChange('data');
   }
 
   merge(props) {
     merge(this._data, props);
     this._setState({ isDirty: true });
-    this._notifyDidChange();
+    this._notifyDidChange('data');
   }
 
   //
@@ -94,17 +94,15 @@ export default class Document extends Bindable {
     assert(data instanceof Object, 'data must be object');
     this._data = data;
     deleteCached(this, 'proxy');
+    this._notifyDidChange('data');
   }
 
-  _onSnapshot(snapshot, notify=true) {
+  _onSnapshot(snapshot) {
     let { exists } = snapshot;
     if(exists) {
       this._setData(snapshot.data({ serverTimestamps: 'estimate' }));
     }
     this._setState({ isNew: false, isLoading: false, isLoaded: true, isDirty: false, exists });
-    if(notify) {
-      this._notifyDidChange();
-    }
   }
 
   //
@@ -115,14 +113,14 @@ export default class Document extends Bindable {
     if(isLoaded && !force) {
       return this;
     }
-    this._setState({ isNew: false, isLoading: true, isError: false, error: null }, true);
+    this._setState({ isNew: false, isLoading: true, isError: false, error: null });
     try {
       let snapshot = await this.ref.ref.get();
-      this._onSnapshot(snapshot, true);
+      this._onSnapshot(snapshot);
       this._maybeSubscribeToOnSnapshot();
       this._deferred.resolve(this);
     } catch(error) {
-      this._setState({ isLoading: false, isError: true, error }, true);
+      this._setState({ isLoading: false, isError: true, error });
       this._deferred.reject(error);
       throw error;
     }
@@ -139,27 +137,27 @@ export default class Document extends Bindable {
     if(!isDirty && !force) {
       return this;
     }
-    this._setState({ isSaving: true, isError: false, error: null }, true);
+    this._setState({ isSaving: true, isError: false, error: null });
     try {
       await this.ref.ref.set(this._data, { merge });
-      this._setState({ isNew: false, isSaving: false, exists: true }, true);
+      this._setState({ isNew: false, isSaving: false, exists: true });
       this._maybeSubscribeToOnSnapshot();
       this._deferred.resolve(this);
     } catch(error) {
-      this._setState({ isSaving: false, isError: true, error }, true);
+      this._setState({ isSaving: false, isError: true, error });
       throw error;
     }
     return this;
   }
 
   async delete() {
-    this._setState({ isSaving: true, isError: false, error: null }, true);
+    this._setState({ isSaving: true, isError: false, error: null });
     try {
       await this.ref.ref.delete();
       this._setState({ isSaving: false, exists: false }, true);
       this._maybeSubscribeToOnSnapshot();
     } catch(error) {
-      this._setState({ isSaving: false, isError: true, error }, true);
+      this._setState({ isSaving: false, isError: true, error });
       throw error;
     }
     return this;
@@ -196,7 +194,7 @@ export default class Document extends Bindable {
     let { isLoaded } = this;
 
     if(!isLoaded) {
-      this._setState({ isLoading: true, isError: false, error: null }, true);
+      this._setState({ isLoading: true, isError: false, error: null });
     }
 
     this._cancel = registerOnSnapshot(this, this.ref.ref.onSnapshot({ includeMetadataChanges: true }, snapshot => {
@@ -206,7 +204,7 @@ export default class Document extends Bindable {
       this._onSnapshot(snapshot);
       this._deferred.resolve(this);
     }, error => {
-      this._setState({ isLoading: false, isError: true, error }, true);
+      this._setState({ isLoading: false, isError: true, error });
       this.store._onSnapshotError(this);
       this._deferred.reject(error);
     }));
