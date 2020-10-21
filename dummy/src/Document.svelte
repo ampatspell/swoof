@@ -1,12 +1,27 @@
 <script>
   import { JSON, swoof, setGlobal } from 'swoof';
+  import { writable } from 'svelte/store';
 
   let store = swoof.store('main');
 
   let id = 'first';
 
-  let doc = store.doc(`foobar/${id}`).existing();
-  setGlobal({ doc });
+  let wrapper = model => {
+    let store = writable(model, () => {
+      let cancel = model.bind(() => {
+        console.log('bound did change');
+        store.set(model);
+      });
+      return () => {
+        cancel();
+      }
+    });
+    return store;
+  }
+
+  let _doc = store.doc(`foobar/${id}`).existing();
+  let doc = wrapper(_doc);
+  setGlobal({ _doc, doc });
 
   let save = () => {
     doc.data.updatedAt = store.serverTimestamp;
