@@ -22,6 +22,9 @@ class Writable {
     }
   }
 
+  set() {
+  }
+
   subscribe(...args) {
     return this.writable.subscribe(...args);
   }

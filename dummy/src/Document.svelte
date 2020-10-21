@@ -9,9 +9,10 @@
   $: setGlobal({ doc });
 
   let save = () => {
-    doc.data.updatedAt = store.serverTimestamp;
-    console.log('save', doc.serialized.data);
-    doc.save();
+    let { model } = doc;
+    model.data.updatedAt = store.serverTimestamp;
+    console.log('save', model.serialized.data);
+    model.save();
   };
 
 </script>
