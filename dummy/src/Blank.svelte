@@ -53,6 +53,12 @@
 
 <div class="state">
   <div class="group">
+    <div class="label">Roots</div>
+    {#each $state.roots as model}
+      <div>{model}</div>
+    {/each}
+  </div>
+  <div class="group">
     <div class="label">Bound</div>
     {#each $state.bound as model}
       <div>{model}</div>

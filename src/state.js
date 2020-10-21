@@ -6,6 +6,7 @@ class State {
   constructor() {
     this._snapshots = new Set();
     this._bound = new Set();
+    this._roots = new Set();
     this._writable = writable(this);
   }
 
@@ -17,8 +18,21 @@ class State {
     return [ ...this._bound ];
   }
 
+  get roots() {
+    return [ ...this._roots ];
+  }
+
   _notify() {
     this._writable.set(this);
+  }
+
+  registerRoot(model) {
+    this._roots.add(model);
+    this._notify();
+    return () => {
+      this._roots.delete(model);
+      this._notify();
+    }
   }
 
   registerOnSnapshot(model) {

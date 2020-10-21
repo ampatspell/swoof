@@ -1,6 +1,7 @@
 import { writable } from 'svelte/store';
 import { assert } from '../util/error';
 import Bindable, { _binding, getBinding } from './bindable';
+import state from '../state';
 
 export class Writable {
 
@@ -17,14 +18,18 @@ export class Writable {
     this.writable.set(this.model);
   }
 
-  get bound() {
+  get isBound() {
     return getBinding(this.model).isBound;
   }
 
   bind() {
     let binding = getBinding(this.model);
+    let root = state.registerRoot(this.model);
     binding.bind(this);
-    return () => binding.unbind(this);
+    return () => {
+      binding.unbind(this.model);
+      root();
+    };
   }
 
   set() {
@@ -35,7 +40,7 @@ export class Writable {
   }
 
   get serialized() {
-    let { bound, model } = this;
+    let { isBound: bound, model } = this;
     return {
       bound,
       model: objectToJSON(model)
@@ -43,8 +48,8 @@ export class Writable {
   }
 
   toString() {
-    let { bound, model } = this;
-    return toString(this, `${bound ? 'bound' : 'unbound'}:${model}`);
+    let { isBound, model } = this;
+    return toString(this, `${isBound ? 'bound' : 'unbound'}:${model}`);
   }
 
   toJSON() {

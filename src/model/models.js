@@ -146,14 +146,12 @@ export default class Models {
   }
 
   _onStart() {
-    console.log('models start');
     this._recreateContent();
     this.subscription = this.parent.subscribe(() => this._parentDidChange());
     return () => this._onStop();
   }
 
   _onStop() {
-    console.log('models stop');
     this.subscription();
     this._unsubscribeContent();
   }
@@ -161,7 +159,6 @@ export default class Models {
   subscribe(...args) {
     let r = this._subscriptions.subscribe(...args);
     return () => {
-      console.log('models unsubscribe');
       r();
     };
   }

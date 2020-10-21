@@ -70,7 +70,7 @@ export default class Query extends Bindable {
     let cancel = this._cancel;
     if(!cancel) {
       this._setState({ isLoading: true, isError: false, error: null }, true);
-      cancel = registerOnSnapshot(this, this._ref.onSnapshot({ includeMetadataChanges: true }, snapshot => {
+      this._cancel = registerOnSnapshot(this, this._ref.onSnapshot({ includeMetadataChanges: true }, snapshot => {
         this._onSnapshot(snapshot);
         this._setState({ isLoading: false, isLoaded: true });
         this._notifyDidChange();
@@ -80,7 +80,6 @@ export default class Query extends Bindable {
         this.store._onSnapshotError(this);
         this._deferred.reject(error);
       }));
-      this._cancel = cancel;
     }
   }
 
@@ -91,12 +90,10 @@ export default class Query extends Bindable {
   }
 
   _onBind() {
-    console.log(this+'', 'onBind');
     this._subscribeToOnSnapshot();
   }
 
   _onUnbind() {
-    console.log(this+'', 'onUnbind');
     this._unsubscribeFromOnSnapshot();
   }
 
