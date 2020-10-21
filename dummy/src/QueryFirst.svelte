@@ -7,7 +7,7 @@
 
   let store = swoof.store('main');
 
-  class QueryFirst extends Bindable {
+  class QueryArray extends Bindable {
 
     constructor() {
       super();
@@ -31,7 +31,7 @@
 
   }
 
-  let model = writable(new QueryFirst());
+  let model = writable(new QueryArray());
   setGlobal({ model: model.value });
 
 </script>

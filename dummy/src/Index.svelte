@@ -1,9 +1,11 @@
 <script>
+  import { state } from 'swoof';
+
   import Document from './Document.svelte';
   import QueryFirst from './QueryFirst.svelte';
   import QueryArray from './QueryArray.svelte';
+  import Models from './Models.svelte';
   import Blank from './Blank.svelte';
-  import { state } from 'swoof';
 
   let show = true;
   let toggle = () => show = !show;
@@ -12,7 +14,8 @@
     { label: 'Document', component: Document },
     { label: 'Query First', component: QueryFirst },
     { label: 'Query Array', component: QueryArray },
-    { label: 'Blank', component: Blank },
+    { label: 'Models', component: Models },
+    { label: 'Blank', component: Blank }
   ];
 
   let selected = routes[0];
