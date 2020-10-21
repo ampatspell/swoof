@@ -119,7 +119,7 @@ export default class Document extends Bindable {
     try {
       let snapshot = await this.ref.ref.get();
       this._onSnapshot(snapshot, true);
-      this._maybeStartObserving();
+      this._maybeSubscribeToOnSnapshot();
       this._deferred.resolve(this);
     } catch(error) {
       this._setState({ isLoading: false, isError: true, error }, true);
@@ -143,7 +143,7 @@ export default class Document extends Bindable {
     try {
       await this.ref.ref.set(this._data, { merge });
       this._setState({ isNew: false, isSaving: false, exists: true }, true);
-      this._maybeStartObserving();
+      this._maybeSubscribeToOnSnapshot();
       this._deferred.resolve(this);
     } catch(error) {
       this._setState({ isSaving: false, isError: true, error }, true);
@@ -157,7 +157,7 @@ export default class Document extends Bindable {
     try {
       await this.ref.ref.delete();
       this._setState({ isSaving: false, exists: false }, true);
-      this._maybeStartObserving();
+      this._maybeSubscribeToOnSnapshot();
     } catch(error) {
       this._setState({ isSaving: false, isError: true, error }, true);
       throw error;
