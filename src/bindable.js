@@ -2,9 +2,9 @@ import { defineHiddenProperty, toString } from './util';
 import { assert } from './error';
 import { registerBound, unregisterBound } from './state';
 
-const _binding = '_binding';
-const isBindable = model => model instanceof Bindable;
-const getBinding = model => isBindable(model) && model[_binding];
+export const _binding = '_binding';
+const isBindable = model => model && model[_binding];
+export const getBinding = model => isBindable(model) && model[_binding];
 
 class Binding {
 
@@ -12,6 +12,7 @@ class Binding {
     this.owner = owner;
     this.parent = null;
     this.nested = new Set();
+    this.listeners = new Set();
     this.properties = Object.create(null);
   }
 
@@ -40,29 +41,40 @@ class Binding {
     return !!this.parent;
   }
 
+  addDidChangeListener(listener) {
+    this.listeners.add(listener);
+  }
+
+  removeDidChangeListener(listener) {
+    this.listeners.delete(listener);
+  }
+
   notifyDidChange() {
     if(!this.isBound) {
       return;
     }
-    this.parent._nestedDidChange(this);
+    this.listeners.forEach(listener => listener(this.owner));
+    getBinding(this.parent).notifyDidChange();
   }
 
   registerNested(model) {
-    if(!isBindable(model)) {
+    let binding = getBinding(model);
+    if(!binding) {
       return;
     }
     this.nested.add(model);
     if(this.isBound) {
-      model._bind(this.owner);
+      binding.bind(this.owner);
     }
   }
 
   unregisterNested(model) {
-    if(!isBindable(model)) {
+    let binding = getBinding(model);
+    if(!binding) {
       return;
     }
     if(this.isBound) {
-      model._unbind(this.owner);
+      binding.unbind(this.owner);
     }
     this.nested.delete(model);
   }
@@ -97,46 +109,17 @@ export default class Bindable {
   }
 
   property(key, value) {
-    return this[_binding].defineProperty(key, value);
+    return getBinding(this).defineProperty(key, value);
   }
 
-  get _isBindable() {
-    return true;
-  }
-
-  get _parent() {
-    return this[_binding].parent;
-  }
-
-  get _isBound() {
-    return this[_binding].isBound;
+  _isBound() {
+    return getBinding(this).isBound;
   }
 
   _onBind() {
   }
 
   _onUnbind() {
-  }
-
-  _registerNested(model) {
-    this[_binding].registerNested(model);
-    return model;
-  }
-
-  _unregisterNested(model) {
-    this[_binding].unregisterNested(model);
-  }
-
-  _bind(parent) {
-    this[_binding].bind(parent);
-  }
-
-  _unbind(parent) {
-    this[_binding].unbind(parent);
-  }
-
-  _nestedDidChange() {
-    this[_binding].notifyDidChange();
   }
 
   //

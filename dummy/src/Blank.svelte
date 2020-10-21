@@ -1,32 +1,28 @@
 <script>
-  import { state, setGlobal } from 'swoof';
+  import { swoof, state, setGlobal } from 'swoof';
   import { Bindable, writable } from 'swoof';
 
   class Base extends Bindable {
-    constructor(nested) {
-      super();
-      this.property('nested', nested);
-    }
-  }
-
-  class Nested extends Bindable {
     constructor() {
       super();
+      this.property('doc');
     }
   }
 
-  let base = null;
   let show = true;
 
+  let doc = swoof.store('main').doc('messages/first').existing();
+  let base = writable(new Base());
+
   $: {
-    base = show ? writable(new Base(new Nested())) : null;
-    setGlobal({ base: base && base.model, Nested });
+    base.model.doc = show ? doc : null;
+    setGlobal({ base: base.model });
   }
 
 </script>
 
 <div class="row">
-  {$base} {$base.nested}
+  {$base} {$base.doc}
 </div>
 <div class="row">
   <button on:click={() => show = !show}>Toggle</button>

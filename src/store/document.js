@@ -2,14 +2,16 @@ import { toString, toJSON, defineHiddenProperty, objectToJSON, defer, cached, de
 import { assert } from '../error';
 import Membrane from 'observable-membrane';
 import { registerOnSnapshot } from '../state';
+import Bindable from '../bindable';
 
 const {
   assign
 } = Object;
 
-export default class Document {
+export default class Document extends Bindable {
 
   constructor({ store, ref, snapshot, data, parent }) {
+    super();
     defineHiddenProperty(this, 'store', store);
     defineHiddenProperty(this, 'ref', ref);
     defineHiddenProperty(this, 'parent', parent);
@@ -125,6 +127,9 @@ export default class Document {
   }
 
   _shouldStartObserving() {
+    if(!this._isBound) {
+      return;
+    }
     if(this._cancel) {
       return false;
     }
@@ -164,22 +169,15 @@ export default class Document {
     }
   }
 
-  _notifyDidChange() {
-    console.log(this+' notify');
-    this._subscription && this._subscription(this);
+  _onBind() {
+    this._maybeStartObserving();
   }
 
-  bind(subscription) {
-    assert(!this._subscription, 'already bound');
-    this._subscription = subscription;
-    console.log(this+' bind');
-    this._maybeStartObserving();
-    return () => {
-      console.log(this+' unbind');
-      this._subscription = null;
-      this._stopObserving();
-    }
+  _onUnbind() {
+    this._stopObserving();
   }
+
+  //
 
   async load(opts) {
     let { force } = assign({ force: false }, opts);
