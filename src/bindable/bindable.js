@@ -1,5 +1,5 @@
 import { defineHiddenProperty, toString, toJSON } from '../util';
-import { assert } from '../error';
+import { assert } from '../util/error';
 import { registerBound, unregisterBound } from '../state';
 
 export const _binding = '_binding';
