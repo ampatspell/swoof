@@ -1,4 +1,4 @@
-import { initializeApp, enablePersistence } from './store/firebase';
+import { initializeApp, destroyApp, enablePersistence } from './store/firebase';
 import { getContext, setContext } from 'svelte';
 import Store from './store/store';
 
@@ -34,6 +34,14 @@ class Swoof {
 
   store(identifier) {
     return getContext(this._contextIdentifier(identifier));
+  }
+
+  destroy() {
+    let { definitions } = this;
+    for(let key in definitions) {
+      let { firebase } = definitions[key];
+      destroyApp(firebase);
+    }
   }
 
 }
