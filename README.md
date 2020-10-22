@@ -4,6 +4,8 @@ Swoof Google Firebase Firestore library for Svelte.
 
 > Docs are coming.
 
+See `/dummy` for some examples.
+
 <!-- TOC depthFrom:2 -->
 
 - [Setting up](#setting-up)
@@ -50,8 +52,9 @@ Swoof Google Firebase Firestore library for Svelte.
   - [Query Array](#query-array)
   - [Model](#model)
   - [Model properties](#model-properties)
-- [process is not defined](#process-is-not-defined)
-- ['registerComponent' of undefined](#registercomponent-of-undefined)
+- [Issues](#issues)
+  - [process is not defined](#process-is-not-defined)
+  - ['registerComponent' of undefined](#registercomponent-of-undefined)
 - [TODO](#todo)
 
 <!-- /TOC -->
@@ -457,7 +460,9 @@ Basically same as serialized with additional data
 
 ...
 
-## process is not defined
+## Issues
+
+### process is not defined
 
 ```
 Uncaught ReferenceError: process is not defined
@@ -481,7 +486,7 @@ plugins([
 ])
 ```
 
-## 'registerComponent' of undefined
+### 'registerComponent' of undefined
 
 ```
 Uncaught TypeError: Cannot read property 'registerComponent' of undefined
