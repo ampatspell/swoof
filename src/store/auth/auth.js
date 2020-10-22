@@ -50,13 +50,17 @@ export default class Auth extends Model {
     return await this._restoreUser(user);
   }
 
+  get _userFactory() {
+    return this.store._config.User;
+  }
+
   async _restoreUser(internal) {
     let { user } = this;
     if(internal) {
       if(user && internal.uid === user.user.uid) {
         await user.restore(internal);
       } else {
-        user = new User(this);
+        user = new this._userFactory(this);
         this.user = user;
         await user.restore(internal);
       }

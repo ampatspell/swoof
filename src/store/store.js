@@ -8,17 +8,26 @@ import Auth from './auth/auth';
 import { toString, toJSON, defineHiddenProperty, cached } from '../util/util';
 import { assert } from '../util/error';
 import firebase from "firebase/app";
+import BaseUser from './auth/user';
 
 const {
   assign
 } = Object;
 
+const normalizeConfig = (config={}) => {
+  let { swoof } = config;
+  let { User } = swoof || {};
+  User = User || BaseUser;
+  return { User };
+}
+
 export default class Store {
 
-  constructor({ swoof, identifier, firebase }) {
+  constructor({ swoof, identifier, firebase, config }) {
     this.identifier = identifier;
     defineHiddenProperty(this, 'swoof', swoof);
     defineHiddenProperty(this, 'firebase', firebase);
+    defineHiddenProperty(this, '_config', normalizeConfig(config));
   }
 
   get auth() {
