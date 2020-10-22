@@ -1,6 +1,6 @@
 import { writable } from 'svelte/store';
 import { assert } from '../util/error';
-import Bindable, { _binding, getBinding } from './bindable';
+import Model, { _binding, getBinding } from './model';
 import { registerRoot } from '../state';
 
 const noop = () => {};
@@ -8,7 +8,7 @@ const noop = () => {};
 export class Writable {
 
   constructor(model, { logger }) {
-    assert(model instanceof Bindable, `model ${model} is not Bindable`);
+    assert(model instanceof Model, `model ${model} is not Model`);
     this.model = model;
     this[_binding] = {
       notifyDidChange: path => this.notifyDidChange(path)
