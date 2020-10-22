@@ -4,15 +4,13 @@
 
   let { firebase } = process.env.CONFIG;
 
-  let config = {
+  let store = swoof.create('main', {
     firebase,
     firestore: {
       enablePersistence: true
     }
-  };
+  });
 
-  swoof.configure('main', config);
-  let store = swoof.create('main', 'main');
   setGlobal({ store });
   setGlobal({ state });
 </script>

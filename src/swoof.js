@@ -1,6 +1,7 @@
 import { initializeApp, destroyApp, enablePersistence } from './store/firebase';
 import { getContext, setContext } from 'svelte';
 import Store from './store/store';
+import { assert } from './util/error';
 
 const noop = () => {};
 
@@ -24,7 +25,17 @@ class Swoof {
     }
   }
 
-  create(identifier, definition) {
+  create(identifier, definitionOrConfig, cb) {
+    let definition;
+    if(typeof definitionOrConfig === 'object') {
+      this.configure(identifier, definitionOrConfig, cb);
+      definition = identifier;
+    } else if(typeof definitionOrConfig === 'string') {
+      definition = definitionOrConfig;
+    } else {
+      assert(false, 'create second argument must be firebase configuraion or configuration identifier');
+    }
+
     let opts = this.definitions[definition];
     let swoof = this;
     let store = new Store(Object.assign({ swoof, identifier }, opts));
