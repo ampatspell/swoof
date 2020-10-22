@@ -11,7 +11,7 @@ See `/dummy` for some examples.
 - [Setting up](#setting-up)
 - [API](#api)
   - [swoof](#swoof)
-    - [configure(name, config) `→ undefined`](#configurename-config-→-undefined)
+    - [configure(name, config) `: undefined`](#configurename-config--undefined)
     - [create(identifier, name) `→ store`](#createidentifier-name-→-store)
     - [store(identifier) → store or undefined](#storeidentifier-→-store-or-undefined)
     - [destroy() `→ undefined`](#destroy-→-undefined)
@@ -121,7 +121,7 @@ If you're getting weird build or runtime errors, see below.
 import { swoof } from 'swoof';
 ```
 
-#### configure(name, config) `→ undefined`
+#### configure(name, config) `: undefined`
 
 Creates FirebaseApp and links it to the name.
 
