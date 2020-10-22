@@ -11,47 +11,48 @@ See `/dummy` for some examples.
 - [Setting up](#setting-up)
 - [API](#api)
   - [swoof](#swoof)
-    - [configure(name, config) `: undefined`](#configurename-config--undefined)
-    - [create(identifier, name) `→ store`](#createidentifier-name-→-store)
-    - [store(identifier) → store or undefined](#storeidentifier-→-store-or-undefined)
-    - [destroy() `→ undefined`](#destroy-→-undefined)
+    - [configure(name, config): undefined](#configurename-config-undefined)
+    - [create(identifier, name): store](#createidentifier-name-store)
+    - [store(identifier): store or undefined](#storeidentifier-store-or-undefined)
+    - [destroy(): undefined](#destroy-undefined)
   - [Store](#store)
-    - [doc(path) → DocumentReference](#docpath-→-documentreference)
-    - [collection(path) → CollectionReference](#collectionpath-→-collectionreference)
-    - [serverTimestamp() → firestore.FieldValue.ServerTimestamp](#servertimestamp-→-firestorefieldvalueservertimestamp)
+    - [doc(path): DocumentReference](#docpath-documentreference)
+    - [collection(path): CollectionReference](#collectionpath-collectionreference)
+    - [serverTimestamp(): firestore.FieldValue.ServerTimestamp](#servertimestamp-firestorefieldvalueservertimestamp)
   - [DocumentReference](#documentreference)
-    - [id](#id)
-    - [path](#path)
-    - [collection(path)](#collectionpath)
-    - [new(props)](#newprops)
-    - [existing()](#existing)
-    - [async load({ optional: false })](#async-load-optional-false-)
+    - [id: string](#id-string)
+    - [path: string](#path-string)
+    - [collection(path): CollectionReference](#collectionpath-collectionreference-1)
+    - [new(props): Document](#newprops-document)
+    - [existing(): Document](#existing-document)
+    - [async load({ optional: false }): Document or undefined](#async-load-optional-false--document-or-undefined)
   - [CollectionReference](#collectionreference)
-    - [id](#id-1)
-    - [path](#path-1)
-    - [doc(path)](#docpath)
+    - [id: string](#id-string-1)
+    - [path: string](#path-string-1)
+    - [doc(path): DocumentReference](#docpath-documentreference-1)
     - [conditions](#conditions)
-    - [query({ type: 'array' })](#query-type-array-)
-    - [async load() -> Array<Document>](#async-load---arraydocument)
-    - [first({ optional: false })](#first-optional-false-)
+    - [query({ type: 'array' }): ArrayQuery or SingleQuery](#query-type-array--arrayquery-or-singlequery)
+    - [async load(): Array<Document>](#async-load-arraydocument)
+    - [first({ optional: false }): Document or undefined](#first-optional-false--document-or-undefined)
   - [Document](#document)
-    - [store](#store)
-    - [ref](#ref)
-    - [id](#id-2)
-    - [path](#path-2)
-    - [promise](#promise)
-    - [data Proxy](#data-proxy)
-    - [merge(props)](#mergeprops)
-    - [async load({ force: false })](#async-load-force-false-)
-    - [async reload()](#async-reload)
-    - [async save({ force: false, merge: false })](#async-save-force-false-merge-false-)
-    - [async delete()](#async-delete)
-    - [serialized](#serialized)
-    - [toJSON()](#tojson)
-  - [Query Single](#query-single)
-  - [Query Array](#query-array)
+    - [store: Store](#store-store)
+    - [ref: DocumentReference](#ref-documentreference)
+    - [id: string](#id-string-2)
+    - [path: string](#path-string-2)
+    - [promise: Promise<Document>](#promise-promisedocument)
+    - [data: ObjectProxy](#data-objectproxy)
+    - [merge(props): undefined](#mergeprops-undefined)
+    - [async load({ force: false }): Document](#async-load-force-false--document)
+    - [async reload(): Document](#async-reload-document)
+    - [async save({ force: false, merge: false }): Document](#async-save-force-false-merge-false--document)
+    - [async delete(): Document](#async-delete-document)
+    - [serialized: Object](#serialized-object)
+    - [toJSON(): Object](#tojson-object)
+  - [Query](#query)
+    - [QuerySingle](#querysingle)
+    - [QueryArray](#queryarray)
   - [Model](#model)
-  - [Model properties](#model-properties)
+    - [Properties](#properties)
 - [Issues](#issues)
   - [process is not defined](#process-is-not-defined)
   - ['registerComponent' of undefined](#registercomponent-of-undefined)
@@ -121,15 +122,15 @@ If you're getting weird build or runtime errors, see below.
 import { swoof } from 'swoof';
 ```
 
-#### configure(name, config) `: undefined`
+#### configure(name, config): undefined
 
 Creates FirebaseApp and links it to the name.
 
-#### create(identifier, name) `→ store`
+#### create(identifier, name): store
 
 Creates and returns swoof store with given identifier and configuration name.
 
-#### store(identifier) → store or undefined
+#### store(identifier): store or undefined
 
 Returns existing store for identifier.
 
@@ -140,7 +141,7 @@ swoof.create('main', 'production'); // once
 let store = swoof.store('main');
 ```
 
-#### destroy() `→ undefined`
+#### destroy(): undefined
 
 Destroys internal FirebaseApp instances
 
@@ -151,7 +152,7 @@ import { swoof } from 'swoof';
 let store = swoof.store('main');
 ```
 
-#### doc(path) → DocumentReference
+#### doc(path): DocumentReference
 
 Creates swoof firestore document reference.
 
@@ -159,7 +160,7 @@ Creates swoof firestore document reference.
 let ref = store.doc('messages/first');
 ```
 
-#### collection(path) → CollectionReference
+#### collection(path): CollectionReference
 
 Creates swoof firestore collection reference.
 
@@ -167,7 +168,7 @@ Creates swoof firestore collection reference.
 let ref = store.doc('messages/first/comments');
 ```
 
-#### serverTimestamp() → firestore.FieldValue.ServerTimestamp
+#### serverTimestamp(): firestore.FieldValue.ServerTimestamp
 
 ``` javascript
 let doc = store.doc('messages/first').new({
@@ -185,15 +186,15 @@ let ref = store.collection('messages').doc('first');
 let ref = store.collection('messages').doc(); // generated id
 ```
 
-#### id
+#### id: string
 
 Document id
 
-#### path
+#### path: string
 
 Document path
 
-#### collection(path)
+#### collection(path): CollectionReference
 
 Creates nested Collection Reference
 
@@ -201,7 +202,7 @@ Creates nested Collection Reference
 let coll = store.doc('messages/first').collection('comments');
 ```
 
-#### new(props)
+#### new(props): Document
 
 Creates Document instance which is not automatically subscribed to onSnapshot listener.
 
@@ -221,7 +222,7 @@ await doc.save();
 // now doc is subscribed to onSnashot listener
 ```
 
-#### existing()
+#### existing(): Document
 
 Creates Document instance which is automatically subscribed to onSnapshot listener.
 
@@ -230,7 +231,7 @@ let doc = store.doc('messages/first').existing();
 // doc.isNew === false
 ```
 
-#### async load({ optional: false })
+#### async load({ optional: false }): Document or undefined
 
 Loads document and creates Document instance for it.
 
@@ -244,15 +245,15 @@ If document doesn't exist and optional is:
 
 ### CollectionReference
 
-#### id
+#### id: string
 
 Dollection id
 
-#### path
+#### path: string
 
 Collection full path
 
-#### doc(path)
+#### doc(path): DocumentReference
 
 Creates nested document reference
 
@@ -263,7 +264,7 @@ let ref = store.collection('messages').doc('first');
 
 #### conditions
 
-There are also all firestore condition operators which all also return QueryableReference for further conditions and `query()`, `load()` methods.
+There are also all firestore condition operators which all also return `QueryableReference` for further conditions and `query()`, `load()` methods.
 
 * where()
 * orderBy()
@@ -274,7 +275,7 @@ There are also all firestore condition operators which all also return Queryable
 * endAt()
 * endBefore()
 
-#### query({ type: 'array' })
+#### query({ type: 'array' }): ArrayQuery or SingleQuery
 
 Creates `onSnapshot` supporting Query instance. There are two types: `array`, `single`.
 
@@ -286,7 +287,7 @@ let array = store.collection('messages').query();
 let single = store.collection('messages').orderBy('createdAt', 'asc').limit(1).query({ type: 'single' });
 ```
 
-#### async load() -> Array<Document>
+#### async load(): Array<Document>
 
 Loads documents from firestore and creates Document instances for each of them.
 
@@ -295,7 +296,7 @@ let ref = store.collection('messages').load();
 let array = await ref.lod(); // [ <Document>, ... ]
 ```
 
-#### first({ optional: false })
+#### first({ optional: false }): Document or undefined
 
 Loads first document from firestore and creates Document instance
 
@@ -317,27 +318,27 @@ let doc = store.doc('messages/first').new({
 });
 ```
 
-#### store
+#### store: Store
 
 Store for which this document is created.
 
-#### ref
+#### ref: DocumentReference
 
 DocumentReference for this document
 
-#### id
+#### id: string
 
 Document id
 
-#### path
+#### path: string
 
 Document full path
 
-#### promise
+#### promise: Promise<Document>
 
 Promise which is resolved after 1st load or 1st onSnapshot call
 
-#### data Proxy
+#### data: ObjectProxy
 
 Document's data.
 
@@ -350,7 +351,7 @@ doc.data = { name: 'new name' };
 
 Both editing properties directly or replacing data will trigger Svelte component renders.
 
-#### merge(props)
+#### merge(props): undefined
 
 Deep merge document data
 
@@ -373,7 +374,7 @@ doc.merge({
 });
 ```
 
-#### async load({ force: false })
+#### async load({ force: false }): Document
 
 Loads document if it's not already loaded.
 
@@ -384,11 +385,11 @@ await doc.load(); // ignores. already loade
 await doc.load({ force: true }); // loads or reloads
 ```
 
-#### async reload()
+#### async reload(): Document
 
 Reloads document. The same as `doc.load({ force: true })`
 
-#### async save({ force: false, merge: false })
+#### async save({ force: false, merge: false }): Document
 
 Saves document if `isDirty` is `true`.
 
@@ -405,7 +406,7 @@ await doc.save({ force: true }); // saves even if not dirty
 await doc.save({ merge: true }) // does `ref.set(data, { merge: true });
 ```
 
-#### async delete()
+#### async delete(): Document
 
 Deletes a document
 
@@ -414,7 +415,7 @@ let doc = await store.doc('messages/first');
 await doc.delete();
 ```
 
-#### serialized
+#### serialized: Object
 
 Returns JSON debugish representation of document.
 
@@ -440,25 +441,17 @@ let doc = await store.doc('messages/first').load();
 }
 ```
 
-#### toJSON()
+#### toJSON(): Object
 
 Basically same as serialized with additional data
 
-### Query Single
+### Query
 
-...
-
-### Query Array
-
-...
+#### QuerySingle
+#### QueryArray
 
 ### Model
-
-...
-
-### Model properties
-
-...
+#### Properties
 
 ## Issues
 
