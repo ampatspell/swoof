@@ -258,6 +258,12 @@ Creates Svelte writable for sfoof model instance or tree.
 * tap
 * logger
 
+#### load()
+
+```
+await load(....modelsOrPromises);
+```
+
 ### Store
 
 ``` javascript
