@@ -11,11 +11,11 @@ See `/dummy` for some examples.
 - [Setting up](#setting-up)
 - [API](#api)
   - [swoof](#swoof)
-    - [configure(name, config) → undefined](#configurename-config-→-undefined)
-    - [create(identifier, name) → store](#createidentifier-name-→-store)
+    - [configure(name, config) `→ undefined`](#configurename-config-→-undefined)
+    - [create(identifier, name) `→ store`](#createidentifier-name-→-store)
     - [store(identifier) → store or undefined](#storeidentifier-→-store-or-undefined)
-    - [destroy() → undefined](#destroy-→-undefined)
-  - [store](#store)
+    - [destroy() `→ undefined`](#destroy-→-undefined)
+  - [Store](#store)
     - [doc(path) → DocumentReference](#docpath-→-documentreference)
     - [collection(path) → CollectionReference](#collectionpath-→-collectionreference)
     - [serverTimestamp() → firestore.FieldValue.ServerTimestamp](#servertimestamp-→-firestorefieldvalueservertimestamp)
@@ -35,7 +35,7 @@ See `/dummy` for some examples.
     - [async load() -> Array<Document>](#async-load---arraydocument)
     - [first({ optional: false })](#first-optional-false-)
   - [Document](#document)
-    - [store](#store-1)
+    - [store](#store)
     - [ref](#ref)
     - [id](#id-2)
     - [path](#path-2)
@@ -121,11 +121,11 @@ If you're getting weird build or runtime errors, see below.
 import { swoof } from 'swoof';
 ```
 
-#### configure(name, config) → undefined
+#### configure(name, config) `→ undefined`
 
 Creates FirebaseApp and links it to the name.
 
-#### create(identifier, name) → store
+#### create(identifier, name) `→ store`
 
 Creates and returns swoof store with given identifier and configuration name.
 
@@ -140,11 +140,11 @@ swoof.create('main', 'production'); // once
 let store = swoof.store('main');
 ```
 
-#### destroy() → undefined
+#### destroy() `→ undefined`
 
 Destroys internal FirebaseApp instances
 
-### store
+### Store
 
 ``` javascript
 import { swoof } from 'swoof';
