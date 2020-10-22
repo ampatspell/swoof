@@ -8,8 +8,11 @@ const {
   assign
 } = Object;
 
-const definition = hash => {
-  hash.opts = assign({ dependencies: [] }, hash.opts);
+const definition = (factory, opts) => {
+  let hash = {
+    factory,
+    opts: assign({ dependencies: [] }, opts)
+  }
   return assign(hash, {
     _isPropertyDefinition: true,
     dependencies: (...keys) => {
@@ -19,50 +22,9 @@ const definition = hash => {
   });
 };
 
-export const attribute = value => {
-  return definition({
-    factory: AttributeProperty,
-    opts: {
-      value
-    },
-  });
-};
-
+export const attribute = value => definition(AttributeProperty, { value });
 export const attr = attribute;
-
-export const array = value => {
-  return definition({
-    factory: ArrayProperty,
-    opts: {
-      value
-    }
-  });
-};
-
-export const models = (path, factory) => {
-  return definition({
-    factory: ModelsProperty,
-    opts: {
-      path,
-      factory
-    }
-  });
-}
-
-export const tap = value => {
-  return definition({
-    factory: TapProperty,
-    opts: {
-      value
-    }
-  });
-}
-
-export const logger = callback => {
-  return definition({
-    factory: LoggerProperty,
-    opts: {
-      callback
-    }
-  });
-}
+export const array = value => definition(ArrayProperty, { value });
+export const models = (path, factory) => definition(ModelsProperty, { path, factory });
+export const tap = value => definition(TapProperty, { value });
+export const logger = callback => definition(LoggerProperty, { callback });
