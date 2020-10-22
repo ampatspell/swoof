@@ -58,12 +58,10 @@ export default class Binding {
 
     this.listeners.forEach(listener => listener(key));
 
-    if(local) {
-      return;
+    if(!local) {
+      let path = join([ this.key, key ], '.');
+      getBinding(this.parent).notifyDidChange(path);
     }
-
-    let path = join([ this.key, key ], '.');
-    getBinding(this.parent).notifyDidChange(path);
   }
 
   registerNested(property, model, key) {
