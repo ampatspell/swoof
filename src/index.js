@@ -3,7 +3,7 @@ import JSON from './components/JSON.svelte';
 import swoof from './swoof';
 import state from './state';
 
-import { setGlobal, isServerTimestamp, isTimestamp, objectToJSON, toString, toJSON, get, set } from './util/util';
+import { setGlobal, isServerTimestamp, isTimestamp, objectToJSON, toString, toPrimitive, toJSON, get, set } from './util/util';
 import { SwoofError, error, assert } from './util/error';
 
 import Model from './bindable/model';
@@ -19,6 +19,7 @@ export {
   setGlobal,
   objectToJSON,
   toString,
+  toPrimitive,
   toJSON,
 
   isServerTimestamp,
