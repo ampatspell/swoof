@@ -93,7 +93,7 @@ export default class Binding {
     this.parent = parent;
     registerBound(this.owner);
     this.properties.all.forEach(property => property.onBind());
-    this.nested.forEach(model => model[_binding].bind(this.owner));
+    this.nested.forEach(model => getBinding(model).bind(this.owner));
     this.owner._onBind();
   }
 
@@ -103,7 +103,7 @@ export default class Binding {
     this.parent = null;
     unregisterBound(this.owner);
     this.owner._onUnbind();
-    this.nested.forEach(model => model[_binding].unbind(this.owner));
+    this.nested.forEach(model => getBinding(model).unbind(this.owner));
     this.properties.all.forEach(property => property.onUnbind());
   }
 
