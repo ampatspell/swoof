@@ -2,7 +2,7 @@ import Property from './property';
 import { isFunction } from '../../util/util';
 import { assert } from '../../util/error';
 
-const LAZY = {};
+const LAZY = { __lazy: true };
 
 export default class AttributeProperty extends Property {
 
