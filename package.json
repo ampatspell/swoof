@@ -1,6 +1,6 @@
 {
   "name": "swoof",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "Firestore library for Svelte",
   "license": "MIT",
   "author": "Arnis Vuskans <ampatspell@gmail.com> (http://www.amateurinmotion.com/)",
