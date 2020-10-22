@@ -6,7 +6,7 @@ export default class TapProperty extends Property {
   constructor(binding, key, dependencies, { value }) {
     super(binding, key, dependencies);
     this.value = value;
-    this.cancel = null;
+    this.listener = key => this.tappedDidChange(key);
   }
 
   tappedDidChange(key) {
@@ -18,15 +18,15 @@ export default class TapProperty extends Property {
     if(!binding) {
       return;
     }
-    this.cancel = binding.addNotifyDidChangeListener(key => this.tappedDidChange(key));
+    binding.addNotifyDidChangeListener(this.listener);
   }
 
-  untap() {
-    let { cancel } = this;
-    if(cancel) {
-      cancel();
-      this.cancel = null;
+  untap(value) {
+    let binding = getBinding(value);
+    if(!binding) {
+      return;
     }
+    binding.removeNotifyDidChangeListener(this.listener);
   }
 
   define() {
