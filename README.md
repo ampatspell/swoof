@@ -648,11 +648,11 @@ await user.signOut();
 
 ### Storage
 
-``` javascript
+``` javascript
 let storage = store.storage;
 ```
 
-``` javascript
+``` javascript
 let ref = storage.ref(`users/${uid}/avatar`);
 
 let task = ref.put({
@@ -666,7 +666,7 @@ let task = ref.put({
 await task.promise;
 ```
 
-``` javascript
+``` javascript
 let ref = storage.ref(`users/${uid}/avatar`);
 await ref.url();
 await ref.metadata();
