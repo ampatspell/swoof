@@ -1,12 +1,19 @@
 import Property from './property';
 import { isFunction } from '../../util/util';
+import { assert } from '../../util/error';
+
+const LAZY = {};
 
 export default class AttributeProperty extends Property {
 
-  constructor(binding, key, dependencies, { value }) {
+  constructor(binding, key, dependencies, { readOnly, value }) {
     super(binding, key, dependencies);
+    this._readOnly = readOnly;
     this.__value = value;
     this._isFunction = isFunction(value);
+    if(this._isFunction) {
+      this.value = LAZY;
+    }
   }
 
   get _value() {
@@ -18,18 +25,36 @@ export default class AttributeProperty extends Property {
     return value;
   }
 
-  define() {
-    let { owner, key } = this;
-
+  _instantiateValue() {
     let value = this._value;
     this.value = value;
     this.registerNested(value);
+  }
 
-    Object.defineProperty(owner, key, {
-      get: () => {
-        return this.value;
-      },
-      set: value => {
+  define() {
+    let { owner, key } = this;
+
+    if(!this._isFunction) {
+      this._instantiateValue();
+    }
+
+    let get = () => {
+      if(this.value === LAZY) {
+        this._instantiateValue();
+      }
+      return this.value;
+    };
+
+    let set;
+    if(this._readOnly) {
+      set = value => {
+        assert(false, [
+          `attempting to set '${value}'`,
+          `to read-only attribute '${this.key}' for ${this.owner}`
+        ].join(' '));
+      }
+    } else {
+      set = value => {
         let current = this.value;
         if(value === current) {
           return;
@@ -41,7 +66,9 @@ export default class AttributeProperty extends Property {
 
         this.notifyDidChange();
       }
-    });
+    }
+
+    Object.defineProperty(owner, key, { get, set });
   }
 
   onDependencyDidChange() {

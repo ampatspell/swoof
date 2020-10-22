@@ -1,13 +1,20 @@
 <script>
-  import { Model, writable, setGlobal } from 'swoof';
+  import { swoof, Model, writable, setGlobal, properties } from 'swoof';
   import JSON from '../components/JSON.svelte';
 
+  const {
+    attr
+  } = properties;
+
   export let location; !location;
+
+  let store = swoof.store('main');
 
   class Blank extends Model {
 
     constructor() {
       super();
+      this.property('doc', attr(() => store.doc('messages/first').existing()).readOnly());
     }
 
     get serialized() {

@@ -8,12 +8,19 @@ import LoggerProperty from './logger';
 const definition = (factory, opts) => {
   let hash = {
     factory,
-    opts: assign({ dependencies: [] }, opts)
+    opts: assign({
+      dependencies: [],
+      readOnly: false
+    }, opts)
   }
   return assign(hash, {
     _isPropertyDefinition: true,
     dependencies: (...keys) => {
       hash.opts.dependencies = [ ...hash.opts.dependencies, ...keys ];
+      return hash;
+    },
+    readOnly() {
+      hash.opts.readOnly = true;
       return hash;
     }
   });
