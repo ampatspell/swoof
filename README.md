@@ -195,6 +195,7 @@ export default class Messages extends Model {
 
     // query autosubscribes to ref.onSnapshot
     this.property('query', attr(this.coll.orderBy('createdAt').query()));
+
     // Message models are automatically created for each document. then added/removed based on snapshot.docChanges
     this.property('messages', models('query.content', doc => new Message(doc)));
   }
