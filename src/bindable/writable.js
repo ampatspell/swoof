@@ -64,4 +64,4 @@ export class Writable {
 
 }
 
-export default (model, opts={}) => new Writable(model, opts);
+export default (model, opts={}) => new Writable(model);
