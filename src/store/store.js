@@ -21,10 +21,6 @@ export default class Store {
     defineHiddenProperty(this, 'firebase', firebase);
   }
 
-  get firestore() {
-    return cached(this, 'firestore', () => this.firebase.firestore());
-  }
-
   get auth() {
     return cached(this, 'auth', () => new Auth(this));
   }
@@ -34,7 +30,7 @@ export default class Store {
   doc(path) {
     let ref = path;
     if(typeof ref === 'string') {
-      ref = this.firestore.doc(path);
+      ref = this.firebase.firestore().doc(path);
     }
     return this._createDocumentReference(ref);
   }
@@ -42,7 +38,7 @@ export default class Store {
   collection(path) {
     let ref = path;
     if(typeof ref === 'string') {
-      ref = this.firestore.collection(path);
+      ref = this.firebase.firestore().collection(path);
     }
     return new CollectionReference(this, ref);
   }

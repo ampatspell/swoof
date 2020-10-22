@@ -1,5 +1,10 @@
 <script>
-  import { swoof, JSON, Model, writable, setGlobal } from 'swoof';
+  import { swoof, JSON, Model, writable, setGlobal, computed } from 'swoof';
+
+  const {
+    attr,
+    logger
+  } = computed;
 
   let store = swoof.store('main');
 
@@ -7,6 +12,8 @@
 
     constructor() {
       super();
+      this.property('auth', attr(store.auth));
+      this.property('logger', logger());
     }
 
     get serialized() {
@@ -17,8 +24,6 @@
 
   }
 
-  let auth = store.auth;
-
   let model = writable(new Auth());
   setGlobal({ model: model.value });
 
@@ -26,10 +31,6 @@
 
 <div class="row">
   <JSON object={$model}/>
-</div>
-
-<div class="row">
-  <JSON object={$auth}/>
 </div>
 
 <style>
