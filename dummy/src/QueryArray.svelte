@@ -1,5 +1,6 @@
 <script>
-  import { JSON, swoof, Model, writable, computed, setGlobal } from 'swoof';
+  import { swoof, Model, writable, computed, setGlobal } from 'swoof';
+  import JSON from './JSON.svelte';
 
   const {
     attr,
@@ -67,7 +68,6 @@
       align-items: baseline;
       > .key {
         min-width: 50px;
-        font-size: 13px;
       }
       > .value {
         flex: 1;

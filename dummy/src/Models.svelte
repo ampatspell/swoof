@@ -1,5 +1,6 @@
 <script>
-  import { swoof, JSON, Model, writable, computed, setGlobal } from 'swoof';
+  import { swoof, Model, writable, computed, setGlobal } from 'swoof';
+  import JSON from './JSON.svelte';
 
   const {
     attr,

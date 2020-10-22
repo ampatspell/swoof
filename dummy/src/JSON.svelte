@@ -5,8 +5,7 @@
 
 <style>
   .json {
-    font-family: 'Menlo';
-    font-size: 12px;
+    font-size: 13px;
     white-space: pre-wrap;
   }
 </style>

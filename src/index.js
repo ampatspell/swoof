@@ -1,5 +1,3 @@
-import JSON from './components/JSON.svelte';
-
 import swoof from './swoof';
 import state from './state';
 
@@ -24,8 +22,6 @@ import * as computed from './bindable/properties/definitions';
 import User from './store/auth/user';
 
 export {
-  JSON,
-
   swoof,
   state,
 

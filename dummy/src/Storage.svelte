@@ -1,5 +1,6 @@
 <script>
-  import { swoof, JSON, Model, writable, setGlobal, computed, objectToJSON } from 'swoof';
+  import { swoof, Model, writable, setGlobal, computed, objectToJSON } from 'swoof';
+  import JSON from './JSON.svelte';
 
   const {
     attr
@@ -61,6 +62,7 @@
 <div class="row">
   <input type="file" bind:files={$model.files}/>
 </div>
+
 <div class="row">
   <input type="button" value="Upload" on:click={() => $model.upload()}/>
 </div>

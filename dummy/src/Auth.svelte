@@ -1,5 +1,6 @@
 <script>
-  import { swoof, JSON, Model, writable, setGlobal, computed } from 'swoof';
+  import { swoof, Model, writable, setGlobal, computed } from 'swoof';
+  import JSON from './JSON.svelte';
 
   const {
     attr,
@@ -62,7 +63,7 @@
 <style type="text/scss">
   .row {
     > .label {
-      font-size: 13px;
+      font-size: 11px;
       margin-bottom: 5px;
     }
     margin-bottom: 15px;
