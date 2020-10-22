@@ -1,6 +1,5 @@
 <script>
-  import { JSON, swoof, Bindable, writable, computed, setGlobal } from 'swoof';
-import Blank from './Blank.svelte';
+  import { JSON, swoof, Model, writable, computed, setGlobal } from 'swoof';
 
   const {
     attr,
@@ -8,7 +7,7 @@ import Blank from './Blank.svelte';
 
   let store = swoof.store('main');
 
-  class Document extends Bindable {
+  class Document extends Model {
 
     constructor() {
       super();

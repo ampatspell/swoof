@@ -1,7 +1,7 @@
 <script>
-  import { JSON, Bindable, writable, setGlobal } from 'swoof';
+  import { JSON, Model, writable, setGlobal } from 'swoof';
 
-  class Blank extends Bindable {
+  class Blank extends Model {
 
     constructor() {
       super();

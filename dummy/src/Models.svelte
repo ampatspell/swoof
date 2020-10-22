@@ -1,5 +1,5 @@
 <script>
-  import { swoof, JSON, Bindable, writable, computed, setGlobal } from 'swoof';
+  import { swoof, JSON, Model, writable, computed, setGlobal } from 'swoof';
 
   const {
     attr,
@@ -9,7 +9,7 @@
 
   let store = swoof.store('main');
 
-  class Message extends Bindable {
+  class Message extends Model {
 
     constructor(doc) {
       super();
@@ -27,7 +27,7 @@
 
   }
 
-  class Models extends Bindable {
+  class Models extends Model {
 
     constructor() {
       super();

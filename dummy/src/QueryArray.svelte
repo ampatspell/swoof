@@ -1,5 +1,5 @@
 <script>
-  import { JSON, swoof, Bindable, writable, computed, setGlobal } from 'swoof';
+  import { JSON, swoof, Model, writable, computed, setGlobal } from 'swoof';
 
   const {
     attr,
@@ -7,7 +7,7 @@
 
   let store = swoof.store('main');
 
-  class QueryFirst extends Bindable {
+  class QueryFirst extends Model {
 
     constructor() {
       super();

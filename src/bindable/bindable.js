@@ -6,7 +6,7 @@ export {
   getBinding
 }
 
-export default class Bindable {
+export default class Model {
 
   constructor() {
     defineHiddenProperty(this, _binding, new Binding(this));

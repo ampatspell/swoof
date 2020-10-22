@@ -6,7 +6,7 @@ import state from './state';
 import { setGlobal, isServerTimestamp, isTimestamp, objectToJSON, toString, toJSON, get, set } from './util/util';
 import { SwoofError, error, assert } from './util/error';
 
-import Bindable from './bindable/bindable';
+import Model from './bindable/bindable';
 import writable from './bindable/writable';
 import * as computed from './bindable/properties/definitions';
 
@@ -32,7 +32,7 @@ export {
   assert,
 
   writable,
-  Bindable,
+  Model,
   computed
 }
 
