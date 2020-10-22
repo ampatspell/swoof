@@ -1,4 +1,4 @@
-import { toString } from '../util/util';
+import { toString, join } from '../util/util';
 import { assert } from '../util/error';
 import { registerBound, unregisterBound } from '../state';
 
@@ -12,7 +12,6 @@ export default class Binding {
     this.owner = owner;
     this.parent = null;
     this.nested = new Set();
-    this.listeners = new Set();
     this.properties = {
       byKey: Object.create(null),
       all: []
@@ -34,44 +33,41 @@ export default class Binding {
     return !!this.parent;
   }
 
-  addDidChangeListener(listener) {
-    this.listeners.add(listener);
-  }
-
-  removeDidChangeListener(listener) {
-    this.listeners.delete(listener);
-  }
-
   notifyDidChange(key) {
+    if(!key) {
+      debugger;
+    }
+    assert(!!key, 'Missing key for notifyDidChange');
+
     if(!this.isBound) {
       return;
     }
 
-    if(key) {
-      this.properties.all.forEach(property => {
-        if(property.key === key) {
-          return;
-        }
-        property.onPropertyDidChange(key);
-      });
-    }
+    this.properties.all.forEach(property => {
+      if(property.key === key) {
+        return;
+      }
+      property.onPropertyDidChange(key);
+    });
 
-    this.listeners.forEach(listener => listener(this.owner, key));
-    getBinding(this.parent).notifyDidChange();
+    let path = join([ this.key, key ], '.');
+    getBinding(this.parent).notifyDidChange(path);
   }
 
-  registerNested(model) {
+  registerNested(property, model, key) {
     let binding = getBinding(model);
     if(!binding) {
       return;
     }
+    let path = join([ property.key, key ], '.');
+    binding.key = path;
     this.nested.add(model);
     if(this.isBound) {
       binding.bind(this.owner);
     }
   }
 
-  unregisterNested(model) {
+  unregisterNested(property, model) {
     let binding = getBinding(model);
     if(!binding) {
       return;
@@ -83,20 +79,22 @@ export default class Binding {
   }
 
   bind(parent) {
-    assert(!this.parent, `${this.owner} is already bound to ${this.parent} while attempting to bind to ${parent}`);
+    assert(!this.parent, `${this.owner} is already bound to ${this.parent} while attempting to bind it to ${parent}`);
     this.parent = parent;
     registerBound(this.owner);
+    this.properties.all.forEach(property => property.onBind());
     this.nested.forEach(model => model[_binding].bind(this.owner));
     this.owner._onBind();
   }
 
   unbind(parent) {
     assert(this.parent, `${this.owner} is not bound while trying to unbind from ${parent}`);
-    assert(this.parent === parent, `${this.owner} is bound to ${this.parent} while trying to unbind from ${parent}`);
+    assert(this.parent === parent, `${this.owner} is bound to ${this.parent} while trying to unbind it from ${parent}`);
     this.parent = null;
     unregisterBound(this.owner);
     this.owner._onUnbind();
     this.nested.forEach(model => model[_binding].unbind(this.owner));
+    this.properties.all.forEach(property => property.onUnbind());
   }
 
   toString() {

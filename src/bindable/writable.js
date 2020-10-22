@@ -3,18 +3,23 @@ import { assert } from '../util/error';
 import Bindable, { _binding, getBinding } from './bindable';
 import { registerRoot } from '../state';
 
+const noop = () => {};
+
 export class Writable {
 
-  constructor(model) {
+  constructor(model, { logger }) {
     assert(model instanceof Bindable, `model ${model} is not Bindable`);
     this.model = model;
     this[_binding] = {
-      notifyDidChange: () => this.notifyDidChange()
+      notifyDidChange: path => this.notifyDidChange(path)
     }
+    this.logger = logger || noop;
     this.writable = writable(model, () => this.bind());
   }
 
-  notifyDidChange() {
+  notifyDidChange(path) {
+    let { model } = this;
+    this.logger({ type: 'change', model, path });
     this.writable.set(this.model);
   }
 
@@ -30,9 +35,11 @@ export class Writable {
     let { model } = this;
     let binding = getBinding(model);
     let root = registerRoot(model);
+    this.logger({ type: 'bind', model });
     binding.bind(this);
     return () => {
       binding.unbind(this);
+      this.logger({ type: 'unbind', model });
       root();
     };
   }
@@ -64,4 +71,4 @@ export class Writable {
 
 }
 
-export default model => new Writable(model);
+export default (model, opts={}) => new Writable(model, opts);

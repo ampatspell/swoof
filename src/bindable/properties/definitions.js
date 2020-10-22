@@ -1,5 +1,6 @@
 import AttributeProperty from './attribute';
 import ArrayProperty from './array';
+import ModelsProperty from './models';
 
 const {
   assign
@@ -36,3 +37,14 @@ export const array = value => {
     }
   });
 };
+
+export const models = (path, factory) => {
+  return definition({
+    factory: ModelsProperty,
+    opts: {
+      path,
+      factory,
+      dependencies: []
+    }
+  });
+}

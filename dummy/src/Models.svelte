@@ -1,21 +1,56 @@
 <script>
-  import { JSON, Bindable, writable, setGlobal } from 'swoof';
+  import { swoof, JSON, Bindable, writable, computed, setGlobal } from 'swoof';
 
-  class Models extends Bindable {
+  const {
+    attr,
+    models
+  } = computed;
 
-    constructor() {
+  let store = swoof.store('main');
+
+  class Message extends Bindable {
+
+    constructor(doc) {
       super();
+      this.doc = doc;
+      // this.property('doc', attr(doc));
+      this.property('name', attr('hey'));
     }
 
     get serialized() {
       return {
-        ok: true
+        doc: this.doc
       };
     }
 
   }
 
-  let model = writable(new Models());
+  class Models extends Bindable {
+
+    constructor() {
+      super();
+      this.property('query', attr(store.collection('messages').query()));
+      this.property('models', models('query.content', doc => new Message(doc)));
+    }
+
+    get serialized() {
+      let { query, models } = this;
+      return {
+        query: query.content.length,
+        models: models
+      };
+    }
+
+  }
+
+  let logger = ({ path }) => {
+    if(!path) {
+      return;
+    }
+    console.log(`→ ${path}`);
+  };
+
+  let model = writable(new Models(), { logger: logger });
   setGlobal({ model: model.value });
 
 </script>
