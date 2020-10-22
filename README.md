@@ -49,4 +49,4 @@ update `plugin-commonjs`:
 - [ ] diff doc onSnapshot changes + state and do writable.set(this) only if there are changes present
 - [ ] readOnly() property
 - [x] models() property
-- [ ] needs some kind of tool to forward change notifications to nested models
+- [x] tap: needs some kind of tool to forward change notifications to nested models
