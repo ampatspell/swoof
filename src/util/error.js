@@ -1,8 +1,4 @@
-import { objectToJSON, toJSON, isFunction } from './util';
-
-const {
-  assign
-} = Object;
+import { objectToJSON, toJSON, isFunction, assign } from './util';
 
 export class SwoofError extends Error {
 

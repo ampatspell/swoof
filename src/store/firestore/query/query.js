@@ -1,10 +1,6 @@
 import Model from '../../../bindable/model';
-import { defineHiddenProperty, toJSON, toString, objectToJSON, defer } from '../../../util/util';
+import { defineHiddenProperty, toJSON, toString, objectToJSON, defer, assign } from '../../../util/util';
 import { registerOnSnapshot } from '../../../state';
-
-const {
-  assign
-} = Object;
 
 export default class Query extends Model {
 

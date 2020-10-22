@@ -1,10 +1,6 @@
 import { Model, computed } from '../../bindable';
-import { toString, toJSON, defineHiddenProperty } from '../../util/util';
+import { toString, toJSON, defineHiddenProperty, assign } from '../../util/util';
 import { assert } from '../../util/error';
-
-const {
-  assign
-} = Object;
 
 const {
   attr

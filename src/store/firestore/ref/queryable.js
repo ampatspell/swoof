@@ -1,9 +1,6 @@
 import Reference from './reference';
+import { assign } from '../../../util/util';
 import { documentNotFoundError } from '../../../util/error';
-
-const {
-  assign
-} = Object;
 
 export default class QueryableReference extends Reference {
 

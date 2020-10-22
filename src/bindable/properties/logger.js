@@ -1,9 +1,5 @@
 import Property from './property';
-import { toPrimitive } from '../../util/util';
-
-const {
-  assign
-} = Object;
+import { toPrimitive, assign } from '../../util/util';
 
 let _callback = ({ model, type, path }) => {
   let arr = [

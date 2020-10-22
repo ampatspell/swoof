@@ -1,10 +1,6 @@
 import Reference from './reference';
-import { toString, toJSON } from '../../../util/util';
+import { toString, toJSON, assign } from '../../../util/util';
 import { documentForRefNotFoundError } from '../../../util/error';
-
-const {
-  assign
-} = Object;
 
 export default class DocumentReference extends Reference {
 

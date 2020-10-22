@@ -6,14 +6,10 @@ import QuerySingle from './firestore/query/single';
 import QueryArray from './firestore/query/array';
 import Auth from './auth/auth';
 import Storage from './storage/storage';
-import { toString, toJSON, defineHiddenProperty, cached } from '../util/util';
+import { toString, toJSON, defineHiddenProperty, cached, assign } from '../util/util';
 import { assert } from '../util/error';
 import BaseUser from './auth/user';
 import firebase from "firebase/app";
-
-const {
-  assign
-} = Object;
 
 const normalizeConfig = (config={}) => {
   let { swoof } = config;

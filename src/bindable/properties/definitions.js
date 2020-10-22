@@ -1,12 +1,9 @@
+import { assign } from '../../util/util';
 import AttributeProperty from './attribute';
 import ArrayProperty from './array';
 import ModelsProperty from './models';
 import TapProperty from './tap';
 import LoggerProperty from './logger';
-
-const {
-  assign
-} = Object;
 
 const definition = (factory, opts) => {
   let hash = {
