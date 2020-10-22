@@ -25,11 +25,10 @@ export default class Property {
   }
 
   onPropertyDidChange(key) {
-    let dependency = this.dependencies.find(dep => key.startsWith(dep));
-    if(!dependency) {
+    if(!this.dependencies.includes(key)) {
       return;
     }
-    this.onDependencyDidChange(dependency, key);
+    this.onDependencyDidChange(key);
   }
 
   onBind() {
