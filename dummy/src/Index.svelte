@@ -6,6 +6,7 @@
   import QueryArray from './QueryArray.svelte';
   import Models from './Models.svelte';
   import Auth from './Auth.svelte';
+  import Storage from './Storage.svelte';
   import Blank from './Blank.svelte';
 
   let show = true;
@@ -17,10 +18,11 @@
     { label: 'Query Array', component: QueryArray },
     { label: 'Models', component: Models },
     { label: 'Auth', component: Auth },
+    { label: 'Storage', component: Storage },
     { label: 'Blank', component: Blank }
   ];
 
-  let selected = routes.find(r => r.label === 'Auth');
+  let selected = routes.find(r => r.label === 'Storage');
 
   let select = route => selected = route;
 
