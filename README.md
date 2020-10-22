@@ -2,6 +2,8 @@
 
 Swoof Google Firebase Firestore library for Svelte.
 
+> Docs are coming.
+
 <!-- TOC depthFrom:2 -->
 
 - [Setting up](#setting-up)
