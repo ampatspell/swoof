@@ -11,6 +11,12 @@ body {
 	font-weight: 400;
 }
 
+a,
+a:visited,
+a:active {
+	color: #000;
+}
+
 * {
 	box-sizing: border-box;
 }

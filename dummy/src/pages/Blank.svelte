@@ -1,6 +1,8 @@
 <script>
   import { Model, writable, setGlobal } from 'swoof';
-  import JSON from './JSON.svelte';
+  import JSON from '../components/JSON.svelte';
+
+  export let location; !location;
 
   class Blank extends Model {
 

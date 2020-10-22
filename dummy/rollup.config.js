@@ -51,7 +51,7 @@ export default {
       preprocess: preprocess(),
       css: css => {
         css.write('bundle.css');
-      },
+      }
     }),
     replace({
       'process.env.CONFIG': JSON.stringify(require('./config')),

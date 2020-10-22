@@ -1,33 +1,29 @@
 <script>
-  import { swoof, state, setGlobal, toString, User } from 'swoof';
-  import Index from './Index.svelte';
+  import { swoof, state, setGlobal } from 'swoof';
+  import { config, isDevelopment } from './lib/config';
 
-  class DummyUser extends User {
+  import Pages from './Pages.svelte';
+  import State from './components/State.svelte';
 
-    toString() {
-      let { user: { uid, email } } = this;
-      return toString(this, `${email || uid}`);
-    }
+  let store = swoof.create('main', config);
 
+  if(isDevelopment) {
+    setGlobal({ store });
+    setGlobal({ state });
   }
 
-  let { firebase } = process.env.CONFIG;
-
-  let store = swoof.create('main', {
-    firebase,
-    firestore: {
-      enablePersistence: true
-    },
-    swoof: {
-      User: DummyUser
-    }
-  });
-
-  setGlobal({ store });
-  setGlobal({ state });
 </script>
 
-<Index/>
+<Pages/>
 
-<style>
+<div class="state">
+  <State/>
+</div>
+
+<style type="text/scss">
+  .state {
+    border-top: 1px solid fade-out(#000, 0.95);
+    margin-top: 25px;
+    padding: 10px;
+  }
 </style>
