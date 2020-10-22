@@ -2,12 +2,14 @@ import AttributeProperty from './attribute';
 import ArrayProperty from './array';
 import ModelsProperty from './models';
 import TapProperty from './tap';
+import LoggerProperty from './logger';
 
 const {
   assign
 } = Object;
 
 const definition = hash => {
+  hash.opts = assign({ dependencies: [] }, hash.opts);
   return assign(hash, {
     _isPropertyDefinition: true,
     dependencies: (...keys) => {
@@ -21,8 +23,7 @@ export const attribute = value => {
   return definition({
     factory: AttributeProperty,
     opts: {
-      value,
-      dependencies: []
+      value
     },
   });
 };
@@ -33,8 +34,7 @@ export const array = value => {
   return definition({
     factory: ArrayProperty,
     opts: {
-      value,
-      dependencies: []
+      value
     }
   });
 };
@@ -44,8 +44,7 @@ export const models = (path, factory) => {
     factory: ModelsProperty,
     opts: {
       path,
-      factory,
-      dependencies: []
+      factory
     }
   });
 }
@@ -54,8 +53,16 @@ export const tap = value => {
   return definition({
     factory: TapProperty,
     opts: {
-      value,
-      dependencies: []
+      value
+    }
+  });
+}
+
+export const logger = callback => {
+  return definition({
+    factory: LoggerProperty,
+    opts: {
+      callback
     }
   });
 }

@@ -4,10 +4,18 @@
   const {
     attr,
     models,
-    tap
+    tap,
+    logger
   } = computed;
 
   let store = swoof.store('main');
+
+  let log = ({ model, path }) => {
+    if(!path) {
+      return;
+    }
+    console.log(`${model} → ${path}`);
+  };
 
   class Message extends Model {
 
@@ -15,6 +23,11 @@
       super();
       this.property('doc', tap(doc)); // doesn't bind, just forwards change notifications in this context
       this.property('name', attr(() => this.doc.data.name).dependencies('doc'));
+      this.property('logger', logger(log));
+    }
+
+    get toStringExtension() {
+      return this.doc.id;
     }
 
     get serialized() {
@@ -33,6 +46,7 @@
       super();
       this.property('query', attr(store.collection('messages').query()));
       this.property('models', models('query.content', doc => new Message(doc)));
+      this.property('logger', logger(log));
     }
 
     get serialized() {
@@ -45,14 +59,7 @@
 
   }
 
-  let logger = ({ path }) => {
-    if(!path) {
-      return;
-    }
-    console.log(`→ ${path}`);
-  };
-
-  let model = writable(new Models(), { logger: logger });
+  let model = writable(new Models());
   setGlobal({ model: model.value });
 
 </script>

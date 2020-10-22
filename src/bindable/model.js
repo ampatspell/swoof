@@ -40,7 +40,7 @@ export default class Model {
   }
 
   toString() {
-    return toString(this);
+    return toString(this, this.toStringExtension);
   }
 
 }
