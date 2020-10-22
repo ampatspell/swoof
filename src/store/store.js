@@ -5,6 +5,7 @@ import ConditionReference from './firestore/ref/condition';
 import QuerySingle from './firestore/query/single';
 import QueryArray from './firestore/query/array';
 import Auth from './auth/auth';
+import Storage from './storage/storage';
 import { toString, toJSON, defineHiddenProperty, cached } from '../util/util';
 import { assert } from '../util/error';
 import BaseUser from './auth/user';
@@ -32,6 +33,10 @@ export default class Store {
 
   get auth() {
     return cached(this, 'auth', () => new Auth(this));
+  }
+
+  get storage() {
+    return cached(this, 'storage', () => new Storage(this));
   }
 
   //

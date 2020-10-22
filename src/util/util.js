@@ -1,9 +1,10 @@
 import firebase from "firebase/app";
 
 const {
-  assign,
   keys
 } = Object;
+
+export const assign = Object.assign;
 
 export const setGlobal = hash => {
   for(let key in hash) {
@@ -193,4 +194,29 @@ export const removeObject = (array, object) => {
 
 export const join = (strings, ...remaining) => {
   return strings.filter(string => !!string).join(...remaining);
+}
+
+export const pick = (object, keys) => {
+  let hash = {};
+  keys.forEach(key => {
+    let value = object[key];
+    if(value !== undefined) {
+      hash[key] = value;
+    }
+  });
+  return hash;
+}
+
+export const omit = (object, keys) => {
+  let hash = {};
+  for(let key in object) {
+    if(keys.includes(key)) {
+      continue;
+    }
+    let value = object[key];
+    if(value !== undefined) {
+      hash[key] = value;
+    }
+  }
+  return hash;
 }
