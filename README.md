@@ -757,9 +757,9 @@ update `plugin-commonjs`:
 
 ## TODO
 
-- [x] add basic auth support (sign up, sign in (email, anon), forgot password, link account, sign out)
-- [ ] add basic storage support
 - [ ] diff doc onSnapshot changes + state and do writable.set(this) only if there are changes present
 - [ ] readOnly() property
 - [x] models() property
 - [x] tap: needs some kind of tool to forward change notifications to nested models
+- [x] add basic auth support (sign up, sign in (email, anon), forgot password, link account, sign out)
+- [x] add basic storage support
