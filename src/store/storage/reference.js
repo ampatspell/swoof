@@ -46,6 +46,10 @@ export default class StorageReference {
     });
   }
 
+  async update(metadata) {
+    await this._ref.updateMetadata(metadata);
+  }
+
   toJSON() {
     let { serialized } = this;
     return toJSON(this, { serialized });
