@@ -73,6 +73,9 @@ export default class QueryableReference extends Reference {
   async first(opts) {
     let { optional } = assign({ optional: false }, opts);
     let snapshot = await this.ref.get();
+    if(snapshot.docs.length > 1) {
+      console.warn(`${this.string} yields more than 1 document`);
+    }
     let doc = snapshot.docs[0];
     if(doc) {
       return this.store._createDocumentForSnapshot(doc);
