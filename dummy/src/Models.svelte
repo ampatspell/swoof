@@ -9,10 +9,20 @@
   let store = swoof.store('main');
 
   class Message extends Bindable {
+
     constructor(doc) {
       super();
       this.doc = doc;
+      // this.property('doc', attr(doc));
+      this.property('name', attr('hey'));
     }
+
+    get serialized() {
+      return {
+        doc: this.doc
+      };
+    }
+
   }
 
   class Models extends Bindable {
@@ -33,7 +43,14 @@
 
   }
 
-  let model = writable(new Models(), { logger: ({ path }) => path ? console.log(`→ ${path}`) : undefined });
+  let logger = ({ path }) => {
+    if(!path) {
+      return;
+    }
+    console.log(`→ ${path}`);
+  };
+
+  let model = writable(new Models(), { logger: logger });
   setGlobal({ model: model.value });
 
 </script>

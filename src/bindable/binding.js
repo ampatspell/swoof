@@ -79,20 +79,22 @@ export default class Binding {
   }
 
   bind(parent) {
-    assert(!this.parent, `${this.owner} is already bound to ${this.parent} while attempting to bind to ${parent}`);
+    assert(!this.parent, `${this.owner} is already bound to ${this.parent} while attempting to bind it to ${parent}`);
     this.parent = parent;
     registerBound(this.owner);
+    this.properties.all.forEach(property => property.onBind());
     this.nested.forEach(model => model[_binding].bind(this.owner));
     this.owner._onBind();
   }
 
   unbind(parent) {
     assert(this.parent, `${this.owner} is not bound while trying to unbind from ${parent}`);
-    assert(this.parent === parent, `${this.owner} is bound to ${this.parent} while trying to unbind from ${parent}`);
+    assert(this.parent === parent, `${this.owner} is bound to ${this.parent} while trying to unbind it from ${parent}`);
     this.parent = null;
     unregisterBound(this.owner);
     this.owner._onUnbind();
     this.nested.forEach(model => model[_binding].unbind(this.owner));
+    this.properties.all.forEach(property => property.onUnbind());
   }
 
   toString() {
