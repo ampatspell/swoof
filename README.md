@@ -58,12 +58,14 @@ See `/dummy` for some examples.
     - [string: string](#string-string)
     - [serialized: object](#serialized-object)
     - [content](#content)
-- [Issues](#issues)
-  - [process is not defined](#process-is-not-defined)
   - [Auth](#auth)
     - [Sign in](#sign-in)
     - [Link anonymous to credentials](#link-anonymous-to-credentials)
     - [User](#user)
+  - [Storage](#storage)
+    - [Task extends Model](#task-extends-model)
+- [Issues](#issues)
+  - [process is not defined](#process-is-not-defined)
   - ['registerComponent' of undefined](#registercomponent-of-undefined)
 - [TODO](#todo)
 
@@ -615,32 +617,6 @@ if `{ type }` is:
 * `array` (default): array of Document instances
 * `single`: single (first) Document instance or null
 
-## Issues
-
-### process is not defined
-
-```
-Uncaught ReferenceError: process is not defined
-```
-
-add `plugin-replace` to rollup config:
-
-``` javascript
-// rollup.config.js
-import replace from '@rollup/plugin-replace';
-
-plugins([
-  //...
-  svelte({
-    // ...
-  }),
-  replace({
-    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
-  }),
-  // ...
-])
-```
-
 ### Auth
 
 ``` javascript
@@ -668,6 +644,99 @@ await user.link('email', email, password);
 let user = auth.user;
 await user.delete();
 await user.signOut();
+```
+
+### Storage
+
+``` javascript
+let storage = store.storage;
+```
+
+``` javascript
+let ref = storage.ref(`users/${uid}/avatar`);
+
+let task = ref.put({
+  type: 'data',
+  data: file,
+  metadata: {
+    contentType: file.type
+  }
+});
+
+await task.promise;
+```
+
+``` javascript
+let ref = storage.ref(`users/${uid}/avatar`);
+await ref.url();
+await ref.metadata();
+await ref.update({ contentType: 'image/png' });
+```
+
+#### Task extends Model
+
+``` javascript
+import { Model, writable, computed, objectToJSON } from 'swoof';
+
+const {
+  attr
+} = computed;
+
+class Storage extends Model {
+
+  constructor() {
+    super();
+    this.property('task', attr(null))
+  }
+
+  async upload() {
+    let task = store.storage.ref('hello').put({
+      type: 'string',
+      format: 'raw',
+      data: 'hey there',
+      metadata: {
+        contentType: 'text/plain'
+      }
+    });
+    this.task = task;
+  }
+
+  get serialized() {
+    let { task } = this;
+    return {
+      task: objectToJSON(task)
+    };
+  }
+
+}
+
+let model = writable(new Storage());
+```
+
+## Issues
+
+### process is not defined
+
+```
+Uncaught ReferenceError: process is not defined
+```
+
+add `plugin-replace` to rollup config:
+
+``` javascript
+// rollup.config.js
+import replace from '@rollup/plugin-replace';
+
+plugins([
+  //...
+  svelte({
+    // ...
+  }),
+  replace({
+    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
+  }),
+  // ...
+])
 ```
 
 ### 'registerComponent' of undefined

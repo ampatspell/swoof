@@ -1,9 +1,7 @@
 import firebase from "firebase/app";
 
-const {
-  assign,
-  keys
-} = Object;
+export const keys = Object.keys;
+export const assign = Object.assign;
 
 export const setGlobal = hash => {
   for(let key in hash) {
@@ -98,6 +96,9 @@ export const isTimestamp = arg => arg instanceof firebase.firestore.Timestamp;
 
 export const isFunction = arg => typeof arg === 'function';
 
+export const isFileList = arg => arg instanceof FileList;
+export const isFile = arg => arg instanceof File;
+
 export const objectToJSON = value => {
   if(typeof value === 'object') {
     if(value === null) {
@@ -109,6 +110,17 @@ export const objectToJSON = value => {
         type: 'date',
         value: dateTimeFormatter.format(value)
       };
+    } else if(isFile(value)) {
+      let { name, type, size } = value;
+      return {
+        type: 'file',
+        name,
+        type,
+        size
+      };
+    } else if(isFileList(value)) {
+      let files = [ ...value ];
+      return files.map(file => objectToJSON(file));
     } else if(isTimestamp(value)) {
       return {
         type: 'timestamp',
@@ -193,4 +205,29 @@ export const removeObject = (array, object) => {
 
 export const join = (strings, ...remaining) => {
   return strings.filter(string => !!string).join(...remaining);
+}
+
+export const pick = (object, keys) => {
+  let hash = {};
+  keys.forEach(key => {
+    let value = object[key];
+    if(value !== undefined) {
+      hash[key] = value;
+    }
+  });
+  return hash;
+}
+
+export const omit = (object, keys) => {
+  let hash = {};
+  for(let key in object) {
+    if(keys.includes(key)) {
+      continue;
+    }
+    let value = object[key];
+    if(value !== undefined) {
+      hash[key] = value;
+    }
+  }
+  return hash;
 }
