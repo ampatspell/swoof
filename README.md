@@ -688,7 +688,7 @@ update `plugin-commonjs`:
 
 ## TODO
 
-- [ ] add basic auth support (sign up, sign in (email, anon), forgot password, link account, sign out)
+- [x] add basic auth support (sign up, sign in (email, anon), forgot password, link account, sign out)
 - [ ] add basic storage support
 - [ ] diff doc onSnapshot changes + state and do writable.set(this) only if there are changes present
 - [ ] readOnly() property

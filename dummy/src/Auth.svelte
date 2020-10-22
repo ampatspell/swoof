@@ -47,6 +47,7 @@
   <input placeholder="password" bind:value={password}/>
   <input type="button" value="Sign in" on:click={() => $model.auth.methods.email.signIn(email, password)}/>
   <input type="button" value="Sign up" on:click={() => $model.auth.methods.email.signUp(email, password)}/>
+  <input type="button" value="Forgot password" disabled={!email} on:click={() => $model.auth.methods.email.sendPasswordReset(email)}/>
 </div>
 
 <div class="row">
