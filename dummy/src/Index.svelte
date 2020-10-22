@@ -22,7 +22,7 @@
     { label: 'Blank', component: Blank }
   ];
 
-  let selected = routes.find(r => r.label === 'Storage');
+  let selected = routes.find(r => r.label === 'Blank');
 
   let select = route => selected = route;
 
