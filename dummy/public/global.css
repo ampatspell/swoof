@@ -12,7 +12,7 @@ body {
 	box-sizing: border-box;
 }
 
-button {
+button, input[type="button"] {
 	font-family: "Menlo";
 	background: #444;
 	border-radius: 3px;
