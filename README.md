@@ -192,13 +192,16 @@ export default class Messages extends Model {
     super();
     this.store = this;
     this.coll = store.collection('messages');
+
+    // query autosubscribes to ref.onSnapshot
     this.property('query', attr(this.coll.orderBy('createdAt').query()));
+    // Message models are automatically created for each document. then added/removed based on snapshot.docChanges
     this.property('messages', models('query.content', doc => new Message(doc)));
   }
 
   async add(text) {
     let { store } = this;
-    let doc = store.doc('messages').new({
+    let doc = this.coll.doc().new({
       text,
       createdAt: store.serverTimestamp();
     });
