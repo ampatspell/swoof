@@ -1,5 +1,5 @@
 import Reference from './reference';
-import { documentNotFoundError } from '../../util/error';
+import { documentNotFoundError } from '../../../util/error';
 
 const {
   assign

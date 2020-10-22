@@ -1,6 +1,6 @@
-import Model from '../../bindable/model';
-import { defineHiddenProperty, toJSON, toString, objectToJSON, defer } from '../../util/util';
-import { registerOnSnapshot } from '../../state';
+import Model from '../../../bindable/model';
+import { defineHiddenProperty, toJSON, toString, objectToJSON, defer } from '../../../util/util';
+import { registerOnSnapshot } from '../../../state';
 
 const {
   assign
