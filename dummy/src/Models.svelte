@@ -3,7 +3,8 @@
 
   const {
     attr,
-    models
+    models,
+    tap
   } = computed;
 
   let store = swoof.store('main');
@@ -12,14 +13,15 @@
 
     constructor(doc) {
       super();
-      this.doc = doc;
-      // this.property('doc', attr(doc));
-      this.property('name', attr('hey'));
+      this.property('doc', tap(doc)); // doesn't bind, just forwards change notifications in this context
+      this.property('name', attr(() => this.doc.data.name).dependencies('doc'));
     }
 
     get serialized() {
+      let { doc, name } = this;
       return {
-        doc: this.doc
+        doc: doc.data.name,
+        name
       };
     }
 

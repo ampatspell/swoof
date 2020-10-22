@@ -12,6 +12,7 @@ export default class Binding {
     this.owner = owner;
     this.parent = null;
     this.nested = new Set();
+    this.listeners = new Set();
     this.properties = {
       byKey: Object.create(null),
       all: []
@@ -33,10 +34,14 @@ export default class Binding {
     return !!this.parent;
   }
 
-  notifyDidChange(key) {
-    if(!key) {
-      debugger;
+  addNotifyDidChangeListener(listener) {
+    this.listeners.add(listener);
+    return () => {
+      this.listeners.delete(listener);
     }
+  }
+
+  notifyDidChange(key, local) {
     assert(!!key, 'Missing key for notifyDidChange');
 
     if(!this.isBound) {
@@ -49,6 +54,12 @@ export default class Binding {
       }
       property.onPropertyDidChange(key);
     });
+
+    this.listeners.forEach(listener => listener(key));
+
+    if(local) {
+      return;
+    }
 
     let path = join([ this.key, key ], '.');
     getBinding(this.parent).notifyDidChange(path);

@@ -1,6 +1,7 @@
 import AttributeProperty from './attribute';
 import ArrayProperty from './array';
 import ModelsProperty from './models';
+import TapProperty from './tap';
 
 const {
   assign
@@ -44,6 +45,16 @@ export const models = (path, factory) => {
     opts: {
       path,
       factory,
+      dependencies: []
+    }
+  });
+}
+
+export const tap = value => {
+  return definition({
+    factory: TapProperty,
+    opts: {
+      value,
       dependencies: []
     }
   });
