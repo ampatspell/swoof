@@ -4,6 +4,7 @@ import CollectionReference from './ref/collection';
 import ConditionReference from './ref/condition';
 import QuerySingle from './query/single';
 import QueryArray from './query/array';
+import Auth from './auth/auth';
 import { toString, toJSON, defineHiddenProperty, cached } from '../util/util';
 import { assert } from '../util/error';
 import firebase from "firebase/app";
@@ -22,6 +23,10 @@ export default class Store {
 
   get firestore() {
     return cached(this, 'firestore', () => this.firebase.firestore());
+  }
+
+  get auth() {
+    return cached(this, 'auth', () => new Auth(this));
   }
 
   //
@@ -84,17 +89,22 @@ export default class Store {
 
   //
 
+  get serialized() {
+    let { identifier, firebase: { options: { projectId } } } = this;
+    return  {
+      identifier,
+      projectId
+    };
+  }
+
   toString() {
     let { identifier } = this;
     return toString(this, `${identifier}`);
   }
 
   toJSON() {
-    let { identifier, firebase: { options: { projectId } } } = this;
-    return toJSON(this, {
-      identifier,
-      projectId
-    });
+    let { serialized } = this;
+    return toJSON(this, { serialized });
   }
 
 }
