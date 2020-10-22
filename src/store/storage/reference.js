@@ -1,6 +1,7 @@
 import { toString, toJSON, defineHiddenProperty, assign, keys } from '../../util/util';
 import { assert } from '../../util/error';
 import firebase from "firebase/app";
+import Task from './task';
 
 const {
   StringFormat
@@ -30,15 +31,6 @@ export default class StorageReference {
 
   get bucket() {
     return this._ref.bucket;
-  }
-
-  get serialized() {
-    let { name, path, bucket } = this;
-    return {
-      name,
-      path,
-      bucket
-    };
   }
 
   async url() {
@@ -82,13 +74,20 @@ export default class StorageReference {
     } else {
       assert(false, `opts.type must be string or data`);
     }
-    return { type, task };
+    return { type, data, task, metadata };
   }
 
-  async put(opts) {
-    let { type, task } = this._put(opts);
-    let { metadata } = await task;
-    return metadata;
+  put(opts) {
+    return new Task(this, this._put(opts));
+  }
+
+  get serialized() {
+    let { name, path, bucket } = this;
+    return {
+      name,
+      path,
+      bucket
+    };
   }
 
   toJSON() {

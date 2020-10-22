@@ -96,6 +96,9 @@ export const isTimestamp = arg => arg instanceof firebase.firestore.Timestamp;
 
 export const isFunction = arg => typeof arg === 'function';
 
+export const isFileList = arg => arg instanceof FileList;
+export const isFile = arg => arg instanceof File;
+
 export const objectToJSON = value => {
   if(typeof value === 'object') {
     if(value === null) {
@@ -107,6 +110,17 @@ export const objectToJSON = value => {
         type: 'date',
         value: dateTimeFormatter.format(value)
       };
+    } else if(isFile(value)) {
+      let { name, type, size } = value;
+      return {
+        type: 'file',
+        name,
+        type,
+        size
+      };
+    } else if(isFileList(value)) {
+      let files = [ ...value ];
+      return files.map(file => objectToJSON(file));
     } else if(isTimestamp(value)) {
       return {
         type: 'timestamp',
