@@ -1,10 +1,10 @@
-import { Model, writable, computed } from '../../bindable';
+import { Model, writable, properties } from '../../bindable';
 import { toString, toJSON, defineHiddenProperty, cached, defer, objectToJSON } from '../../util/util';
 import AuthMethods from './methods';
 
 const {
   attr
-} = computed;
+} = properties;
 
 export default class Auth extends Model {
 

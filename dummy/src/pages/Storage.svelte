@@ -1,12 +1,12 @@
 <script>
-  import { swoof, Model, writable, setGlobal, computed, objectToJSON } from 'swoof';
+  import { swoof, Model, writable, setGlobal, properties, objectToJSON } from 'swoof';
   import JSON from '../components/JSON.svelte';
 
   export let location; !location;
 
   const {
     attr
-  } = computed;
+  } = properties;
 
   let store = swoof.store('main');
 

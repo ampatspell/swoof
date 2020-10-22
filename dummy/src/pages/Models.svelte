@@ -1,5 +1,5 @@
 <script>
-  import { swoof, Model, writable, computed, setGlobal } from 'swoof';
+  import { swoof, Model, writable, properties, setGlobal } from 'swoof';
   import JSON from '../components/JSON.svelte';
 
   export let location; !location;
@@ -9,7 +9,7 @@
     models,
     tap,
     logger
-  } = computed;
+  } = properties;
 
   let store = swoof.store('main');
 

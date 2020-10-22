@@ -17,7 +17,7 @@ import { SwoofError, error, assert } from './util/error';
 
 import Model from './bindable/model';
 import writable from './bindable/writable';
-import * as computed from './bindable/properties/definitions';
+import * as properties from './bindable/properties/definitions';
 
 import User from './store/auth/user';
 
@@ -44,5 +44,5 @@ export {
   writable,
   Model,
   User,
-  computed
+  properties
 }

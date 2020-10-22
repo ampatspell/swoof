@@ -168,13 +168,13 @@ Destroys internal FirebaseApp instances
 
 ``` javascript
 // lib/messages.js
-import { Model, computed } from 'swoof';
+import { Model, properties } from 'swoof';
 
 const {
   attr,
   models,
   tap
-} = computed;
+} = properties;
 
 class Message extends Model {
 
@@ -676,11 +676,11 @@ await ref.update({ contentType: 'image/png' });
 #### Task extends Model
 
 ``` javascript
-import { Model, writable, computed, objectToJSON } from 'swoof';
+import { Model, writable, properties, objectToJSON } from 'swoof';
 
 const {
   attr
-} = computed;
+} = properties;
 
 class Storage extends Model {
 

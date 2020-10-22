@@ -1,10 +1,10 @@
-import { Model, computed } from '../../bindable';
+import { Model, properties } from '../../bindable';
 import { toString, toJSON, defineHiddenProperty, assign } from '../../util/util';
 import { assert } from '../../util/error';
 
 const {
   attr
-} = computed;
+} = properties;
 
 export default class User extends Model {
 

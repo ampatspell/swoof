@@ -1,10 +1,6 @@
-import { Model, computed } from '../../bindable';
+import { Model } from '../../bindable';
 import { toString, toJSON, defineHiddenProperty, objectToJSON } from '../../util/util';
 import firebase from "firebase/app";
-
-const {
-  attr
-} = computed;
 
 const {
   STATE_CHANGED
