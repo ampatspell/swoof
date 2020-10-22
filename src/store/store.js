@@ -4,24 +4,34 @@ import CollectionReference from './ref/collection';
 import ConditionReference from './ref/condition';
 import QuerySingle from './query/single';
 import QueryArray from './query/array';
+import Auth from './auth/auth';
 import { toString, toJSON, defineHiddenProperty, cached } from '../util/util';
 import { assert } from '../util/error';
 import firebase from "firebase/app";
+import BaseUser from './auth/user';
 
 const {
   assign
 } = Object;
 
+const normalizeConfig = (config={}) => {
+  let { swoof } = config;
+  let { User } = swoof || {};
+  User = User || BaseUser;
+  return { User };
+}
+
 export default class Store {
 
-  constructor({ swoof, identifier, firebase }) {
+  constructor({ swoof, identifier, firebase, config }) {
     this.identifier = identifier;
     defineHiddenProperty(this, 'swoof', swoof);
     defineHiddenProperty(this, 'firebase', firebase);
+    defineHiddenProperty(this, '_config', normalizeConfig(config));
   }
 
-  get firestore() {
-    return cached(this, 'firestore', () => this.firebase.firestore());
+  get auth() {
+    return cached(this, 'auth', () => new Auth(this));
   }
 
   //
@@ -29,7 +39,7 @@ export default class Store {
   doc(path) {
     let ref = path;
     if(typeof ref === 'string') {
-      ref = this.firestore.doc(path);
+      ref = this.firebase.firestore().doc(path);
     }
     return this._createDocumentReference(ref);
   }
@@ -37,7 +47,7 @@ export default class Store {
   collection(path) {
     let ref = path;
     if(typeof ref === 'string') {
-      ref = this.firestore.collection(path);
+      ref = this.firebase.firestore().collection(path);
     }
     return new CollectionReference(this, ref);
   }
@@ -84,17 +94,22 @@ export default class Store {
 
   //
 
+  get serialized() {
+    let { identifier, firebase: { options: { projectId } } } = this;
+    return  {
+      identifier,
+      projectId
+    };
+  }
+
   toString() {
     let { identifier } = this;
     return toString(this, `${identifier}`);
   }
 
   toJSON() {
-    let { identifier, firebase: { options: { projectId } } } = this;
-    return toJSON(this, {
-      identifier,
-      projectId
-    });
+    let { serialized } = this;
+    return toJSON(this, { serialized });
   }
 
 }

@@ -1,4 +1,4 @@
-import { objectToJSON, toJSON } from './util';
+import { objectToJSON, toJSON, isFunction } from './util';
 
 const {
   assign
@@ -42,6 +42,9 @@ export const documentNotFoundError = () => error({
 
 export const assert = (condition, message) => {
   if(!condition) {
+    if(isFunction(message)) {
+      message = message();
+    }
     throw error({
       message,
       code: 'assert'

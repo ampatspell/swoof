@@ -1,6 +1,15 @@
 <script>
-  import { swoof, state, setGlobal } from 'swoof';
+  import { swoof, state, setGlobal, toString, User } from 'swoof';
   import Index from './Index.svelte';
+
+  class DummyUser extends User {
+
+    toString() {
+      let { user: { uid, email } } = this;
+      return toString(this, `${email || uid}`);
+    }
+
+  }
 
   let { firebase } = process.env.CONFIG;
 
@@ -8,6 +17,9 @@
     firebase,
     firestore: {
       enablePersistence: true
+    },
+    swoof: {
+      User: DummyUser
     }
   });
 

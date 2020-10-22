@@ -17,7 +17,7 @@ class Swoof {
 
   configure(name, config, cb=noop) {
     let firebase = initializeApp(config.firebase, name);
-    this.definitions[name] = { firebase };
+    this.definitions[name] = { firebase, config };
     if(config.firestore && config.firestore.enablePersistence) {
       enablePersistence(firebase).then(() => cb());
     } else {
