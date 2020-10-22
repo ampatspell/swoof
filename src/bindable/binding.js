@@ -36,9 +36,10 @@ export default class Binding {
 
   addNotifyDidChangeListener(listener) {
     this.listeners.add(listener);
-    return () => {
-      this.listeners.delete(listener);
-    }
+  }
+
+  removeNotifyDidChangeListener(listener) {
+    this.listeners.delete(listener);
   }
 
   notifyDidChange(key, local) {
