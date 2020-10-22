@@ -1,14 +1,14 @@
-import Document from './document';
-import DocumentReference from './ref/document';
-import CollectionReference from './ref/collection';
-import ConditionReference from './ref/condition';
-import QuerySingle from './query/single';
-import QueryArray from './query/array';
+import Document from './firestore/document';
+import DocumentReference from './firestore/ref/document';
+import CollectionReference from './firestore/ref/collection';
+import ConditionReference from './firestore/ref/condition';
+import QuerySingle from './firestore/query/single';
+import QueryArray from './firestore/query/array';
 import Auth from './auth/auth';
 import { toString, toJSON, defineHiddenProperty, cached } from '../util/util';
 import { assert } from '../util/error';
-import firebase from "firebase/app";
 import BaseUser from './auth/user';
+import firebase from "firebase/app";
 
 const {
   assign

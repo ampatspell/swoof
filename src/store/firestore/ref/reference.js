@@ -1,4 +1,4 @@
-import { defineHiddenProperty } from '../../util/util';
+import { defineHiddenProperty } from '../../../util/util';
 
 export default class Reference {
 

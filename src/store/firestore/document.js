@@ -1,7 +1,7 @@
-import Model from '../bindable/model';
-import { registerOnSnapshot } from '../state';
-import { toString, toJSON, defineHiddenProperty, objectToJSON, defer, cached, deleteCached, merge } from '../util/util';
-import { assert } from '../util/error';
+import Model from '../../bindable/model';
+import { registerOnSnapshot } from '../../state';
+import { toString, toJSON, defineHiddenProperty, objectToJSON, defer, cached, deleteCached, merge } from '../../util/util';
+import { assert } from '../../util/error';
 import Membrane from 'observable-membrane';
 
 const {

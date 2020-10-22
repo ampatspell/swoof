@@ -1,6 +1,6 @@
 import Query from './query';
-import { assert } from '../../util/error';
-import { array } from '../../bindable/properties/definitions';
+import { assert } from '../../../util/error';
+import { array } from '../../../bindable/properties/definitions';
 
 export default class QueryArray extends Query {
 
