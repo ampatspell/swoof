@@ -1,4 +1,17 @@
-import { toString, toJSON, defineHiddenProperty, assign, omit } from '../../util/util';
+import { toString, toJSON, defineHiddenProperty, assign, keys } from '../../util/util';
+import { assert } from '../../util/error';
+import firebase from "firebase/app";
+
+const {
+  StringFormat
+} = firebase.storage;
+
+const stringFormats = {
+  'raw':        StringFormat.RAW,
+  'base64':     StringFormat.BASE64,
+  'base64-url': StringFormat.BASE64URL,
+  'data-url':   StringFormat.DATA_URL
+};
 
 export default class StorageReference {
 
@@ -48,6 +61,34 @@ export default class StorageReference {
 
   async update(metadata) {
     await this._ref.updateMetadata(metadata);
+    return this;
+  }
+
+  async delete() {
+    await this._ref.delete();
+    return this;
+  }
+
+  _put(opts={}) {
+    let { type, data, format, metadata } = opts;
+    assert(typeof metadata === 'object', `opts.metadata must be object`);
+    let task;
+    if(type === 'string') {
+      let format_ = stringFormats[format];
+      assert(format_, `opts.format can be one of the following [ ${keys(stringFormats).join(', ')} ]`);
+      task = this._ref.putString(data, format_, metadata);
+    } else if(type === 'data') {
+      task = this._ref.put(data, metadata);
+    } else {
+      assert(false, `opts.type must be string or data`);
+    }
+    return { type, task };
+  }
+
+  async put(opts) {
+    let { type, task } = this._put(opts);
+    let { metadata } = await task;
+    return metadata;
   }
 
   toJSON() {

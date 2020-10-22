@@ -1,9 +1,6 @@
 import firebase from "firebase/app";
 
-const {
-  keys
-} = Object;
-
+export const keys = Object.keys;
 export const assign = Object.assign;
 
 export const setGlobal = hash => {
