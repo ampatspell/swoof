@@ -10,20 +10,13 @@
 
   let store = swoof.store('main');
 
-  let log = ({ model, path }) => {
-    if(!path) {
-      return;
-    }
-    console.log(`${model} → ${path}`);
-  };
-
   class Message extends Model {
 
     constructor(doc) {
       super();
       this.property('doc', tap(doc)); // doesn't bind, just forwards change notifications in this context
       this.property('name', attr(() => this.doc.data.name).dependencies('doc'));
-      this.property('logger', logger(log));
+      this.property('logger', logger());
     }
 
     get toStringExtension() {
@@ -46,7 +39,7 @@
       super();
       this.property('query', attr(store.collection('messages').query()));
       this.property('models', models('query.content', doc => new Message(doc)));
-      this.property('logger', logger(log));
+      this.property('logger', logger());
     }
 
     get serialized() {
