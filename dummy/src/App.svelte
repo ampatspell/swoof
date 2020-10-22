@@ -1,5 +1,5 @@
 <script>
-  import swoof, { state, setGlobal } from 'swoof';
+  import { swoof, state, setGlobal } from 'swoof';
   import Index from './Index.svelte';
 
   let { firebase } = process.env.CONFIG;
