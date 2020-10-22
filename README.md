@@ -16,7 +16,7 @@ See `/dummy` for some examples.
     - [store(identifier): store or undefined](#storeidentifier-store-or-undefined)
     - [destroy(): undefined](#destroy-undefined)
   - [Model](#model)
-    - [writable(model, { logger }): svelte/writable](#writablemodel--logger--sveltewritable)
+    - [writable(model): svelte/writable](#writablemodel-sveltewritable)
     - [Properties](#properties)
   - [Store](#store)
     - [doc(path): DocumentReference](#docpath-documentreference)
@@ -234,7 +234,7 @@ export default class Messages extends Model {
 </div>
 ```
 
-#### writable(model, { logger }): svelte/writable
+#### writable(model): svelte/writable
 
 Creates Svelte writable for sfoof model instance or tree.
 
@@ -244,6 +244,7 @@ Creates Svelte writable for sfoof model instance or tree.
 * array
 * models
 * tap
+* logger
 
 ### Store
 
