@@ -88,7 +88,7 @@ export default class Auth extends Model {
 
   _onAuthStateChange(user) {
     this._restoreUser(user);
-    this._deferred.resolve();
+    this._deferred.resolve(this.user);
   }
 
   _onBind() {
