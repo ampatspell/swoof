@@ -25,6 +25,10 @@ export default class User extends Model {
 
   //
 
+  signOut() {
+    return this._auth.signOut();
+  }
+
   delete() {
     return this._auth._deleteUser(this);
   }

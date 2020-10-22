@@ -60,6 +60,10 @@ See `/dummy` for some examples.
     - [content](#content)
 - [Issues](#issues)
   - [process is not defined](#process-is-not-defined)
+  - [Auth](#auth)
+    - [Sign in](#sign-in)
+    - [Link anonymous to credentials](#link-anonymous-to-credentials)
+    - [User](#user)
   - ['registerComponent' of undefined](#registercomponent-of-undefined)
 - [TODO](#todo)
 
@@ -74,8 +78,11 @@ $ npm install swoof --save-dev
 ``` svelte
 // App.svete
 <script>
-  import swoof, { state, setGlobal } from 'swoof';
+  import { swoof, state, setGlobal, User } from 'swoof';
   import SomethingNice from './SomethingNice.svelte';
+
+  class FancyUser extends User {
+  }
 
   let { firebase } = process.env.CONFIG;
 
@@ -91,6 +98,9 @@ $ npm install swoof --save-dev
     },
     firestore: {
       enablePersistence: true
+    },
+    swoof: {
+      User: FancyUser
     }
   };
 
@@ -629,6 +639,35 @@ plugins([
   }),
   // ...
 ])
+```
+
+### Auth
+
+``` javascript
+let auth = store.auth;
+```
+
+#### Sign in
+
+``` javascript
+await auth.methods.anonymous.signIn();
+await auth.methods.email.signIn(email, password);
+```
+
+#### Link anonymous to credentials
+
+``` javascript
+await auth.methods.anonymous.signIn();
+let user = auth.user;
+await user.link('email', email, password);
+```
+
+#### User
+
+``` javascript
+let user = auth.user;
+await user.delete();
+await user.signOut();
 ```
 
 ### 'registerComponent' of undefined
