@@ -98,6 +98,7 @@ export const isFunction = arg => typeof arg === 'function';
 
 export const isFileList = arg => arg instanceof FileList;
 export const isFile = arg => arg instanceof File;
+export const isPromise = arg => arg && isFunction(arg.then);
 
 export const objectToJSON = value => {
   if(typeof value === 'object') {

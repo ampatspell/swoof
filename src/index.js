@@ -15,6 +15,8 @@ import {
 
 import { SwoofError, error, assert } from './util/error';
 
+import load from './util/resolve';
+
 import Model from './bindable/model';
 import writable from './bindable/writable';
 import * as properties from './bindable/properties/definitions';
@@ -40,6 +42,8 @@ export {
   SwoofError,
   error,
   assert,
+
+  load,
 
   writable,
   Model,

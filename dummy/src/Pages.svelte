@@ -9,6 +9,7 @@
   import QueryArray from "./pages/QueryArray.svelte";
   import QueryFirst from "./pages/QueryFirst.svelte";
   import Storage from "./pages/Storage.svelte";
+  import Lazy from "./pages/Lazy.svelte";
 
   let routes = [
     { label: 'Index', path: '/', component: Index },
@@ -16,6 +17,7 @@
     { label: 'Query First', path: '/query/first', component: QueryFirst },
     { label: 'Query Array', path: '/query/array', component: QueryArray },
     { label: 'Models', path: '/models', component: Models },
+    { label: 'Lazy', path: '/lazy', component: Lazy },
     { label: 'Auth', path: '/auth', component: Auth },
     { label: 'Storage', path: '/storage', component: Storage },
     { label: 'Blank', path: '/blank', component: Blank }
