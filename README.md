@@ -15,6 +15,9 @@ See `/dummy` for some examples.
     - [create(identifier, name): store](#createidentifier-name-store)
     - [store(identifier): store or undefined](#storeidentifier-store-or-undefined)
     - [destroy(): undefined](#destroy-undefined)
+  - [Model](#model)
+    - [writable(model, { logger }): svelte/writable](#writablemodel--logger--sveltewritable)
+    - [Properties](#properties)
   - [Store](#store)
     - [doc(path): DocumentReference](#docpath-documentreference)
     - [collection(path): CollectionReference](#collectionpath-collectionreference)
@@ -55,8 +58,6 @@ See `/dummy` for some examples.
     - [string: string](#string-string)
     - [serialized: object](#serialized-object)
     - [content](#content)
-  - [Model](#model)
-    - [Properties](#properties)
 - [Issues](#issues)
   - [process is not defined](#process-is-not-defined)
   - ['registerComponent' of undefined](#registercomponent-of-undefined)
@@ -148,6 +149,96 @@ let store = swoof.store('main');
 #### destroy(): undefined
 
 Destroys internal FirebaseApp instances
+
+### Model
+
+> Soon. See /dummy for examples
+
+``` javascript
+// lib/messages.js
+import { Model, computed } from 'swoof';
+
+const {
+  attr,
+  models,
+  tap
+} = computed;
+
+class Message extends Model {
+
+  constructor(message) {
+    super();
+    // tap doesn't bind, just forwards change notifications in this context
+    this.property('doc', tap(doc));
+  }
+
+  get data() {
+    return this.doc.data;
+  }
+
+  get text() {
+    return this.data.text;
+  }
+
+  async save() {
+    await this.doc.save();
+  }
+
+}
+
+export default class Messages extends Model {
+
+  constructor(store) {
+    super();
+    this.store = this;
+    this.coll = store.collection('messages');
+    this.property('query', attr(this.coll.orderBy('createdAt').query()));
+    this.property('messages', models('query.content', doc => new Message(doc)));
+  }
+
+  async add(text) {
+    let { store } = this;
+    let doc = store.doc('messages').new({
+      text,
+      createdAt: store.serverTimestamp();
+    });
+    await doc.save();
+  }
+
+}
+```
+
+``` svelte
+<script>
+  import { store } from 'swoof';
+  import Messages from './lib/messages';
+
+  // Writable when subscribed starts all onSnapshot listeners and
+  // property change notifications
+  // Everything is torn down when last subscriber unsubscribes.
+  let messages = writable(new Messages(store));
+</script>
+
+<!-- use "$" only for `messages` - first level -->
+
+<div>{$messages.count} messages.</div>
+<div>
+  {#each $messages.message as message}
+    <div>{message.text}</div>
+  {/each}
+</div>
+```
+
+#### writable(model, { logger }): svelte/writable
+
+Creates Svelte writable for sfoof model instance or tree.
+
+#### Properties
+
+* attr
+* array
+* models
+* tap
 
 ### Store
 
@@ -507,12 +598,6 @@ if `{ type }` is:
 
 * `array` (default): array of Document instances
 * `single`: single (first) Document instance or null
-
-### Model
-
-> Soon. See /dummy for examples
-
-#### Properties
 
 ## Issues
 
