@@ -49,8 +49,12 @@ See `/dummy` for some examples.
     - [serialized: Object](#serialized-object)
     - [toJSON(): Object](#tojson-object)
   - [Query](#query)
-    - [QuerySingle](#querysingle)
-    - [QueryArray](#queryarray)
+    - [promise: Promise<Query>](#promise-promisequery)
+    - [async load({ force: false }): Query](#async-load-force-false--query)
+    - [reload(): Query](#reload-query)
+    - [string: string](#string-string)
+    - [serialized: object](#serialized-object)
+    - [content](#content)
   - [Model](#model)
     - [Properties](#properties)
 - [Issues](#issues)
@@ -447,10 +451,67 @@ Basically same as serialized with additional data
 
 ### Query
 
-#### QuerySingle
-#### QueryArray
+onSnapshot aware query.
+
+``` javascript
+let array = store.collection('messages').where('status', '==', 'sent').query({ type: 'array' });
+let single = store.collection('messages').limit(1).query({ type: 'single' });
+```
+
+#### promise: Promise<Query>
+
+Promise which is resolved after 1st load or 1st onSnapshot call.
+
+``` javascript
+let query = store.collection('messages').query();
+await query.promise; // resolves after 1st load or onSnapshot
+```
+
+#### async load({ force: false }): Query
+
+Loads query if it is not already loaded. See `Document.load` for details on `force`.
+
+``` javascript
+let query = store.collection('messages').query();
+await query.load();
+// isLoaded === true
+await query.load(); // doesn't do anything
+await query.load({ force: true }); // loads
+```
+
+#### reload(): Query
+
+Relaods query. Same as `load({ force: true })`
+
+#### string: string
+
+More or less readable query as a string.
+
+#### serialized: object
+
+Debugish query status representation
+
+``` javascript
+{
+  error: null
+  isError: false
+  isLoaded: false
+  isLoading: false
+  string: "messages.where(status, ==, sent).limit(10)"
+}
+```
+
+#### content
+
+if `{ type }` is:
+
+* `array` (default): array of Document instances
+* `single`: single (first) Document instance or null
 
 ### Model
+
+> Soon. See /dummy for examples
+
 #### Properties
 
 ## Issues
