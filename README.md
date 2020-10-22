@@ -37,7 +37,7 @@ See `/dummy` for some examples.
     - [query({ type: 'array' }): ArrayQuery or SingleQuery](#query-type-array--arrayquery-or-singlequery)
     - [async load(): Array<Document>](#async-load-arraydocument)
     - [first({ optional: false }): Document or undefined](#first-optional-false--document-or-undefined)
-  - [Document](#document)
+  - [Document extends Model](#document-extends-model)
     - [store: Store](#store-store)
     - [ref: DocumentReference](#ref-documentreference)
     - [id: string](#id-string-2)
@@ -51,7 +51,7 @@ See `/dummy` for some examples.
     - [async delete(): Document](#async-delete-document)
     - [serialized: Object](#serialized-object)
     - [toJSON(): Object](#tojson-object)
-  - [Query](#query)
+  - [Query extends Model](#query-extends-model)
     - [promise: Promise<Query>](#promise-promisequery)
     - [async load({ force: false }): Query](#async-load-force-false--query)
     - [reload(): Query](#reload-query)
@@ -403,7 +403,7 @@ If document doesn't exist and optional is:
 * `true`: `undefined` is returned
 * `false`: `SwoofError` with `{ code: 'document/missing' }` is thrown
 
-### Document
+### Document extends Model
 
 Document instance represents one firestore document.
 
@@ -540,7 +540,7 @@ let doc = await store.doc('messages/first').load();
 
 Basically same as serialized with additional data
 
-### Query
+### Query extends Model
 
 onSnapshot aware query.
 
