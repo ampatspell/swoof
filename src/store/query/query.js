@@ -1,4 +1,4 @@
-import Bindable from '../../bindable/bindable';
+import Model from '../../bindable/model';
 import { defineHiddenProperty, toJSON, toString, objectToJSON, defer } from '../../util/util';
 import { registerOnSnapshot } from '../../state';
 
@@ -6,7 +6,7 @@ const {
   assign
 } = Object;
 
-export default class Query extends Bindable {
+export default class Query extends Model {
 
   constructor({ store, ref }) {
     super();
