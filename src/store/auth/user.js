@@ -8,15 +8,23 @@ const {
 
 export default class User extends Model {
 
-  constructor(auth, user) {
+  constructor(store, user) {
     super();
-    defineHiddenProperty(this, '_auth', auth);
-    defineHiddenProperty(this, 'store', auth.store);
+    defineHiddenProperty(this, 'store', store);
+    defineHiddenProperty(this, '_auth', store.auth);
+
     this.property('user', attr(user));
+
+    let prop = key => attr(() => {
+      let { user } = this;
+      return user && user[key];
+    }).readOnly().dependencies([ 'user' ]);
+
+    this.property('uid', prop('uid'));
+    this.property('email', prop('email'));
   }
 
-  async restore(user) {
-    this.user = user;
+  async restore() {
   }
 
   //
@@ -53,7 +61,7 @@ export default class User extends Model {
   //
 
   get serialized() {
-    let { user: { uid, email } } = this;
+    let { uid, email } = this;
     return {
       uid,
       email
@@ -61,7 +69,7 @@ export default class User extends Model {
   }
 
   toString() {
-    let { user: { uid, email } } = this;
+    let { uid, email } = this;
     return toString(this, `${email || uid}`);
   }
 

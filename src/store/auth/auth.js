@@ -60,9 +60,8 @@ export default class Auth extends Model {
       if(user && internal.uid === user.user.uid) {
         await user.restore(internal);
       } else {
-        user = new this._userFactory(this);
-        this.user = user;
-        await user.restore(internal);
+        user = new this._userFactory(this.store, internal);
+        await user.restore();
       }
     } else {
       user = null;
