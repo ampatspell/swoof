@@ -6,14 +6,16 @@
 
   const {
     attr,
+    logger
   } = properties;
 
   let store = swoof.store('main');
 
-  class QueryFirst extends Model {
+  class QueryArray extends Model {
 
     constructor() {
       super();
+      this.property('logger', logger());
       this.property('query', attr(store.collection('messages').query()));
     }
 
@@ -31,7 +33,7 @@
 
   }
 
-  let model = writable(new QueryFirst());
+  let model = writable(new QueryArray());
   setGlobal({ model: model.value });
 
 </script>

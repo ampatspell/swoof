@@ -3,7 +3,8 @@ import { toString, toJSON, defineHiddenProperty, assign } from '../../util/util'
 import { assert } from '../../util/error';
 
 const {
-  attr
+  attr,
+  alias
 } = properties;
 
 export default class User extends Model {
@@ -15,13 +16,9 @@ export default class User extends Model {
 
     this.property('user', attr(user));
 
-    let prop = key => attr(() => {
-      let { user } = this;
-      return user && user[key];
-    }).readOnly().dependencies([ 'user' ]);
-
-    this.property('uid', prop('uid'));
-    this.property('email', prop('email'));
+    let _user = key => alias(`user.${key}`).deps('user').readOnly();
+    this.property('uid', _user('uid'));
+    this.property('email', _user('email'));
   }
 
   async restore() {

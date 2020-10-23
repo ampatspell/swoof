@@ -3,7 +3,8 @@
   import JSON from '../components/JSON.svelte';
 
   const {
-    attr
+    attr,
+    logger
   } = properties;
 
   export let location; !location;
@@ -14,6 +15,7 @@
 
     constructor() {
       super();
+      this.property('logger', logger());
       this.property('one', attr(() => store.doc('messages/first').existing()).readOnly());
       this.property('two', attr(() => store.doc('messages/second').existing()).readOnly());
       this.property('three', attr(() => store.doc('messages/third').existing()).readOnly());

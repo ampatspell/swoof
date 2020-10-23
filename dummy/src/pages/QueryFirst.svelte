@@ -6,6 +6,7 @@
 
   const {
     attr,
+    logger
   } = properties;
 
   let store = swoof.store('main');
@@ -14,6 +15,7 @@
 
     constructor() {
       super();
+      this.property('logger', logger());
       this.property('name', attr('first'));
       this.property('first', attr(() => {
         let { name } = this;

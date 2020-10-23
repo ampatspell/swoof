@@ -1,11 +1,12 @@
 <script>
-  import { swoof, Model, writable, setGlobal, properties } from 'swoof';
+  import { swoof, Model, writable, setGlobal, properties, objectToJSON } from 'swoof';
   import JSON from '../components/JSON.svelte';
 
   export let location; !location;
 
   const {
     attr,
+    alias,
     logger
   } = properties;
 
@@ -15,13 +16,16 @@
 
     constructor() {
       super();
-      this.property('auth', attr(store.auth));
       this.property('logger', logger());
+      this.property('store', attr(store).readOnly());
+      this.property('auth', alias('store.auth').readOnly());
+      this.property('user', alias('auth.user').readOnly());
     }
 
     get serialized() {
+      let { user } = this;
       return {
-        ok: true
+        user: objectToJSON(user)
       };
     }
 
@@ -59,7 +63,7 @@
 </div>
 
 <div class="row">
-  <JSON object={$model.auth.user}/>
+  <JSON object={$model}/>
 </div>
 
 <style type="text/scss">

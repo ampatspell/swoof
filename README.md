@@ -264,6 +264,7 @@ Creates Svelte writable for sfoof model instance or tree.
 * array
 * models
 * tap
+* alias
 * logger
 
 #### load()
