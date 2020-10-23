@@ -102,7 +102,13 @@ $ npm install swoof --save-dev
       enablePersistence: true
     },
     swoof: {
-      User: FancyUser
+      auth: {
+        User: FancyUser
+      },
+      // override default region for store.functions
+      // functions: {
+      //   region: 'us-central1'
+      // }
     }
   };
 
@@ -717,6 +723,13 @@ class Storage extends Model {
 }
 
 let model = writable(new Storage());
+```
+
+### Functions
+
+``` javascript
+await store.functions.call('hey-there', { ok: true });
+await store.functions.region('us-central1').call('hey-there', { ok: true });
 ```
 
 ## Issues
