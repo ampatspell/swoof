@@ -2,32 +2,45 @@ import Property from './property';
 import { get, set } from '../../util/util';
 import { assert } from '../../util/error';
 
+const LAZY = { __lazy: true };
+
+const normalizeDependencies = (dependencies, path) => {
+  return [ ...dependencies, path ];
+}
+
 export default class AliasProperty extends Property {
 
   constructor(binding, key, dependencies, { path, readOnly }) {
-    super(binding, key, dependencies);
-    console.log(path, readOnly);
-    this._path = path;
-    this._readOnly = readOnly;
+    super(binding, key, normalizeDependencies(dependencies, path));
+    this.path = path;
+    this.readOnly = readOnly;
+    this._value = LAZY;
   }
 
-  getTargetValue() {
-    return get(this.owner, this._path);
+  valueDidChange(key) {
+    this._value = LAZY;
+    this.notifyDidChange(key, true);
   }
 
-  setTargetValue(value) {
-    set(this.owner, this._path, value);
+  get value() {
+    let value = this._value;
+    if(value === LAZY) {
+      value = get(this.owner, this.path);
+      this._value = value;
+    }
+    return value;
   }
 
-  targetValueDidChange() {
-    this.notifyDidChange();
+  set value(value) {
+    this._value = LAZY;
+    set(this.owner, this.path, value);
   }
 
   define() {
-    let get = () => this.getTargetValue();
+    let get = () => this.value;
 
     let set;
-    if(this._readOnly) {
+    if(this.readOnly) {
       set = value => {
         assert(false, [
           `attempting to set '${value}'`,
@@ -36,11 +49,7 @@ export default class AliasProperty extends Property {
       }
     } else {
       set = value => {
-        let current = this.getTargetValue();
-        if(value === current) {
-          return;
-        }
-        this.setTargetValue(value);
+        this.value = value;
       }
     }
 
@@ -48,10 +57,12 @@ export default class AliasProperty extends Property {
   }
 
   onPropertyDidChange(path) {
-    if(!this._path.startsWith(path)) {
+    let dependency = this.dependencies.find(dependency => path.startsWith(dependency));
+    if(!dependency) {
       return;
     }
-    this.targetValueDidChange();
+    let key = path.substr(this.path.length + 1);
+    this.valueDidChange(key);
   }
 
 }

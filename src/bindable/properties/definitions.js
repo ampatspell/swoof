@@ -14,7 +14,7 @@ const definition = (factory, opts) => {
       readOnly: false
     }, opts)
   }
-  return assign(hash, {
+  hash = assign(hash, {
     _isPropertyDefinition: true,
     dependencies: (...keys) => {
       hash.opts.dependencies = [ ...hash.opts.dependencies, ...keys ];
@@ -25,6 +25,8 @@ const definition = (factory, opts) => {
       return hash;
     }
   });
+  hash.deps = hash.dependencies;
+  return hash;
 };
 
 export const attribute = value => definition(AttributeProperty, { value });
