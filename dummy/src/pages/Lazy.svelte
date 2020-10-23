@@ -24,6 +24,9 @@
     }
 
     async load() {
+      if(this.isLoaded) {
+        return;
+      }
       this.isLoading = true;
       let { one, two, three } = this;
       await load(one, two, three);
