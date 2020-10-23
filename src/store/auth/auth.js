@@ -1,3 +1,4 @@
+import 'firebase/auth';
 import { Model, writable, properties } from '../../bindable';
 import { toString, toJSON, defineHiddenProperty, cached, defer, objectToJSON } from '../../util/util';
 import AuthMethods from './methods';

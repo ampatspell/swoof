@@ -1,3 +1,4 @@
+import 'firebase/storage';
 import { toString, toJSON, defineHiddenProperty } from '../../util/util';
 import StorageReference from './reference';
 
