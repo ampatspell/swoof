@@ -778,7 +778,7 @@ update `plugin-commonjs`:
 
 ## TODO
 
-- [ ] readOnly() property
+- [ ] alias() property
 - [ ] diff doc onSnapshot changes + state and do writable.set(this) only if there are changes present
 - [x] models() property
 - [x] tap: needs some kind of tool to forward change notifications to nested models
