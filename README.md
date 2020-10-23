@@ -268,7 +268,7 @@ Creates Svelte writable for sfoof model instance or tree.
 
 #### load()
 
-```
+``` javascript
 await load(....modelsOrPromises);
 ```
 
