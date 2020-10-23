@@ -93,8 +93,8 @@ export default class Binding {
     assert(!this.parent, () => `${this.owner} is already bound to ${this.parent} while attempting to bind it to ${parent}`);
     this.parent = parent;
     registerBound(this.owner);
-    this.properties.all.forEach(property => property.onBind());
     this.nested.forEach(model => getBinding(model).bind(this.owner));
+    this.properties.all.forEach(property => property.onBind());
     this.owner._onBind();
   }
 
