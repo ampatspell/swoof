@@ -99,8 +99,20 @@ export default class Store extends Model {
 
   //
 
+  get projectId() {
+    return this.firebase.options.projectId;
+  }
+
+  get dashboard() {
+    return `https://console.firebase.google.com/u/0/project/${this.projectId}/overview`;
+  }
+
+  openDashboard() {
+    window.open(this.dashboard, '_blank');
+  }
+
   get serialized() {
-    let { identifier, firebase: { options: { projectId } } } = this;
+    let { identifier, projectId } = this;
     return  {
       identifier,
       projectId
