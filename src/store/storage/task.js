@@ -6,7 +6,7 @@ const {
   STATE_CHANGED
 } = firebase.storage.TaskEvent;
 
-export default class StorageTask extends Model {
+export default class StorageUploadTask extends Model {
 
   constructor(ref, { type, data, task, metadata }) {
     super();
