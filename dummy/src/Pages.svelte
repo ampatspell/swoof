@@ -25,6 +25,9 @@
     { label: 'Blank', path: '/blank', component: Blank }
   ];
 
+  let show = true;
+  let toggle = () => show = !show;
+
 </script>
 
 <Router>
@@ -34,18 +37,25 @@
         <Link to={path}>{label}</Link>
       {/each}
     </div>
+    <input type="button" value="Toggle" on:click={() => toggle()}/>
   </div>
-  <div class="content">
-    {#each routes as { path, component }}
-      <Route path={path} component={component}/>
-    {/each}
-  </div>
+  {#if show}
+    <div class="content">
+      {#each routes as { path, component }}
+        <Route path={path} component={component}/>
+      {/each}
+    </div>
+  {:else}
+    <div class="content">
+      Now there should be no roots, bound models or snapshot listeners.
+    </div>
+  {/if}
 </Router>
 
 <style type="text/scss">
   .header {
     border-bottom: 1px solid #eee;
-    padding: 10px 10px;
+    padding: 5px 10px;
     display: flex;
     flex-direction: row;
     align-items: center;
