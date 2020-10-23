@@ -44,6 +44,7 @@ export default class Binding {
 
   notifyDidChange(key, local) {
     assert(!!key, 'Missing key for notifyDidChange');
+    assert(local === undefined || typeof local === 'boolean', 'Local must be either undefined or boolean');
 
     if(!this.isBound) {
       return;

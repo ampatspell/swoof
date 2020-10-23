@@ -1,4 +1,4 @@
-import { toString } from '../../util/util';
+import { toString, join } from '../../util/util';
 
 export default class Property {
 
@@ -17,8 +17,9 @@ export default class Property {
     this.binding.unregisterNested(this, object);
   }
 
-  notifyDidChange() {
-    this.binding.notifyDidChange(this.key);
+  notifyDidChange(key, local) {
+    let path = join([ this.key, key ], '.');
+    this.binding.notifyDidChange(path, local);
   }
 
   onDependencyDidChange() {
