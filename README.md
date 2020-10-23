@@ -1,6 +1,6 @@
 # Swoof
 
-Swoof Google Firebase Firestore library for Svelte.
+Swoof is Google Firebase Firestore, Auth, Storage, Functions library for Svelte.
 
 > Docs are coming.
 
