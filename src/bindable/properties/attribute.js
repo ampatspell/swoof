@@ -8,17 +8,17 @@ export default class AttributeProperty extends Property {
 
   constructor(binding, key, dependencies, { readOnly, value }) {
     super(binding, key, dependencies);
-    this._readOnly = readOnly;
+    this.readOnly = readOnly;
     this.__value = value;
-    this._isFunction = isFunction(value);
-    if(this._isFunction) {
+    this.isFunction = isFunction(value);
+    if(this.isFunction) {
       this.value = LAZY;
     }
   }
 
   get _value() {
     let value = this.__value;
-    if(this._isFunction) {
+    if(this.isFunction) {
       let { owner, key } = this;
       value = value.call(owner, owner, key);
     }
@@ -34,7 +34,7 @@ export default class AttributeProperty extends Property {
   define() {
     let { owner, key } = this;
 
-    if(!this._isFunction) {
+    if(!this.isFunction) {
       this._instantiateValue();
     }
 
@@ -46,7 +46,7 @@ export default class AttributeProperty extends Property {
     };
 
     let set;
-    if(this._readOnly) {
+    if(this.readOnly) {
       set = value => {
         assert(false, [
           `attempting to set '${value}'`,
@@ -72,7 +72,7 @@ export default class AttributeProperty extends Property {
   }
 
   onDependencyDidChange() {
-    if(!this._isFunction) {
+    if(!this.isFunction) {
       return;
     }
     this.owner[this.key] = this._value;

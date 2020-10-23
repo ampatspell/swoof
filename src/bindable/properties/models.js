@@ -28,7 +28,6 @@ export default class ModelsProperty extends Property {
     super(binding, key, [ ...dependencies, source.path ]);
     this.source = source;
     this.factory = factory;
-
     this.models = [];
     this.content = new ModelsProxy(this.models);
     this.proxy = createArrayProxy(this.content);
