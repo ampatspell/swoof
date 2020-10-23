@@ -19,7 +19,7 @@ export default class AliasProperty extends Property {
 
   valueDidChange(key) {
     this._value = LAZY;
-    this.notifyDidChange(key, true);
+    this.notifyDidChange(key);
   }
 
   get value() {

@@ -5,39 +5,41 @@
   const {
     attr,
     alias,
-    logger
+    logger,
+    tap
   } = properties;
 
   export let location; !location;
 
   let store = swoof.store('main');
 
-  class Blank extends Model {
-
+  class External extends Model {
     constructor() {
       super();
-      this.property('logger', logger());
-      this.property('name', alias('doc.data.name'));
       this.property('doc', attr(() => store.doc('messages/first').existing()).readOnly());
     }
+  }
 
-    get serialized() {
-      let { name, doc } = this;
-      return {
-        name,
-        doc: objectToJSON(doc)
-      };
+  class Blank extends Model {
+
+    constructor(external) {
+      super();
+      this.property('external', tap(external));
+      this.property('logger', logger());
+      this.property('name', alias('external.doc.data.name').deps('external.doc.data'));
     }
 
   }
-
-  let model = writable(new Blank());
+  let external = writable(new External());
+  let model = writable(new Blank(external.model));
   setGlobal({ model: model.value });
 
 </script>
 
 <div class="row">
-  <JSON object={$model}/>
+  {$external}
+  {$model.external.doc.data.name} :
+  {$model.name}
 </div>
 
 <style>

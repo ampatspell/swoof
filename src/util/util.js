@@ -163,10 +163,11 @@ export const get = (object, path) => {
   let components = path.split('.');
   let current = object;
   for(let i = 0; i < components.length; i++) {
-    if(current[components[i]] === undefined) {
+    let next = current[components[i]];
+    if(next === undefined || next === null) {
       return;
     }
-    current = current[components[i]];
+    current = next;
   }
   return current;
 }
@@ -176,10 +177,11 @@ export const set = (object, path, value) => {
   let key = components.pop();
   let current = object;
   for(let i = 0; i < components.length; i++) {
-    if(current[components[i]] === undefined) {
+    let next = current[components[i]];
+    if(next === undefined || next === null) {
       return;
     }
-    current = current[components[i]];
+    current = next;
   }
   current[key] = value;
 }
