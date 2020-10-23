@@ -660,6 +660,31 @@ await user.delete();
 await user.signOut();
 ```
 
+``` javascript
+import { User, toString } from 'swoof';
+
+export default class DummyUser extends User {
+
+  constructor(store, user) {
+    super(store, user);
+  }
+
+  // restoe is called with user arg only if
+  // user.uid === this.user.uid
+  async restore(user) {
+    if(user) {
+      this.user = user;
+    }
+  }
+
+  toString() {
+    let { uid, email } = this;
+    return toString(this, `${email || uid}`);
+  }
+
+}
+```
+
 ### Storage
 
 ``` javascript
