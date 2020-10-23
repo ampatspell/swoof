@@ -1,9 +1,11 @@
 <script>
-  import { swoof, Model, writable, setGlobal, properties } from 'swoof';
+  import { swoof, Model, writable, setGlobal, properties, objectToJSON } from 'swoof';
   import JSON from '../components/JSON.svelte';
 
   const {
-    attr
+    attr,
+    alias,
+    logger
   } = properties;
 
   export let location; !location;
@@ -14,12 +16,16 @@
 
     constructor() {
       super();
+      this.property('logger', logger());
+      this.property('name', alias('doc.data.name'));
       this.property('doc', attr(() => store.doc('messages/first').existing()).readOnly());
     }
 
     get serialized() {
+      let { name, doc } = this;
       return {
-        ok: true
+        name,
+        doc: objectToJSON(doc)
       };
     }
 
