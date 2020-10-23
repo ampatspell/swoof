@@ -6,7 +6,7 @@ const {
   STATE_CHANGED
 } = firebase.storage.TaskEvent;
 
-export default class Task extends Model {
+export default class StorageTask extends Model {
 
   constructor(ref, { type, data, task, metadata }) {
     super();
@@ -21,6 +21,7 @@ export default class Task extends Model {
     this.isCompleted = false;
     this.isError = false;
     this.error = null;
+    this._await(task);
   }
 
   get progress() {
@@ -29,6 +30,16 @@ export default class Task extends Model {
       return 0;
     }
     return Math.floor(transferred / total * 100);
+  }
+
+  async _await(task) {
+    let snapshot;
+    try {
+      snapshot = await task;
+    } catch {
+      return;
+    }
+    this._onSnapshot(snapshot);
   }
 
   _onSnapshot(snapshot) {
@@ -49,8 +60,8 @@ export default class Task extends Model {
   _onCompleted() {
     this.isRunning = false;
     this.isCompleted = true;
-    this._cancelObserver();
     this._notifyDidChange('progress');
+    this._cancelObserver();
   }
 
   get promise() {
@@ -73,7 +84,7 @@ export default class Task extends Model {
     this._taskObserver = this._task.on(STATE_CHANGED,
       snapshot => this._onSnapshot(snapshot),
       err => this._onError(err),
-      () => this._onCompleted()
+      (...args) => this._onCompleted(args)
     );
   }
 
