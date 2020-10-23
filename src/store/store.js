@@ -6,6 +6,7 @@ import QuerySingle from './firestore/query/single';
 import QueryArray from './firestore/query/array';
 import Auth from './auth/auth';
 import Storage from './storage/storage';
+import Functions from './functions/functions';
 import { toString, toJSON, defineHiddenProperty, cached, assign } from '../util/util';
 import { assert } from '../util/error';
 import BaseUser from './auth/user';
@@ -13,9 +14,13 @@ import firebase from "firebase/app";
 
 const normalizeConfig = (config={}) => {
   let { swoof } = config;
-  let { User } = swoof || {};
-  User = User || BaseUser;
-  return { User };
+  let { auth, functions } = assign({ auth: {}, functions: {} }, swoof);
+  let { User } = assign({ User: BaseUser }, auth);
+  let { region } = assign({}, functions);
+  return {
+    auth: { User },
+    functions: { region }
+  };
 }
 
 export default class Store {
@@ -33,6 +38,10 @@ export default class Store {
 
   get storage() {
     return cached(this, 'storage', () => new Storage(this));
+  }
+
+  get functions() {
+    return cached(this, 'functions', () => new Functions(this));
   }
 
   //

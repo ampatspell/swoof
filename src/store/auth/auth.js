@@ -51,7 +51,7 @@ export default class Auth extends Model {
   }
 
   get _userFactory() {
-    return this.store._config.User;
+    return this.store._config.auth.User;
   }
 
   async _restoreUser(internal) {
