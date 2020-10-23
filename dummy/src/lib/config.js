@@ -10,7 +10,13 @@ export const config = {
     enablePersistence: true
   },
   swoof: {
-    User
+    auth: {
+      User
+    },
+    // functions: {
+    //   // custom default region
+    //   region: 'us-central1'
+    // }
   }
 };
 
