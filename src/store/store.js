@@ -1,3 +1,4 @@
+import { Model, properties } from '../bindable';
 import Document from './firestore/document';
 import DocumentReference from './firestore/ref/document';
 import CollectionReference from './firestore/ref/collection';
@@ -12,6 +13,10 @@ import { assert } from '../util/error';
 import BaseUser from './auth/user';
 import firebase from "firebase/app";
 
+const {
+  attr
+} = properties;
+
 const normalizeConfig = (config={}) => {
   let { swoof } = config;
   let { auth, functions } = assign({ auth: {}, functions: {} }, swoof);
@@ -23,28 +28,18 @@ const normalizeConfig = (config={}) => {
   };
 }
 
-export default class Store {
+export default class Store extends Model {
 
   constructor({ swoof, identifier, firebase, config }) {
+    super();
     this.identifier = identifier;
     defineHiddenProperty(this, 'swoof', swoof);
     defineHiddenProperty(this, 'firebase', firebase);
     defineHiddenProperty(this, '_config', normalizeConfig(config));
+    this.property('auth', attr(() => new Auth(this)).readOnly());
+    this.property('storage', attr(() => new Storage(this)).readOnly());
+    this.property('functions', attr(() => new Functions(this)).readOnly());
   }
-
-  get auth() {
-    return cached(this, 'auth', () => new Auth(this));
-  }
-
-  get storage() {
-    return cached(this, 'storage', () => new Storage(this));
-  }
-
-  get functions() {
-    return cached(this, 'functions', () => new Functions(this));
-  }
-
-  //
 
   doc(path) {
     let ref = path;
