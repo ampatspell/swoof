@@ -27,32 +27,21 @@ export const guidFor = instance => {
   return guid;
 }
 
-export const __toPrimitive = (prefix, instance) => {
+export const toPrimitive = (instance) => {
   let name = instance.constructor.name;
-  if(prefix) {
-    name = `${prefix}:${name}`;
-  }
   return `${name}:${guidFor(instance)}`;
 }
 
-export const __toString = (prefix, instance, extension) => {
-  return `<${__toPrimitive(prefix, instance)}${extension ? `:${extension}` : ''}>`;
+export const toString = (instance, extension) => {
+  return `<${toPrimitive(instance)}${extension ? `:${extension}` : ''}>`;
 }
 
-export const __toJSON = (prefix, instance, props) => {
+export const toJSON = (instance, props) => {
   return {
-    instance: __toPrimitive(prefix, instance),
+    instance: toPrimitive(instance),
     ...props
   };
 }
-
-export const publicToPrimitive = (...args) => __toPrimitive(null, ...args);
-export const publicToString = (...args) => __toString(null, ...args);
-export const publicToJSON = (...args) => __toJSON(null, ...args);
-
-export const toPrimitive = (...args) => __toPrimitive('Swoof', ...args);
-export const toString = (...args) => __toString('Swoof', ...args);
-export const toJSON = (...args) => __toJSON('Swoof', ...args);
 
 const __cache = '__swoof_cache';
 

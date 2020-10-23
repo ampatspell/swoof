@@ -6,9 +6,9 @@ import {
   isServerTimestamp,
   isTimestamp,
   objectToJSON,
-  publicToString as toString,
-  publicToPrimitive as toPrimitive,
-  publicToJSON as toJSON,
+  toString,
+  toPrimitive,
+  toJSON,
   get,
   set
 } from './util/util';

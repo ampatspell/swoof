@@ -1,4 +1,4 @@
-import { defineHiddenProperty, publicToString, publicToJSON } from '../util/util';
+import { defineHiddenProperty, toString, toJSON } from '../util/util';
 import Binding, { _binding, getBinding } from './binding';
 
 export {
@@ -36,11 +36,11 @@ export default class Model {
 
   toJSON() {
     let { serialized } = this;
-    return publicToJSON(this, { serialized });
+    return toJSON(this, { serialized });
   }
 
   toString() {
-    return publicToString(this, this.toStringExtension);
+    return toString(this, this.toStringExtension);
   }
 
 }
