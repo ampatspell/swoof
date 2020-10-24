@@ -28,7 +28,7 @@ export default class Auth extends Model {
   }
 
   async signOut() {
-    this._withAuthReturningUser(async auth => {
+    await this._withAuthReturningUser(async auth => {
       await auth.signOut();
       return null;
     });
