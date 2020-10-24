@@ -1,6 +1,6 @@
 {
   "name": "swoof",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "Google Firebase Firestore, Auth, Storage, Functions library for Svelte",
   "license": "MIT",
   "author": "Arnis Vuskans <ampatspell@gmail.com> (http://www.amateurinmotion.com/)",
