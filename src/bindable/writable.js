@@ -5,17 +5,29 @@ import { registerRoot } from '../state';
 
 export class Writable {
 
-  constructor(model) {
+  constructor(model, opts) {
     assert(model instanceof Model, `model ${model} is not Model`);
     this.model = model;
+    this.opts = opts;
     this[_binding] = {
       notifyDidChange: path => this.notifyDidChange(path)
     }
     this.writable = writable(model, () => this.bind());
   }
 
-  notifyDidChange() {
+  _notifyDidChange() {
     this.writable.set(this.model);
+  }
+
+  notifyDidChange(path) {
+    if(this.opts.handle) {
+      let item = this.opts.handle.find(item => item === path);
+      if(item) {
+        this._notifyDidChange();
+      }
+    } else {
+      this._notifyDidChange();
+    }
   }
 
   get value() {
@@ -64,4 +76,4 @@ export class Writable {
 
 }
 
-export default (model, opts={}) => new Writable(model);
+export default (model, opts={}) => new Writable(model, opts);
