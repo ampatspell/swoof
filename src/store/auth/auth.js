@@ -66,7 +66,7 @@ export default class Auth extends Model {
       }
     } else {
       user = null;
-      this.user = user;
+      this.user = null;
     }
     return user;
   }
